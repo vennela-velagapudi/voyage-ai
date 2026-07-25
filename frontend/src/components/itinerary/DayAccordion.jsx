@@ -8,6 +8,7 @@ export default function DayAccordion({
   day,
   isOpen: controlledIsOpen,
   onToggle,
+  onPlaceClick,
   isDefaultOpen = false,
 }) {
   const [internalOpen, setInternalOpen] = useState(isDefaultOpen);
@@ -116,7 +117,8 @@ export default function DayAccordion({
                 <span className="flex items-center gap-2 font-medium">
                   <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
                   <span>
-                    Curated chronological travel progression designed for effortless pacing.
+                    Curated chronological travel progression. Click any place card for live Google
+                    details.
                   </span>
                 </span>
                 {hasTimeline && (
@@ -135,6 +137,7 @@ export default function DayAccordion({
                       item={item}
                       index={index}
                       isLast={index === timeline.length - 1}
+                      onPlaceClick={onPlaceClick}
                     />
                   ))}
                 </div>
@@ -142,13 +145,19 @@ export default function DayAccordion({
                 /* Legacy fallback layout if older format itinerary without timeline array is cached */
                 <div className="grid grid-cols-1 gap-5">
                   {morning && (
-                    <ActivityCard type="morning" title="Morning Exploration" data={morning} />
+                    <ActivityCard
+                      type="morning"
+                      title="Morning Exploration"
+                      data={morning}
+                      onPlaceClick={onPlaceClick}
+                    />
                   )}
                   {afternoon && (
                     <ActivityCard
                       type="afternoon"
                       title="Afternoon Sightseeing & Activities"
                       data={afternoon}
+                      onPlaceClick={onPlaceClick}
                     />
                   )}
                   {evening && (
@@ -156,6 +165,7 @@ export default function DayAccordion({
                       type="evening"
                       title="Evening & Twilight Experience"
                       data={evening}
+                      onPlaceClick={onPlaceClick}
                     />
                   )}
                   {diningRecommendation && (
@@ -163,6 +173,7 @@ export default function DayAccordion({
                       type="dining"
                       title="Featured Gastronomy Highlight"
                       data={diningRecommendation}
+                      onPlaceClick={onPlaceClick}
                     />
                   )}
                 </div>

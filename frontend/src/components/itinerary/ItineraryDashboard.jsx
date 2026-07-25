@@ -4,6 +4,7 @@ import { Compass, Sparkles } from 'lucide-react';
 import TripSummary from './TripSummary';
 import DayAccordion from './DayAccordion';
 import ActionToolbar from './ActionToolbar';
+import PlaceDrawer from '../places/PlaceDrawer';
 
 export default function ItineraryDashboard({
   itinerary,
@@ -16,6 +17,10 @@ export default function ItineraryDashboard({
   // Enforce accordion rule: only Day 1 (index 0) expanded initially, only one open at a time
   const [expandedIndex, setExpandedIndex] = useState(0);
 
+  // State for interactive right-side place drawer (Milestone 4A)
+  const [activePlaceQuery, setActivePlaceQuery] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   if (!itinerary || !Array.isArray(itinerary.dailyItinerary)) {
     return null;
   }
@@ -23,6 +28,14 @@ export default function ItineraryDashboard({
   const handleToggle = (index) => {
     setExpandedIndex((prev) => (prev === index ? null : index));
   };
+
+  const handleOpenPlaceDrawer = (placeName) => {
+    if (!placeName) return;
+    setActivePlaceQuery(placeName);
+    setIsDrawerOpen(true);
+  };
+
+  const currentDestination = itinerary.destination || userParams.destination || '';
 
   return (
     <motion.div
@@ -51,14 +64,14 @@ export default function ItineraryDashboard({
             <span>Daily Itinerary Schedule</span>
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Explore your step-by-step chronological timeline. Click any day header to collapse or
-            expand details.
+            Click any attraction or dining experience to explore interactive real-time Google Places
+            details and maps.
           </p>
         </div>
 
         <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-indigo-300 text-xs font-semibold shadow-inner">
           <Sparkles className="h-4 w-4 text-indigo-400" />
-          <span>{itinerary.dailyItinerary.length} Curated Days</span>
+          <span>{itinerary.dailyItinerary.length} Interactive Days</span>
         </div>
       </div>
 
@@ -70,6 +83,7 @@ export default function ItineraryDashboard({
             day={day}
             isOpen={expandedIndex === index}
             onToggle={() => handleToggle(index)}
+            onPlaceClick={handleOpenPlaceDrawer}
           />
         ))}
       </div>
@@ -83,6 +97,14 @@ export default function ItineraryDashboard({
           isRegenerating={isRegenerating}
         />
       </div>
+
+      {/* Interactive Right-Side Information Drawer */}
+      <PlaceDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        placeQuery={activePlaceQuery}
+        destination={currentDestination}
+      />
     </motion.div>
   );
 }

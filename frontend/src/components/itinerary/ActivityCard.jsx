@@ -9,9 +9,10 @@ import {
   Tag,
   DollarSign,
   Award,
+  ArrowUpRight,
 } from 'lucide-react';
 
-export default function ActivityCard({ type, title, data }) {
+export default function ActivityCard({ type, title, data, onPlaceClick }) {
   if (!data) return null;
 
   let Icon = Sun;
@@ -54,9 +55,24 @@ export default function ActivityCard({ type, title, data }) {
   const diningName = isString ? null : data.name;
   const diningCuisine = isString ? null : data.cuisine;
 
+  const targetPlace =
+    diningName || locationText || (isString ? data.split(' at ')[1] || data.slice(0, 40) : label);
+
+  const handleClick = () => {
+    if (onPlaceClick && type !== 'tip') {
+      onPlaceClick(targetPlace);
+    }
+  };
+
   return (
     <div
-      className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-r ${bgGradient} border border-slate-800/80 hover:border-slate-700 transition-all duration-300 shadow-sm flex flex-col justify-between`}
+      onClick={handleClick}
+      role={type !== 'tip' ? 'button' : 'region'}
+      tabIndex={type !== 'tip' ? 0 : -1}
+      onKeyDown={(e) => type !== 'tip' && (e.key === 'Enter' || e.key === ' ') && handleClick()}
+      className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-r ${bgGradient} border border-slate-800/80 ${
+        type !== 'tip' ? 'hover:border-indigo-500/60 cursor-pointer hover:shadow-lg' : ''
+      } transition-all duration-300 shadow-sm flex flex-col justify-between group relative`}
     >
       <div>
         {/* Card Header */}
@@ -82,14 +98,22 @@ export default function ActivityCard({ type, title, data }) {
             </div>
           </div>
 
-          {costText && (
-            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold shadow-inner">
-              <DollarSign className="h-3 w-3 text-emerald-400" />
-              <span>
-                Est. Cost: <strong className="text-white">{costText}</strong>
+          <div className="flex items-center gap-2">
+            {costText && (
+              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold shadow-inner">
+                <DollarSign className="h-3 w-3 text-emerald-400" />
+                <span>
+                  Est. Cost: <strong className="text-white">{costText}</strong>
+                </span>
+              </div>
+            )}
+            {type !== 'tip' && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-indigo-300 bg-indigo-500/15 px-2.5 py-1 rounded-lg border border-indigo-500/30">
+                <span>Details</span>
+                <ArrowUpRight className="h-3 w-3" />
               </span>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Activity or Highlight Text */}

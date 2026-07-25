@@ -22,4 +22,23 @@ export const ApiService = {
   async getItineraries() {
     return apiClient.get('/itineraries');
   },
+
+  // Google Places interactive location search by text and destination context
+  async searchPlace({ query, destination }) {
+    return apiClient.get('/places/search', {
+      params: { query, destination },
+    });
+  },
+
+  // Fetch complete details for a place ID from Google Places API
+  async getPlaceDetails(placeId) {
+    return apiClient.get(`/places/details/${encodeURIComponent(placeId)}`);
+  },
+
+  // Search nearby restaurants or tourist attractions around GPS coordinates
+  async searchNearby({ lat, lng, category }) {
+    return apiClient.get('/places/nearby', {
+      params: { lat, lng, category },
+    });
+  },
 };

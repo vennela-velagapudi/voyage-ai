@@ -11,6 +11,8 @@ import {
   Sparkles,
   Clock,
   Tag,
+  MapPin,
+  ArrowUpRight,
 } from 'lucide-react';
 
 /**
@@ -111,7 +113,6 @@ const getCategoryConfig = (category) => {
     };
   }
 
-  // Default Fallback
   return {
     icon: Compass,
     color: 'text-indigo-400',
@@ -121,12 +122,20 @@ const getCategoryConfig = (category) => {
   };
 };
 
-export default function TimelineItem({ item, isLast = false, index = 0 }) {
+export default function TimelineItem({ item, isLast = false, index = 0, onPlaceClick }) {
   if (!item) return null;
 
   const { time, title, description, category } = item;
   const config = getCategoryConfig(category || title);
   const Icon = config.icon || Sparkles;
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onPlaceClick && title) {
+      onPlaceClick(title);
+    }
+  };
 
   return (
     <motion.div
@@ -150,30 +159,51 @@ export default function TimelineItem({ item, isLast = false, index = 0 }) {
         )}
       </div>
 
-      {/* Activity Details Box */}
+      {/* Interactive Activity Details Card */}
       <div className="flex-grow pb-8">
-        <div className="p-5 sm:p-6 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all duration-300 shadow-md group-hover:shadow-[0_0_20px_-5px_rgba(129,140,248,0.15)] bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900">
+        <div
+          onClick={handleClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleClick(e)}
+          aria-label={`Explore interactive details for ${title}`}
+          className="p-5 sm:p-6 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-indigo-500/60 transition-all duration-300 shadow-md hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 hover:from-slate-900 hover:to-indigo-950/30 cursor-pointer relative overflow-hidden text-left"
+        >
+          {/* Subtle top indicator beam on hover */}
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
           {/* Header Row: Time & Category Tag */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-2.5 pb-2 border-b border-slate-800/60">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3 pb-2.5 border-b border-slate-800/60">
             <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-300 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/30">
               <Clock className="h-3.5 w-3.5 text-indigo-400" />
               <span>{time || 'Scheduled Time'}</span>
             </div>
 
-            {category && (
-              <div
-                className={`inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-slate-950/60`}
-              >
-                <Tag className="h-3 w-3" />
-                <span>{category}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {category && (
+                <div
+                  className={`inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-slate-950/60`}
+                >
+                  <Tag className="h-3 w-3" />
+                  <span>{category}</span>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Activity Title & Description */}
-          <h4 className="text-base sm:text-lg font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mb-2">
-            {title || 'Curated Activity Experience'}
-          </h4>
+          {/* Interactive Place Title Row */}
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <h4 className="text-base sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2">
+              <span>{title || 'Curated Activity Experience'}</span>
+            </h4>
+
+            <span className="inline-flex items-center gap-1 text-xs font-extrabold text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 group-hover:border-indigo-400/60 px-3 py-1 rounded-xl transition-all flex-shrink-0 shadow-sm">
+              <MapPin className="h-3.5 w-3.5 text-sky-400" />
+              <span className="hidden sm:inline">Explore Place</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
+
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
             {description || 'Enjoy this bespoke experience tailored to your itinerary schedule.'}
           </p>
