@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, PlaneTakeoff, Sparkles } from 'lucide-react';
+import { Menu, X, PlaneTakeoff } from 'lucide-react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,19 +15,11 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
-  const scrollToPlanner = () => {
-    setIsOpen(false);
-    const element = document.getElementById('trip-planner-card');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-slate-800/80 backdrop-blur-xl bg-slate-950/75">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+          {/* Logo - Clickable and navigates to Home (/) */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center gap-2.5 group" id="nav-logo-link">
               <div className="p-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 group-hover:scale-105 transition-transform">
@@ -59,19 +51,10 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Action Button */}
-          <div className="hidden md:block">
-            <button
-              onClick={scrollToPlanner}
-              id="nav-cta-btn"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all duration-300 glow-effect shadow-md hover:scale-103 cursor-pointer"
-            >
-              <Sparkles className="h-4 w-4" />
-              <span>Plan a Trip</span>
-            </button>
-          </div>
+          {/* Reserved clean space for future authentication functionality */}
+          <div className="hidden md:flex items-center w-32 justify-end" />
 
-          {/* Mobile menu button */}
+          {/* Mobile menu toggle button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -104,16 +87,6 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4 border-t border-slate-800/80">
-              <button
-                onClick={scrollToPlanner}
-                id="mobile-nav-cta-btn"
-                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 text-white font-bold px-4 py-3 rounded-xl shadow-lg transition-all duration-200"
-              >
-                <Sparkles className="h-4 w-4" />
-                <span>Plan a Trip Now</span>
-              </button>
-            </div>
           </div>
         </div>
       )}

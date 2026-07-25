@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import {
   MapPin,
   Calendar,
@@ -22,10 +23,16 @@ import {
   Waves,
   Send,
   CheckCircle2,
+  Sliders,
+  PenTool,
 } from 'lucide-react';
 import FormInput from './FormInput';
 import OptionSelector from './OptionSelector';
 import InterestChips from './InterestChips';
+import { ApiService } from '../../services/apiService';
+import LoadingOverlay from '../itinerary/LoadingOverlay';
+import ErrorCard from '../itinerary/ErrorCard';
+import ItineraryDashboard from '../itinerary/ItineraryDashboard';
 
 const BUDGET_OPTIONS = [
   { id: 'budget', label: 'Budget', description: 'Smart & thrifty ($)', icon: Wallet },
@@ -39,6 +46,7 @@ const TRAVEL_STYLE_OPTIONS = [
   { id: 'family', label: 'Family Vacation', icon: Users },
   { id: 'friends', label: 'Friends Trip', icon: Palette },
   { id: 'business', label: 'Business Travel', icon: Briefcase },
+  { id: 'other', label: 'Other', icon: Sliders },
 ];
 
 const INTEREST_OPTIONS = [
@@ -52,50 +60,134 @@ const INTEREST_OPTIONS = [
   { id: 'beach', label: 'Beach & Coastal', icon: Waves },
   { id: 'history', label: 'Historical Sites', icon: Landmark },
   { id: 'photo', label: 'Photography', icon: Camera },
+  { id: 'other', label: 'Other', icon: Sliders },
 ];
 
+// Helper: Validation for Destination
+const isValidDestination = (val) => {
+  if (!val || typeof val !== 'string') return false;
+  const trimmed = val.trim();
+  if (trimmed.length < 2) return false;
+  // Reject if only numbers or only symbols (must contain at least one alphabetical letter)
+  if (!/[a-zA-Z]/.test(trimmed)) return false;
+  // Reject repeated random characters (e.g. "aaaaa", "!!!!!", "@@@@@", "11111")
+  const stripped = trimmed.replace(/[\s,.'&-]+/g, '').toLowerCase();
+  if (stripped.length > 1 && /^(.)\1+$/.test(stripped)) return false;
+  // Reject known keyboard mashing sequence strings (e.g. 12345, @@@@@, asdfghjkl, qwerty)
+  if (/(asdfgh|qwert|zxcvb|hjkl|12345|poiuy|lkjhg|mnbvc)/i.test(stripped)) return false;
+  // Reject unsupported illegal symbol overload
+  if (!/^[a-zA-Z0-9\s,.'&()/-]+$/.test(trimmed)) return false;
+  // Must have at least two alphabetic characters in total
+  if (trimmed.replace(/[^a-zA-Z]/g, '').length < 2) return false;
+  return true;
+};
+
+// Helper: Validation for Meaningful Write-in Text ("Other" specify fields)
+const isMeaningfulText = (val) => {
+  if (!val || typeof val !== 'string') return false;
+  const trimmed = val.trim();
+  if (trimmed.length < 2) return false;
+  // Must contain letters and NO digits or random symbols
+  if (!/[a-zA-Z]/.test(trimmed) || /\d/.test(trimmed)) return false;
+  if (!/^[a-zA-Z\s,.'&-]+$/.test(trimmed)) return false;
+  // Reject repeated characters or keyboard mashing
+  const stripped = trimmed.replace(/[\s,.'&-]+/g, '').toLowerCase();
+  if (stripped.length > 1 && /^(.)\1+$/.test(stripped)) return false;
+  if (/(asdfgh|qwert|zxcvb|hjkl|poiuy|lkjhg|mnbvc)/i.test(stripped)) return false;
+  return true;
+};
+
 export default function TripPlannerCard() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const prefillDestination = location.state?.destination || searchParams.get('destination') || '';
+
+  // Application flow state: 'form' | 'loading' | 'success' | 'error'
+  const [status, setStatus] = useState('form');
+  const [itinerary, setItinerary] = useState(null);
+  const [apiError, setApiError] = useState(null);
+
   const [formData, setFormData] = useState({
-    destination: '',
+    destination: prefillDestination,
     days: '',
     budget: 'moderate',
     travelStyle: 'couple',
+    travelStyleOther: '',
     interests: ['food', 'culture'],
+    interestsOther: '',
     notes: '',
   });
 
   const [touched, setTouched] = useState({
-    destination: false,
+    destination: Boolean(prefillDestination),
     days: false,
+    travelStyleOther: false,
+    interestsOther: false,
   });
 
-  const [submitted, setSubmitted] = useState(false);
+  // Keep destination synced if navigating directly with state/params
+  useEffect(() => {
+    const target = location.state?.destination || searchParams.get('destination');
+    if (target) {
+      setFormData((prev) =>
+        prev.destination !== target ? { ...prev, destination: target } : prev
+      );
+      setTouched((prev) => (!prev.destination ? { ...prev, destination: true } : prev));
+    }
+  }, [location.state, searchParams]);
 
   // Client-side validation logic
   const errors = useMemo(() => {
     const newErrors = {};
-    if (touched.destination && formData.destination.trim().length < 2) {
-      newErrors.destination =
-        'Please enter a valid destination city or country (min 2 characters).';
+    if (touched.destination && !isValidDestination(formData.destination)) {
+      newErrors.destination = 'Please enter a valid city, state, country or destination name.';
     }
     const daysNum = parseInt(formData.days, 10);
     if (touched.days && (isNaN(daysNum) || daysNum < 1 || daysNum > 60)) {
       newErrors.days = 'Please specify a trip duration between 1 and 60 days.';
     }
+    if (
+      formData.travelStyle === 'other' &&
+      touched.travelStyleOther &&
+      !isMeaningfulText(formData.travelStyleOther)
+    ) {
+      newErrors.travelStyleOther =
+        'Please enter at least 2 characters of meaningful text (no numbers or random symbols).';
+    }
     if (formData.interests.length === 0) {
       newErrors.interests = 'Please select at least one interest area.';
+    }
+    if (
+      formData.interests.includes('other') &&
+      touched.interestsOther &&
+      !isMeaningfulText(formData.interestsOther)
+    ) {
+      newErrors.interestsOther =
+        'Please enter at least 2 characters of meaningful text (no numbers or random symbols).';
     }
     return newErrors;
   }, [formData, touched]);
 
   const isValid = useMemo(() => {
-    const destValid = formData.destination.trim().length >= 2;
+    const destValid = isValidDestination(formData.destination);
     const daysNum = parseInt(formData.days, 10);
     const daysValid = !isNaN(daysNum) && daysNum >= 1 && daysNum <= 60;
     const budgetValid = Boolean(formData.budget);
     const styleValid = Boolean(formData.travelStyle);
+    const styleOtherValid =
+      formData.travelStyle !== 'other' || isMeaningfulText(formData.travelStyleOther);
     const interestsValid = formData.interests.length > 0;
-    return destValid && daysValid && budgetValid && styleValid && interestsValid;
+    const interestsOtherValid =
+      !formData.interests.includes('other') || isMeaningfulText(formData.interestsOther);
+    return (
+      destValid &&
+      daysValid &&
+      budgetValid &&
+      styleValid &&
+      styleOtherValid &&
+      interestsValid &&
+      interestsOtherValid
+    );
   }, [formData]);
 
   const handleChange = (field, value) => {
@@ -114,14 +206,103 @@ export default function TripPlannerCard() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!isValid) return;
-    // Client-side simulation only as requested in Milestone 2
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
+  const scrollToView = () => {
+    const element =
+      document.getElementById('trip-planner-card') ||
+      document.getElementById('itinerary-dashboard');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
+  // Handle generation via backend AI API
+  const executeGeneration = async () => {
+    if (!isValid) {
+      setTouched({ destination: true, days: true, travelStyleOther: true, interestsOther: true });
+      return;
+    }
+    setStatus('loading');
+    setApiError(null);
+    scrollToView();
+
+    try {
+      // Map 'other' write-in fields into clean strings for Gemini AI reasoning
+      const payload = { ...formData };
+      if (payload.travelStyle === 'other' && payload.travelStyleOther) {
+        payload.travelStyle = payload.travelStyleOther.trim();
+      }
+      if (payload.interests.includes('other') && payload.interestsOther) {
+        payload.interests = payload.interests.map((item) =>
+          item === 'other' ? payload.interestsOther.trim() : item
+        );
+      }
+
+      const response = await ApiService.generateTripItinerary(payload);
+      const generatedData = response.data || response;
+      setItinerary(generatedData);
+      setStatus('success');
+      scrollToView();
+    } catch (error) {
+      console.error('[AI Trip Generation Error]:', error);
+      setApiError(error);
+      setStatus('error');
+      scrollToView();
+    }
+  };
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    executeGeneration();
+  };
+
+  const handleNewTrip = () => {
+    setFormData({
+      destination: '',
+      days: '',
+      budget: 'moderate',
+      travelStyle: 'couple',
+      travelStyleOther: '',
+      interests: ['food', 'culture'],
+      interestsOther: '',
+      notes: '',
+    });
+    setTouched({ destination: false, days: false, travelStyleOther: false, interestsOther: false });
+    setItinerary(null);
+    setApiError(null);
+    setStatus('form');
+    scrollToView();
+  };
+
+  const handleEditForm = () => {
+    setStatus('form');
+    scrollToView();
+  };
+
+  // Render loading state
+  if (status === 'loading') {
+    return <LoadingOverlay destination={formData.destination || 'your dream destination'} />;
+  }
+
+  // Render error state
+  if (status === 'error') {
+    return <ErrorCard error={apiError} onRetry={executeGeneration} onEdit={handleEditForm} />;
+  }
+
+  // Render AI generated itinerary state
+  if (status === 'success' && itinerary) {
+    return (
+      <ItineraryDashboard
+        itinerary={itinerary}
+        userParams={formData}
+        onNewTrip={handleNewTrip}
+        onEditForm={handleEditForm}
+        onRegenerate={executeGeneration}
+        isRegenerating={false}
+      />
+    );
+  }
+
+  // Render Trip Planner Form state
   return (
     <motion.div
       initial={{ opacity: 0, y: 35 }}
@@ -150,7 +331,7 @@ export default function TripPlannerCard() {
           <FormInput
             id="input-destination"
             label="Destination City or Country"
-            placeholder="e.g. Kyoto, Japan or Amalfi Coast"
+            placeholder="e.g. Tokyo, New York, Goa, Paris, Bali, Swiss Alps"
             value={formData.destination}
             onChange={(e) => handleChange('destination', e.target.value)}
             onBlur={() => handleBlur('destination')}
@@ -180,22 +361,73 @@ export default function TripPlannerCard() {
           onChange={(val) => handleChange('budget', val)}
         />
 
-        {/* Row 3: Travel Style */}
-        <OptionSelector
-          label="Who Are You Traveling With?"
-          options={TRAVEL_STYLE_OPTIONS}
-          selectedValue={formData.travelStyle}
-          onChange={(val) => handleChange('travelStyle', val)}
-        />
+        {/* Row 3: Travel Style & Conditional Write-in */}
+        <div className="space-y-4">
+          <OptionSelector
+            label="Who Are You Traveling With?"
+            options={TRAVEL_STYLE_OPTIONS}
+            selectedValue={formData.travelStyle}
+            onChange={(val) => {
+              handleChange('travelStyle', val);
+              if (val === 'other') setTouched((prev) => ({ ...prev, travelStyleOther: false }));
+            }}
+          />
+          <AnimatePresence>
+            {formData.travelStyle === 'other' && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden pt-1"
+              >
+                <FormInput
+                  id="input-travel-style-other"
+                  label="Please specify companion group"
+                  placeholder="e.g. Backpacking club or Senior tour group..."
+                  value={formData.travelStyleOther}
+                  onChange={(e) => handleChange('travelStyleOther', e.target.value)}
+                  onBlur={() => handleBlur('travelStyleOther')}
+                  error={errors.travelStyleOther}
+                  icon={PenTool}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-        {/* Row 4: Interests Multi-Select */}
-        <InterestChips
-          label="What Experience Are You Looking For?"
-          options={INTEREST_OPTIONS}
-          selectedInterests={formData.interests}
-          onToggle={handleInterestToggle}
-          error={errors.interests}
-        />
+        {/* Row 4: Interests Multi-Select & Conditional Write-in */}
+        <div className="space-y-4">
+          <InterestChips
+            label="What Experience Are You Looking For?"
+            options={INTEREST_OPTIONS}
+            selectedInterests={formData.interests}
+            onToggle={handleInterestToggle}
+            error={errors.interests}
+          />
+          <AnimatePresence>
+            {formData.interests.includes('other') && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden pt-1"
+              >
+                <FormInput
+                  id="input-interests-other"
+                  label="Please specify preferred activity or experience"
+                  placeholder="e.g. Architectural photography, Scuba diving, or Classical operas..."
+                  value={formData.interestsOther}
+                  onChange={(e) => handleChange('interestsOther', e.target.value)}
+                  onBlur={() => handleBlur('interestsOther')}
+                  error={errors.interestsOther}
+                  icon={PenTool}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Row 5: Additional Notes */}
         <div className="flex flex-col space-y-2 text-left">
@@ -223,7 +455,8 @@ export default function TripPlannerCard() {
             {!isValid ? (
               <span className="text-amber-400 font-medium flex items-center gap-1.5 justify-center sm:justify-start">
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                Please complete valid destination and duration fields to unlock trip generation.
+                Please ensure valid destination, duration, and meaningful text specifies to unlock
+                trip generation.
               </span>
             ) : (
               <span className="text-emerald-400 font-medium flex items-center gap-1.5 justify-center sm:justify-start">
@@ -252,36 +485,6 @@ export default function TripPlannerCard() {
           </motion.button>
         </div>
       </form>
-
-      {/* Interactive simulation confirmation toast */}
-      {submitted && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="absolute inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-3xl border border-indigo-500/30"
-        >
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-            <CheckCircle2 className="h-8 w-8" />
-          </div>
-          <h3 className="text-2xl font-display font-extrabold text-white mb-2">
-            Trip Parameters Captured!
-          </h3>
-          <p className="text-slate-400 text-sm max-w-md mb-6">
-            Your customized itinerary profile for{' '}
-            <strong className="text-white">{formData.destination}</strong> over{' '}
-            <strong className="text-white">{formData.days} days</strong> has passed validation.
-            (Milestone 2 Front-End Simulation Completed).
-          </p>
-          <button
-            type="button"
-            onClick={() => setSubmitted(false)}
-            className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition-colors cursor-pointer"
-          >
-            Return to Form
-          </button>
-        </motion.div>
-      )}
     </motion.div>
   );
 }

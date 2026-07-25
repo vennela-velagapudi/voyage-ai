@@ -1,8 +1,16 @@
-import { Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function BaseLayout() {
+  const { pathname, search } = useLocation();
+
+  // Guarantee every navigation lands at the very top of the page (scroll position 0)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname, search]);
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-950 text-slate-50 font-sans">
       {/* Background glowing gradients */}

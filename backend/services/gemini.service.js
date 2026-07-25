@@ -51,13 +51,20 @@ function sanitizeAndValidateResponse(rawText) {
     throw error;
   }
 
+  // Verify timeline structure inside dailyItinerary
+  data.dailyItinerary.forEach((day) => {
+    if (!Array.isArray(day.timeline)) {
+      day.timeline = [];
+    }
+  });
+
   return data;
 }
 
 /**
- * Generates a structured travel itinerary using Google Gemini 2.5 Flash.
+ * Generates a structured travel itinerary using Google Gemini generative AI.
  * @param {object} params - Travel parameters: destination, days, budget, travelStyle, interests, notes.
- * @returns {Promise<object>} Guaranteed structured JSON itinerary object.
+ * @returns {Promise<object>} Guaranteed structured JSON itinerary object with chronological timelines.
  */
 export async function generateTripItinerary({
   destination,
@@ -79,17 +86,18 @@ export async function generateTripItinerary({
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.5-flash',
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: 0.7,
-      maxOutputTokens: 4096,
+      maxOutputTokens: 16384,
     },
   });
 
   const prompt = `
 You are Voyage AI, an elite, professional travel itinerary architect.
 Construct a highly engaging, realistic, and optimized travel itinerary based EXACTLY on the user's criteria.
+For each day, design a comprehensive chronological timeline of experiences from morning until night.
 Return ONLY a valid JSON object matching the exact schema specified below. Do NOT include introductory text, explanations, or markdown formatting outside the JSON structure.
 
 USER TRAVEL PARAMETERS:
@@ -103,41 +111,77 @@ USER TRAVEL PARAMETERS:
 REQUIRED JSON SCHEMA:
 {
   "tripTitle": "A catchy, evocative title for the custom journey",
-  "destination": "Cleaned destination name",
+  "destination": "${destination}",
   "durationDays": ${Number(days)},
   "budget": "${budget}",
   "travelStyle": "${travelStyle}",
   "overview": "A compelling 2-3 sentence summary of what to expect on this tailored trip.",
-  "estimatedTotalBudgetTip": "A realistic budget summary or money-saving tip tailored to the selected budget level",
+  "estimatedTotalBudgetTip": "A realistic overall budget guidance summary or money-saving advice tailored to the selected budget level",
   "dailyItinerary": [
     {
       "dayNumber": 1,
       "theme": "Title or primary focus of the day (e.g. 'Historic Wonders & Local Flavors')",
-      "morning": {
-        "activity": "Detailed morning activity description with specific landmarks or locations",
-        "location": "Primary neighborhood or landmark name",
-        "approxCost": "Estimated expenditure in local currency or USD equivalent ($)"
-      },
-      "afternoon": {
-        "activity": "Detailed afternoon experience and sightseeing itinerary",
-        "location": "Primary location name",
-        "approxCost": "Estimated expenditure ($)"
-      },
-      "evening": {
-        "activity": "Evening leisure, entertainment, or sunset spot recommendation",
-        "location": "Location name",
-        "approxCost": "Estimated expenditure ($)"
-      },
-      "diningRecommendation": {
-        "name": "Recommended authentic restaurant or culinary district matching budget",
-        "cuisine": "Type of cuisine",
-        "highlight": "Must-try signature dish or ambiance tip"
-      },
+      "timeline": [
+        {
+          "time": "08:30 AM",
+          "title": "Authentic Breakfast Cafe",
+          "description": "Start your day with local culinary specialties in a scenic setting.",
+          "category": "Breakfast"
+        },
+        {
+          "time": "10:00 AM",
+          "title": "Iconic Landmark Walk",
+          "description": "Wander the historical grounds and take scenic photographs.",
+          "category": "Sightseeing"
+        },
+        {
+          "time": "12:30 PM",
+          "title": "Central Culinary Lunch",
+          "description": "Taste signature regional dishes at a popular local gathering spot.",
+          "category": "Lunch"
+        },
+        {
+          "time": "02:30 PM",
+          "title": "Cultural Gallery & Archives",
+          "description": "Explore artistic masterpieces and regional historical relics.",
+          "category": "Museum"
+        },
+        {
+          "time": "04:30 PM",
+          "title": "Artisanal Coffee & Sweets Break",
+          "description": "Relax at a celebrated heritage tea house or boutique café.",
+          "category": "Coffee Break"
+        },
+        {
+          "time": "06:00 PM",
+          "title": "Boutique Craft Shopping",
+          "description": "Browse handcrafted souvenirs and local market stalls.",
+          "category": "Shopping"
+        },
+        {
+          "time": "07:30 PM",
+          "title": "Gourmet Dinner Experience",
+          "description": "Enjoy a multi-course dinner matching your budget tier.",
+          "category": "Dinner"
+        },
+        {
+          "time": "09:30 PM",
+          "title": "Illuminated Twilight Walk",
+          "description": "Experience late-night viewpoints or a vibrant evening cocktail terrace.",
+          "category": "Night Activity"
+        }
+      ],
+      "estimatedDailyCost": "$120 - $180 (Est. activities, dining & local transit)",
       "localTip": "An actionable insider hack, transit tip, or etiquette advice for this specific day"
     }
   ]
 }
-Ensure there are exactly ${Number(days)} day objects inside the "dailyItinerary" array, numbered from 1 to ${Number(days)}.
+
+IMPORTANT TIMELINE INSTRUCTIONS:
+1. Ensure there are exactly ${Number(days)} day objects inside the "dailyItinerary" array, numbered from 1 to ${Number(days)}.
+2. Each daily timeline array must contain a rich, chronological progression of activities throughout the day (aim for 5 to 8 entries per day).
+3. Always include diverse category values such as: "Breakfast", "Sightseeing", "Museum", "Lunch", "Shopping", "Coffee Break", "Activity", "Dinner", "Night Activity".
+4. Ensure each day clearly includes "estimatedDailyCost" and "localTip" at the day object root level as shown in the schema.
 `;
 
   try {

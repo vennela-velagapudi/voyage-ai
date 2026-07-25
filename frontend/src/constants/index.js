@@ -8,4 +8,8 @@ export const APP_ROUTES = {
   EXPLORE: '/explore',
   FEATURES: '/features',
   PRICING: '/pricing',
+  PLAN: '/plan',
+  ABOUT: '/about',
+  TERMS: '/terms',
+  PRIVACY: '/privacy',
 };
