@@ -9,15 +9,19 @@ import PlaceHeader from './PlaceHeader';
 import PlaceOverview from './PlaceOverview';
 import NearbyRestaurants from './NearbyRestaurants';
 import NearbyAttractions from './NearbyAttractions';
+import NearbyCafes from './NearbyCafes';
+import BestPhotoSpots from './BestPhotoSpots';
 
 export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }) {
   const [place, setPlace] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // States for nearby dining & sights
+  // States for nearby discoveries
   const [nearbyRestaurants, setNearbyRestaurants] = useState([]);
   const [nearbyAttractions, setNearbyAttractions] = useState([]);
+  const [nearbyCafes, setNearbyCafes] = useState([]);
+  const [photoSpots, setPhotoSpots] = useState([]);
   const [loadingNearby, setLoadingNearby] = useState(false);
 
   useEffect(() => {
@@ -30,6 +34,8 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
       setPlace(null);
       setNearbyRestaurants([]);
       setNearbyAttractions([]);
+      setNearbyCafes([]);
+      setPhotoSpots([]);
 
       try {
         const response = await ApiService.searchPlace({
@@ -42,11 +48,11 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
           setPlace(fetchedPlace);
           setIsLoading(false);
 
-          // If GPS coordinates exist, automatically fetch nearby restaurants and tourist attractions
+          // If GPS coordinates exist, automatically fetch nearby dining, sights, cafes and photo spots
           if (fetchedPlace.coordinates) {
             setLoadingNearby(true);
             try {
-              const [restRes, attrRes] = await Promise.all([
+              const [restRes, attrRes, cafeRes, photoRes] = await Promise.all([
                 ApiService.searchNearby({
                   lat: fetchedPlace.coordinates.lat,
                   lng: fetchedPlace.coordinates.lng,
@@ -57,10 +63,22 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
                   lng: fetchedPlace.coordinates.lng,
                   category: 'attraction',
                 }),
+                ApiService.searchNearby({
+                  lat: fetchedPlace.coordinates.lat,
+                  lng: fetchedPlace.coordinates.lng,
+                  category: 'cafe',
+                }),
+                ApiService.searchNearby({
+                  lat: fetchedPlace.coordinates.lat,
+                  lng: fetchedPlace.coordinates.lng,
+                  category: 'photo_spot',
+                }),
               ]);
               if (isMounted) {
                 setNearbyRestaurants(restRes?.data?.data || restRes?.data || []);
                 setNearbyAttractions(attrRes?.data?.data || attrRes?.data || []);
+                setNearbyCafes(cafeRes?.data?.data || cafeRes?.data || []);
+                setPhotoSpots(photoRes?.data?.data || photoRes?.data || []);
               }
             } catch (nearbyErr) {
               console.warn('Nearby place search fallback triggered:', nearbyErr.message);
@@ -163,7 +181,9 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
 
                   {/* Nearby Discoveries Section */}
                   <NearbyRestaurants restaurants={nearbyRestaurants} isLoading={loadingNearby} />
+                  <NearbyCafes cafes={nearbyCafes} isLoading={loadingNearby} />
                   <NearbyAttractions attractions={nearbyAttractions} isLoading={loadingNearby} />
+                  <BestPhotoSpots spots={photoSpots} isLoading={loadingNearby} />
                 </div>
               )}
             </div>

@@ -1,4 +1,8 @@
-import { generateTripItinerary } from '../services/gemini.service.js';
+import {
+  generateTripItinerary,
+  generateAlternativeActivity,
+  generateSingleDay,
+} from '../services/gemini.service.js';
 import { validateDestination } from '../services/places.service.js';
 import { analyzeDestinationDuration } from '../services/destinationIntelligence.service.js';
 
@@ -122,6 +126,79 @@ export async function createTripItinerary(req, res) {
     return res.status(status).json({
       success: false,
       error: error.message || 'Internal server error while generating trip itinerary.',
+    });
+  }
+}
+
+/**
+ * Controller to replace a single activity in an itinerary via AI.
+ * Route: POST /api/trips/replace-activity
+ */
+export async function replaceTripActivity(req, res) {
+  try {
+    const { activity, destination, budget, travelStyle, interests, notes } = req.body;
+    if (!activity || !destination) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields "activity" or "destination".',
+      });
+    }
+
+    const newActivity = await generateAlternativeActivity({
+      activity,
+      destination,
+      budget,
+      travelStyle,
+      interests,
+      notes,
+    });
+
+    return res.status(200).json({
+      success: true,
+      activity: newActivity,
+    });
+  } catch (error) {
+    console.error('[Replace Activity Error]:', error.message);
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      error: error.message || 'Failed to replace activity.',
+    });
+  }
+}
+
+/**
+ * Controller to regenerate a single day schedule in an itinerary via AI.
+ * Route: POST /api/trips/regenerate-day
+ */
+export async function regenerateTripDay(req, res) {
+  try {
+    const { dayNumber, theme, destination, budget, travelStyle, interests, notes } = req.body;
+    if (!destination) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required field "destination".',
+      });
+    }
+
+    const newDay = await generateSingleDay({
+      dayNumber: parseInt(dayNumber, 10) || 1,
+      theme,
+      destination,
+      budget,
+      travelStyle,
+      interests,
+      notes,
+    });
+
+    return res.status(200).json({
+      success: true,
+      day: newDay,
+    });
+  } catch (error) {
+    console.error('[Regenerate Day Error]:', error.message);
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      error: error.message || 'Failed to regenerate day schedule.',
     });
   }
 }

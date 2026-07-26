@@ -18,6 +18,16 @@ export const ApiService = {
     return apiClient.post('/trips/generate', payload);
   },
 
+  // Replace a single activity via Gemini
+  async replaceActivity(payload) {
+    return apiClient.post('/trips/replace-activity', payload);
+  },
+
+  // Regenerate a single day schedule via Gemini
+  async regenerateDay(payload) {
+    return apiClient.post('/trips/regenerate-day', payload);
+  },
+
   // Stub method for fetching itineraries (no actual logic implemented)
   async getItineraries() {
     return apiClient.get('/itineraries');

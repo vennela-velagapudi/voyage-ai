@@ -303,12 +303,22 @@ export async function searchNearby({ lat, lng, category = 'restaurant' }) {
     throw err;
   }
 
-  const isRestaurant = category === 'restaurant' || category === 'dining';
-  const includedTypes = isRestaurant
-    ? ['restaurant', 'cafe', 'bakery', 'bar']
-    : ['museum', 'tourist_attraction', 'park', 'place_of_worship', 'shopping_mall'];
-  const radius = isRestaurant ? 1500.0 : 3000.0;
-  const maxResults = isRestaurant ? 6 : 6;
+  let includedTypes;
+  let radius = 2500.0;
+  if (category === 'cafe') {
+    includedTypes = ['cafe', 'coffee_shop', 'bakery'];
+    radius = 1500.0;
+  } else if (category === 'photo_spot') {
+    includedTypes = ['tourist_attraction', 'park', 'historical_landmark', 'scenic_point'];
+    radius = 4000.0;
+  } else if (category === 'restaurant' || category === 'dining') {
+    includedTypes = ['restaurant', 'bar', 'meal_takeaway'];
+    radius = 1500.0;
+  } else {
+    includedTypes = ['museum', 'tourist_attraction', 'park', 'place_of_worship', 'shopping_mall'];
+    radius = 3500.0;
+  }
+  const maxResults = 6;
 
   const url = 'https://places.googleapis.com/v1/places:searchNearby';
   const fieldMask =
