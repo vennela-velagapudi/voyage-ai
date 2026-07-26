@@ -59,13 +59,13 @@ export default function DayAccordion({
       {/* Accordion Header Toggle Button & Regenerate Option */}
       <div
         onClick={handleToggleClick}
-        className={`w-full px-6 sm:px-8 py-5 flex items-center justify-between text-left transition-colors duration-200 cursor-pointer group select-none ${
+        className={`w-full px-4 sm:px-8 py-4 sm:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer group select-none ${
           isOpen
             ? 'bg-slate-900/95 border-b border-slate-800/80'
             : 'bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90 hover:bg-slate-800/60'
         }`}
       >
-        <div className="flex items-center gap-4 sm:gap-5 min-w-0 pr-2">
+        <div className="flex items-center gap-3 sm:gap-5 w-full sm:w-auto min-w-0 pr-2">
           <div
             className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${
               isOpen
@@ -81,19 +81,19 @@ export default function DayAccordion({
             </span>
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 flex-grow">
             <div className="flex items-center gap-2 text-indigo-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
               <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
               <span>Day {dayNumber || dayIndex + 1} Schedule</span>
             </div>
-            <h3 className="text-lg sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-1 truncate">
+            <h3 className="text-base sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-1 truncate">
               {theme || 'Exploring Highlights & Marvels'}
             </h3>
           </div>
         </div>
 
         {/* Action Controls in Header: Regenerate Day & Toggle Arrow */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 sm:gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
           {/* Regenerate a Single Day Button */}
           <button
             type="button"
@@ -109,9 +109,7 @@ export default function DayAccordion({
             <RefreshCw
               className={`h-3.5 w-3.5 text-indigo-400 ${isRegeneratingDay ? 'animate-spin' : ''}`}
             />
-            <span className="hidden sm:inline">
-              {isRegeneratingDay ? 'Regenerating...' : 'Regenerate Day'}
-            </span>
+            <span>{isRegeneratingDay ? 'Regenerating...' : 'Regenerate Day'}</span>
           </button>
 
           {hasTimeline && !isOpen && (
@@ -122,7 +120,7 @@ export default function DayAccordion({
           )}
 
           <div
-            className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-1 ${
+            className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
               isOpen
                 ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-sm'
                 : 'bg-slate-800/80 border-slate-700/60 text-slate-400 group-hover:text-white group-hover:border-slate-600'
@@ -183,11 +181,13 @@ export default function DayAccordion({
                   {timeline.map((item, index) => {
                     const activityKey = `${dayIndex}-${index}`;
                     const isReplacingThis = replacingKey === activityKey;
+                    const stableKey = `item-${item.title}-${item.time || ''}-${item.category || ''}`;
                     return (
                       <TimelineItem
-                        key={`${index}-${item.time || item.title}`}
+                        key={stableKey}
                         item={item}
                         index={index}
+                        isFirst={index === 0}
                         isLast={index === timeline.length - 1}
                         onPlaceClick={onPlaceClick}
                         onDelete={(actIndex) =>
@@ -200,6 +200,16 @@ export default function DayAccordion({
                         onOpenEmergency={() => onOpenEmergency && onOpenEmergency()}
                         onDrop={(sourceIdx, targetIdx) =>
                           onReorderActivities && onReorderActivities(dayIndex, sourceIdx, targetIdx)
+                        }
+                        onMoveUp={() =>
+                          index > 0 &&
+                          onReorderActivities &&
+                          onReorderActivities(dayIndex, index, index - 1)
+                        }
+                        onMoveDown={() =>
+                          index < timeline.length - 1 &&
+                          onReorderActivities &&
+                          onReorderActivities(dayIndex, index, index + 1)
                         }
                       />
                     );

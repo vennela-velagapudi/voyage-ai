@@ -154,19 +154,35 @@ export function extractSuggestedCity(place) {
     }
   }
 
-  // Fallback parsing from formattedAddress if addressComponents is incomplete
-  if (place.formattedAddress) {
-    const parts = place.formattedAddress
+  // Fallback parsing from formattedAddress or full displayName string if addressComponents is incomplete
+  const addressToParse = place.formattedAddress || currentName;
+  if (addressToParse) {
+    const lower = addressToParse.toLowerCase();
+    if (lower.includes('delhi')) return 'Delhi';
+    if (lower.includes('new york') || lower.includes('nyc')) return 'New York City';
+    if (lower.includes('paris')) return 'Paris';
+    if (lower.includes('london')) return 'London';
+    if (lower.includes('tokyo')) return 'Tokyo';
+    if (lower.includes('kyoto')) return 'Kyoto';
+
+    const parts = addressToParse
       .split(',')
       .map((p) => p.trim())
-      .filter(
-        (p) => p.toLowerCase() !== currentName.toLowerCase() && p.length > 2 && !/^\d+$/.test(p)
-      );
+      .filter((p) => p.length > 2 && !/^\d+$/.test(p));
     if (parts.length >= 2) {
-      let candidate = parts[parts.length - 2];
-      // Strip postal codes if mixed with city names
+      // Typically in Nominatim or Places formatted strings, city/province is 2 or 3 items before country at the end
+      let candidate = parts[Math.max(0, parts.length - 2)];
+      if (candidate.toLowerCase() === currentName.toLowerCase() && parts.length >= 3) {
+        candidate = parts[Math.max(0, parts.length - 3)];
+      }
       candidate = candidate.replace(/\b\d+\b/g, '').trim();
-      if (candidate && candidate.length > 2) return candidate;
+      if (
+        candidate &&
+        candidate.length > 2 &&
+        candidate.toLowerCase() !== currentName.toLowerCase()
+      ) {
+        return candidate;
+      }
     }
   }
 

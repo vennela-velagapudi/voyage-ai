@@ -107,7 +107,7 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+        <div className="fixed inset-0 z-50 overflow-hidden flex flex-col justify-end sm:flex-row sm:justify-end">
           {/* Backdrop Blur Overaly */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -115,19 +115,19 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity cursor-pointer"
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity cursor-pointer"
           />
 
-          {/* Right-Side Drawer Panel */}
+          {/* Responsive Drawer Panel: Bottom sheet/full modal on mobile, right panel on desktop */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={{ opacity: 0, y: '10%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '10%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 240 }}
-            className="relative w-full max-w-2xl bg-slate-950/95 text-white h-full overflow-y-auto shadow-2xl border-l border-indigo-500/30 flex flex-col z-10 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-slate-950"
+            className="relative w-full sm:max-w-xl md:max-w-2xl bg-slate-950/98 text-white h-[95vh] sm:h-full max-h-screen overflow-y-auto shadow-2xl rounded-t-3xl sm:rounded-t-none border-t sm:border-t-0 sm:border-l border-indigo-500/40 flex flex-col z-10 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-slate-950"
           >
             {/* Top Fixed Drawer Navbar */}
-            <div className="sticky top-0 z-20 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5 overflow-hidden pr-4">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500 flex items-center justify-center flex-shrink-0 shadow-md">
                   <MapPin className="h-4 w-4 text-white" />

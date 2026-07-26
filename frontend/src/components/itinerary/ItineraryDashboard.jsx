@@ -72,7 +72,7 @@ export default function ItineraryDashboard({
 
   // 2. Intra-day Drag and Drop Reordering
   const handleReorderActivities = (dayIndex, fromIndex, toIndex) => {
-    if (fromIndex === toIndex) return;
+    if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return;
     setTripData((prev) => {
       const updatedDays = [...prev.dailyItinerary];
       const targetDay = { ...updatedDays[dayIndex] };
@@ -80,7 +80,7 @@ export default function ItineraryDashboard({
         const items = [...targetDay.timeline];
         const [movedItem] = items.splice(fromIndex, 1);
         items.splice(toIndex, 0, movedItem);
-        targetDay.timeline = items;
+        targetDay.timeline = items.map((act) => ({ ...act }));
       }
       updatedDays[dayIndex] = targetDay;
       return { ...prev, dailyItinerary: updatedDays };
@@ -100,14 +100,15 @@ export default function ItineraryDashboard({
         interests: tripData.interests || userParams.interests || 'sightseeing',
         notes: userParams.notes || '',
       });
-      if (response && response.data && response.data.activity) {
-        const newActivity = response.data.activity;
+      const newActivity =
+        response?.activity || response?.data?.activity || response?.data || response;
+      if (newActivity && (newActivity.title || newActivity.time)) {
         setTripData((prev) => {
           const updatedDays = [...prev.dailyItinerary];
           const targetDay = { ...updatedDays[dayIndex] };
           if (Array.isArray(targetDay.timeline)) {
             const items = [...targetDay.timeline];
-            items[activityIndex] = newActivity;
+            items[activityIndex] = { ...newActivity };
             targetDay.timeline = items;
           }
           updatedDays[dayIndex] = targetDay;
@@ -134,9 +135,10 @@ export default function ItineraryDashboard({
         travelStyle: tripData.travelStyle || userParams.travelStyle || 'travel',
         interests: tripData.interests || userParams.interests || 'sightseeing',
         notes: userParams.notes || '',
+        existingDay: currentDay,
       });
-      if (response && response.data && response.data.day) {
-        const newDay = response.data.day;
+      const newDay = response?.day || response?.data?.day;
+      if (newDay && newDay.timeline) {
         setTripData((prev) => {
           const updatedDays = [...prev.dailyItinerary];
           updatedDays[dayIndex] = newDay;

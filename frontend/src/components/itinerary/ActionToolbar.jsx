@@ -20,14 +20,14 @@ export default function ActionToolbar({
         <span>Adjust your itinerary or start a new plan.</span>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">
         {/* Back to Form (Edit parameters) */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           onClick={onEditForm}
-          className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-all shadow-sm cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-all shadow-sm cursor-pointer"
         >
           <Edit3 className="h-4 w-4 text-slate-400" />
           <span>Back to Form</span>
@@ -40,7 +40,7 @@ export default function ActionToolbar({
           whileTap={{ scale: 0.98 }}
           onClick={onRegenerate}
           disabled={isRegenerating}
-          className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-md cursor-pointer ${
+          className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-md cursor-pointer ${
             isRegenerating
               ? 'bg-indigo-600/50 text-indigo-300 cursor-wait'
               : 'bg-indigo-600 hover:bg-indigo-500 text-white'

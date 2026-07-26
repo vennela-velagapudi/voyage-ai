@@ -22,6 +22,8 @@ import {
   AlertTriangle,
   ShieldCheck,
   Navigation,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 
 const getCategoryConfig = (category) => {
@@ -132,6 +134,7 @@ const getCategoryConfig = (category) => {
 
 export default function TimelineItem({
   item,
+  isFirst = false,
   isLast = false,
   index = 0,
   onPlaceClick,
@@ -142,6 +145,8 @@ export default function TimelineItem({
   onDragStart,
   onDragOver,
   onDrop,
+  onMoveUp,
+  onMoveDown,
 }) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -262,14 +267,14 @@ export default function TimelineItem({
         </div>
 
         {/* Interactive Activity Details Card */}
-        <div className="flex-grow pb-6">
+        <div className="flex-grow pb-6 min-w-0">
           <div
             onClick={handlePlaceClick}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handlePlaceClick(e)}
             aria-label={`Explore interactive details for ${title}`}
-            className={`p-5 sm:p-6 rounded-2xl bg-slate-900/80 border border-slate-800/90 hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 cursor-pointer relative overflow-hidden text-left ${
+            className={`p-4 sm:p-6 rounded-2xl bg-slate-900/80 border border-slate-800/90 hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 cursor-pointer relative overflow-hidden text-left ${
               isReplacing ? 'opacity-70 pointer-events-none ring-2 ring-indigo-500/50' : ''
             }`}
           >
@@ -278,17 +283,17 @@ export default function TimelineItem({
 
             {/* Header Row: Time, Category, Duration & Cost Tag */}
             <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-800/70">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-300 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/30">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-indigo-300 bg-indigo-500/10 px-2.5 sm:px-3 py-1 rounded-full border border-indigo-500/30">
                   <Clock className="h-3.5 w-3.5 text-indigo-400" />
                   <span>{time || 'Scheduled'}</span>
                 </div>
                 {duration && (
-                  <span className="text-[11px] font-bold text-slate-400 bg-slate-950/60 px-2.5 py-0.5 rounded-full border border-slate-800">
+                  <span className="text-[11px] font-bold text-slate-400 bg-slate-950/60 px-2 sm:px-2.5 py-0.5 rounded-full border border-slate-800">
                     {duration}
                   </span>
                 )}
-                <span className="text-[11px] font-extrabold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                <span className="text-[11px] font-extrabold text-emerald-300 bg-emerald-500/10 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                   {formatCost(cost)}
                 </span>
               </div>
@@ -296,7 +301,7 @@ export default function TimelineItem({
               <div className="flex items-center gap-1.5">
                 {category && (
                   <div
-                    className={`inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-slate-950/70`}
+                    className={`inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-slate-950/70`}
                   >
                     <Tag className="h-3 w-3" />
                     <span>{category}</span>
@@ -306,16 +311,54 @@ export default function TimelineItem({
             </div>
 
             {/* Title & Actions Row */}
-            <div className="flex items-start justify-between gap-3 mb-2.5">
-              <h4 className="text-base sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+              <h4 className="text-base sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2 min-w-0 break-words">
                 <span>{title || 'Curated Activity Experience'}</span>
               </h4>
 
-              {/* Interactive Editing Action Buttons (Replace & Delete) */}
+              {/* Interactive Editing Action Buttons (Replace, Reorder & Delete) */}
               <div
-                className="flex items-center gap-1.5 flex-shrink-0"
+                className="flex flex-wrap items-center gap-1 sm:gap-1.5 w-full sm:w-auto justify-end sm:justify-start"
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* Reorder Up */}
+                <button
+                  type="button"
+                  disabled={isFirst}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onMoveUp) onMoveUp();
+                  }}
+                  title="Move activity earlier"
+                  className={`p-1.5 rounded-xl border transition-all cursor-pointer ${
+                    isFirst
+                      ? 'opacity-30 cursor-not-allowed border-slate-800 bg-slate-950 text-slate-600'
+                      : 'bg-slate-950/60 hover:bg-slate-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white'
+                  }`}
+                  aria-label="Move activity earlier"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </button>
+
+                {/* Reorder Down */}
+                <button
+                  type="button"
+                  disabled={isLast}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onMoveDown) onMoveDown();
+                  }}
+                  title="Move activity later"
+                  className={`p-1.5 rounded-xl border transition-all cursor-pointer ${
+                    isLast
+                      ? 'opacity-30 cursor-not-allowed border-slate-800 bg-slate-950 text-slate-600'
+                      : 'bg-slate-950/60 hover:bg-slate-800 border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white'
+                  }`}
+                  aria-label="Move activity later"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
                 {/* Replace Activity Option */}
                 <button
                   type="button"

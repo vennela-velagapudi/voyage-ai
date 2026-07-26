@@ -182,7 +182,8 @@ export async function replaceTripActivity(req, res) {
  */
 export async function regenerateTripDay(req, res) {
   try {
-    const { dayNumber, theme, destination, budget, travelStyle, interests, notes } = req.body;
+    const { dayNumber, theme, destination, budget, travelStyle, interests, notes, existingDay } =
+      req.body;
     if (!destination) {
       return res.status(400).json({
         success: false,
@@ -198,6 +199,7 @@ export async function regenerateTripDay(req, res) {
       travelStyle,
       interests,
       notes,
+      existingDay,
     });
 
     return res.status(200).json({

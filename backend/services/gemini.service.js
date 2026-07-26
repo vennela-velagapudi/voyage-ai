@@ -202,7 +202,7 @@ async function generateItineraryChunk({
       (d) => d.dayNumber >= startDay && d.dayNumber <= endDay
     );
     if (chunkExistingDays.length > 0) {
-      existingItineraryGuidance = `\nIMPORTANT SMART REGENERATION BASELINE (RESPECT USER EDITS):\nThe user has actively customized their current schedule (by deleting, replacing, or reordering activities). Treat this attached current customized itinerary for Days ${startDay}–${endDay} as your primary baseline:\n${JSON.stringify(chunkExistingDays, null, 2)}\nYour task is to generate an improved, refreshed version of this itinerary while RESPECTING and PRESERVING all user modifications, including deleted activities, replaced items, and custom activity ordering whenever possible. Do NOT discard user edits unless absolutely necessary for itinerary timing or geographic consistency.\n`;
+      existingItineraryGuidance = `\nCRITICAL SMART REGENERATION INSTRUCTION (USER EDITS ARE THE BASELINE):\nThe user has actively edited their trip itinerary (by deleting activities, replacing items, and reordering their schedule). Treat this attached customized itinerary for Days ${startDay}–${endDay} as your IMMUTABLE BASELINE:\n${JSON.stringify(chunkExistingDays, null, 2)}\nWhen refreshing the itinerary, you MUST obey these rules:\n1. Do NOT restore activities that were deleted by the user; deleted activities must stay deleted.\n2. PRESERVE all alternative activities that the user replaced.\n3. PRESERVE the user's updated activity order.\n4. Intelligently rebuild and optimize around these remaining activities, only adding complementary items if required to maintain a logical morning-to-night schedule.\n`;
     }
   }
 
@@ -685,6 +685,7 @@ export async function generateSingleDay({
   travelStyle = 'travel',
   interests = 'sightseeing',
   notes = '',
+  existingDay,
 }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === '') {
@@ -695,14 +696,19 @@ export async function generateSingleDay({
 
   const genAI = new GoogleGenerativeAI(apiKey);
 
+  let existingDayBaseline = '';
+  if (existingDay && Array.isArray(existingDay.timeline)) {
+    existingDayBaseline = `\nCRITICAL SMART REGENERATION INSTRUCTION (USER EDITS ARE BASELINE):\nThe user has actively edited Day ${dayNumber} by deleting, replacing, or reordering activities. Treat this current customized timeline as your IMMUTABLE BASELINE:\n${JSON.stringify(existingDay.timeline, null, 2)}\nYou MUST build the refreshed day's schedule around these remaining activities:\n1. Keep deleted activities REMOVED; do not re-insert deleted items.\n2. PRESERVE user-replaced activities and their time slots.\n3. PRESERVE the custom ordering of activities.\n4. Only add new complementary activities if necessary to bridge large time gaps and maintain a balanced, chronological schedule.\n`;
+  }
+
   return await executeWithRetry(async (_attempt, isRetry) => {
     const retryNote = isRetry
       ? '\nCRITICAL RETRY INSTRUCTION: Output strictly valid JSON with no trailing commas or conversational markdown.\n'
       : '';
     const prompt = `You are an expert AI Travel Consultant. The user requested to regenerate the schedule specifically for Day ${dayNumber} of their trip to ${destination}.
-Travel parameters: Theme Focus: ${theme}, Budget: ${budget}, Companion/Style: ${travelStyle}, Interests: ${JSON.stringify(interests)}, Custom Notes: "${notes}".
+Travel parameters: Theme Focus: ${theme}, Budget: ${budget}, Companion/Style: ${travelStyle}, Interests: ${JSON.stringify(interests)}, Custom Notes: "${notes}".${existingDayBaseline}
 
-Create a completely fresh, balanced chronological timeline for Day ${dayNumber} with an engaging theme inspired by "${theme}" and 5 to 8 activities (including breakfast, coffee break, lunch, sightseeing, shopping, and dinner).
+Create a balanced chronological timeline for Day ${dayNumber} with an engaging theme inspired by "${theme}" respecting all user customizations and remaining activities.
 ${retryNote}
 Respond ONLY with a valid JSON object matching this schema:
 {
