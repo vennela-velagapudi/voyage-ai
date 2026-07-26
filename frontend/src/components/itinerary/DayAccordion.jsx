@@ -166,9 +166,7 @@ export default function DayAccordion({
               <div className="flex items-center justify-between text-xs sm:text-sm text-slate-300 pb-3 border-b border-slate-800/80">
                 <span className="flex items-center gap-2 font-medium">
                   <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                  <span>
-                    Drag activities by the left grip handle to reorder within today&apos;s schedule.
-                  </span>
+                  <span>Drag activities using the handle to customize your schedule.</span>
                 </span>
                 {hasTimeline ? (
                   <span className="font-mono font-bold text-indigo-400 text-xs">

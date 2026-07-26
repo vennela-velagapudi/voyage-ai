@@ -12,7 +12,16 @@ import { analyzeDestinationDuration } from '../services/destinationIntelligence.
  */
 export async function createTripItinerary(req, res) {
   try {
-    const { destination, days, budget, travelStyle, interests, notes, forceGenerate } = req.body;
+    const {
+      destination,
+      days,
+      budget,
+      travelStyle,
+      interests,
+      notes,
+      forceGenerate,
+      existingItinerary,
+    } = req.body;
 
     // 1. Rigorous Request Validation
     if (!destination || typeof destination !== 'string' || destination.trim().length < 2) {
@@ -106,6 +115,7 @@ export async function createTripItinerary(req, res) {
       notes: typeof notes === 'string' ? notes.trim() : '',
       expansionNote: durationAnalysis.isExpanded ? durationAnalysis.expansionNote : null,
       placeCategory: durationAnalysis.placeCategory || 'Destination',
+      existingItinerary,
     });
 
     if (validationResult.primaryPhoto) {

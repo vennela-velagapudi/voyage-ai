@@ -33,7 +33,7 @@ export default function ActionToolbar({
           <span>Back to Form</span>
         </motion.button>
 
-        {/* Generate Again (Regenerate with existing inputs) */}
+        {/* Refresh Itinerary (Regenerate from current baseline) */}
         <motion.button
           type="button"
           whileHover={{ scale: 1.03 }}
@@ -47,7 +47,7 @@ export default function ActionToolbar({
           }`}
         >
           <RefreshCw className={`h-4 w-4 ${isRegenerating ? 'animate-spin' : ''}`} />
-          <span>{isRegenerating ? 'Generating...' : 'Generate Again'}</span>
+          <span>{isRegenerating ? 'Refreshing...' : 'Refresh Itinerary'}</span>
         </motion.button>
 
         {/* Plan Another Trip (Reset entirely) */}

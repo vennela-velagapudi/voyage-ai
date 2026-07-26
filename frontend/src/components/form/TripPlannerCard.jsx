@@ -367,7 +367,9 @@ export default function TripPlannerCard() {
         userParams={formData}
         onNewTrip={handleNewTrip}
         onEditForm={handleEditForm}
-        onRegenerate={() => executeGeneration()}
+        onRegenerate={(currentItinerary) =>
+          executeGeneration({ existingItinerary: currentItinerary || itinerary })
+        }
         isRegenerating={false}
       />
     );

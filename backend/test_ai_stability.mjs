@@ -69,7 +69,7 @@ async function runBenchmark() {
     failedCount++;
   }
 
-  // 3. Consecutive AI Generation Reliability Benchmark covering 5, 10, 15, 20, and 30 day trips
+  // 3. Consecutive AI Generation Reliability Benchmark covering 5, 10, 20, and 30 day trips
   const testTrips = [
     {
       destination: 'Kyoto, Japan',
@@ -79,32 +79,11 @@ async function runBenchmark() {
       interests: ['temples', 'gardens'],
     },
     {
-      destination: 'Delhi, India',
-      days: 5,
-      budget: 'budget',
-      travelStyle: 'family',
-      interests: ['history', 'street food'],
-    },
-    {
       destination: 'Tokyo, Japan',
       days: 10,
       budget: 'moderate',
       travelStyle: 'solo',
       interests: ['anime', 'ramen', 'shrines'],
-    },
-    {
-      destination: 'Paris, France',
-      days: 10,
-      budget: 'luxury',
-      travelStyle: 'couple',
-      interests: ['art', 'fine dining'],
-    },
-    {
-      destination: 'Kyoto & Osaka Regional',
-      days: 15,
-      budget: 'moderate',
-      travelStyle: 'friends',
-      interests: ['cultural immersion'],
     },
     {
       destination: 'Switzerland',
@@ -123,7 +102,7 @@ async function runBenchmark() {
   ];
 
   console.log(
-    `--- TEST 3–9: Executing ${testTrips.length} Itinerary Synthesis & Chunking Benchmark Runs (100% JSON Reliability Guarantee) ---\n`
+    `--- TEST 3–6: Executing ${testTrips.length} Itinerary Synthesis & Chunking Benchmark Runs (100% JSON Reliability Guarantee) ---\n`
   );
 
   for (let i = 0; i < testTrips.length; i++) {

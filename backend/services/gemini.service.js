@@ -54,6 +54,50 @@ function sanitizeAndParseJson(rawText) {
   }
 }
 
+const GEMINI_MODEL_POOL = [
+  process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3-flash-preview',
+  'gemini-2.0-flash-001',
+  'gemini-flash-latest',
+].filter((v, i, a) => a.indexOf(v) === i);
+
+async function generateContentWithModelPool(genAI, prompt, maxTokens = 32768) {
+  let lastError;
+  for (let i = 0; i < GEMINI_MODEL_POOL.length; i++) {
+    const modelName = GEMINI_MODEL_POOL[i];
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.7,
+          maxOutputTokens: maxTokens,
+        },
+      });
+      return await model.generateContent(prompt);
+    } catch (err) {
+      lastError = err;
+      const msg = String(err.message || '');
+      if (
+        msg.includes('429') ||
+        msg.toLowerCase().includes('quota') ||
+        msg.toLowerCase().includes('too many requests')
+      ) {
+        if (i < GEMINI_MODEL_POOL.length - 1) {
+          console.warn(
+            `[Model Quota Advisory] Model ${modelName} reached daily limit (429). Switching immediately to fallback model ${GEMINI_MODEL_POOL[i + 1]}...`
+          );
+          continue;
+        }
+      }
+      throw err;
+    }
+  }
+  throw lastError;
+}
+
 /**
  * Helper to execute generative tasks with automatic retries and clean error propagation.
  * @param {Function} fn - Async function taking (attemptNumber, isRetry) as argument.
@@ -131,6 +175,7 @@ async function generateItineraryChunk({
   isFirstChunk,
   existingTitle,
   isRetry,
+  existingItinerary,
 }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === '' || apiKey === 'your_google_gemini_api_key_here') {
@@ -142,14 +187,6 @@ async function generateItineraryChunk({
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    generationConfig: {
-      responseMimeType: 'application/json',
-      temperature: 0.7,
-      maxOutputTokens: 32768,
-    },
-  });
 
   const expansionGuidance = expansionNote
     ? `\nIMPORTANT DESTINATION EXPANSION NOTE:\n${expansionNote}\nBecause the requested trip duration extends beyond a typical visit to this specific venue/landmark, construct an exciting itinerary that expands outward to incorporate the broader surrounding city, authentic cultural neighborhood gems, nearby dining districts, and regional tourist highlights across all ${totalDays} days. Clearly reflect this broader city/regional journey in the overview.\n`
@@ -158,6 +195,16 @@ async function generateItineraryChunk({
   const retryInstruction = isRetry
     ? '\nCRITICAL RETRY NOTICE: Your previous output encountered formatting or JSON syntax truncation. You MUST return exclusively valid, completely closed JSON with no markdown wrapping or conversational text. Keep descriptions concise to guarantee perfect syntax completion.\n'
     : '';
+
+  let existingItineraryGuidance = '';
+  if (existingItinerary && Array.isArray(existingItinerary.dailyItinerary)) {
+    const chunkExistingDays = existingItinerary.dailyItinerary.filter(
+      (d) => d.dayNumber >= startDay && d.dayNumber <= endDay
+    );
+    if (chunkExistingDays.length > 0) {
+      existingItineraryGuidance = `\nIMPORTANT SMART REGENERATION BASELINE (RESPECT USER EDITS):\nThe user has actively customized their current schedule (by deleting, replacing, or reordering activities). Treat this attached current customized itinerary for Days ${startDay}–${endDay} as your primary baseline:\n${JSON.stringify(chunkExistingDays, null, 2)}\nYour task is to generate an improved, refreshed version of this itinerary while RESPECTING and PRESERVING all user modifications, including deleted activities, replaced items, and custom activity ordering whenever possible. Do NOT discard user edits unless absolutely necessary for itinerary timing or geographic consistency.\n`;
+    }
+  }
 
   let prompt;
   if (isFirstChunk) {
@@ -172,7 +219,7 @@ USER TRAVEL PARAMETERS:
 - Budget Profile: ${budget}
 - Travel Style / Companion: ${travelStyle}
 - Key Interests: ${Array.isArray(interests) ? interests.join(', ') : interests}
-- Additional Preferences / Notes: ${notes || 'None provided'}${expansionGuidance}
+- Additional Preferences / Notes: ${notes || 'None provided'}${expansionGuidance}${existingItineraryGuidance}
 
 REQUIRED JSON SCHEMA FOR THIS INITIAL CHUNK:
 {
@@ -306,7 +353,7 @@ USER TRAVEL PARAMETERS:
 - Budget Profile: ${budget}
 - Travel Style / Companion: ${travelStyle}
 - Key Interests: ${Array.isArray(interests) ? interests.join(', ') : interests}
-- Additional Preferences / Notes: ${notes || 'None provided'}${expansionGuidance}
+- Additional Preferences / Notes: ${notes || 'None provided'}${expansionGuidance}${existingItineraryGuidance}
 
 REQUIRED JSON SCHEMA FOR THIS CONTINUATION CHUNK:
 {
@@ -379,7 +426,7 @@ IMPORTANT INSTRUCTIONS:
 `;
   }
 
-  const result = await model.generateContent(prompt);
+  const result = await generateContentWithModelPool(genAI, prompt, 32768);
   const responseText = result.response.text();
   const data = sanitizeAndParseJson(responseText);
 
@@ -418,6 +465,7 @@ export async function generateTripItinerary({
   notes,
   expansionNote,
   placeCategory,
+  existingItinerary,
 }) {
   const totalDays = Number(days) || 1;
   const chunkRanges = [];
@@ -474,6 +522,7 @@ export async function generateTripItinerary({
         isFirstChunk,
         existingTitle: tripTitle,
         isRetry,
+        existingItinerary,
       });
     });
 
@@ -592,14 +641,6 @@ export async function generateAlternativeActivity({
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    generationConfig: {
-      responseMimeType: 'application/json',
-      temperature: 0.7,
-      maxOutputTokens: 8192,
-    },
-  });
 
   return await executeWithRetry(async (_attempt, isRetry) => {
     const retryNote = isRetry
@@ -628,7 +669,7 @@ Respond ONLY with a valid JSON object matching this schema:
 
 IMPORTANT: Express all costs in INR strictly using the ₹ symbol (e.g. ₹300–₹500 or Free). Never display "$". Respond only with valid JSON.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await generateContentWithModelPool(genAI, prompt, 8192);
     return sanitizeAndParseJson(result.response.text());
   });
 }
@@ -653,14 +694,6 @@ export async function generateSingleDay({
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-    generationConfig: {
-      responseMimeType: 'application/json',
-      temperature: 0.7,
-      maxOutputTokens: 16384,
-    },
-  });
 
   return await executeWithRetry(async (_attempt, isRetry) => {
     const retryNote = isRetry
@@ -741,7 +774,7 @@ Respond ONLY with a valid JSON object matching this schema:
 
 IMPORTANT: All monetary figures must be explicitly in INR using the ₹ symbol. Never use dollar symbols ($). Respond ONLY with valid JSON.`;
 
-    const result = await model.generateContent(prompt);
+    const result = await generateContentWithModelPool(genAI, prompt, 16384);
     return sanitizeAndParseJson(result.response.text());
   });
 }

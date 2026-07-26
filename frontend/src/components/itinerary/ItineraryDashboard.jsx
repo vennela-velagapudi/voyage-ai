@@ -206,11 +206,28 @@ export default function ItineraryDashboard({
         ))}
       </div>
 
+      {/* Smart Regeneration Informational Notice */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="w-full max-w-4xl mx-auto -mb-8 mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/90 border border-slate-800/80 shadow-md flex items-center gap-3.5 text-left"
+      >
+        <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0">
+          <Sparkles className="h-5 w-5 text-indigo-400 animate-pulse" />
+        </div>
+        <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+          <strong className="text-white">Smart AI Regeneration:</strong> Future itinerary
+          generations will use your current customized itinerary as the starting point. Your edits
+          help the AI create better recommendations.
+        </p>
+      </motion.div>
+
       {/* Single Action Toolbar at the End of the Itinerary */}
       <ActionToolbar
         onNewTrip={onNewTrip}
         onEditForm={onEditForm}
-        onRegenerate={onRegenerate}
+        onRegenerate={() => onRegenerate && onRegenerate(tripData)}
         isRegenerating={isRegenerating}
       />
 

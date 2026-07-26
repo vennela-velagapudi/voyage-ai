@@ -144,6 +144,7 @@ export default function TimelineItem({
   onDrop,
 }) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   if (!item) return null;
 
@@ -193,15 +194,34 @@ export default function TimelineItem({
 
   return (
     <div className="relative">
+      {/* Dynamic Drop Placeholder */}
+      {isDraggingOver && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 55 }}
+          transition={{ duration: 0.2 }}
+          className="w-full mb-3 rounded-2xl border-2 border-dashed border-indigo-400/80 bg-indigo-500/15 flex items-center justify-center gap-2 text-indigo-200 text-xs font-bold uppercase tracking-wider animate-pulse shadow-md backdrop-blur-sm"
+        >
+          <GripVertical className="h-4 w-4 text-indigo-400 animate-bounce" />
+          <span>Release to Drop &amp; Reorder Activity Here</span>
+        </motion.div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, x: -15 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.35, delay: index * 0.04 }}
-        className={`relative flex gap-3 sm:gap-5 group ${isDraggingOver ? 'ring-2 ring-sky-500 rounded-2xl' : ''}`}
+        className={`relative flex gap-3 sm:gap-5 group transition-all duration-200 ${
+          isDraggingOver ? 'ring-2 ring-indigo-500/80 rounded-2xl pb-2 bg-indigo-950/20' : ''
+        } ${isDragging ? 'opacity-40 scale-[0.98] blur-[0.5px] pointer-events-none' : 'opacity-100'}`}
         draggable
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', String(index));
+          setIsDragging(true);
           if (onDragStart) onDragStart(e, index);
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
         }}
         onDragOver={(e) => {
           e.preventDefault();
@@ -212,6 +232,7 @@ export default function TimelineItem({
         onDrop={(e) => {
           e.preventDefault();
           setIsDraggingOver(false);
+          setIsDragging(false);
           const sourceIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
           if (onDrop) onDrop(sourceIdx, index);
         }}
@@ -220,10 +241,10 @@ export default function TimelineItem({
         <div className="flex flex-col items-center">
           {/* Drag Grip Handle */}
           <div
-            className="p-1 mb-1 text-slate-500 hover:text-white cursor-grab active:cursor-grabbing transition-colors"
-            title="Drag to reorder activities within this day"
+            className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-900/90 hover:bg-indigo-600/30 border border-slate-800 hover:border-indigo-500/50 flex items-center justify-center text-slate-400 hover:text-white cursor-grab active:cursor-grabbing shadow-sm transition-all mb-1.5 z-20 group/grip"
+            title="Drag activities using the handle to customize your schedule."
           >
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-4 w-4 transition-transform group-hover/grip:scale-110" />
           </div>
 
           {/* Timeline Node Circle */}
