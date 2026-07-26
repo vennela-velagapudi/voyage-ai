@@ -50,7 +50,10 @@ export default function NearbyRestaurants({ restaurants, isLoading }) {
               </span>
 
               <span className="text-xs font-bold font-mono text-slate-300 bg-slate-950/80 px-2 py-0.5 rounded border border-slate-800/80">
-                {item.priceLevel || '$$'}
+                {String(item.priceLevel || 'Moderate')
+                  .replace(/\$/g, '')
+                  .replace(/\(|\)/g, '')
+                  .trim() || 'Moderate'}
               </span>
             </div>
 

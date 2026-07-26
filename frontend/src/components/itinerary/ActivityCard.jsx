@@ -7,7 +7,7 @@ import {
   Lightbulb,
   MapPin,
   Tag,
-  DollarSign,
+  Wallet,
   Award,
   ArrowUpRight,
 } from 'lucide-react';
@@ -51,7 +51,8 @@ export default function ActivityCard({ type, title, data, onPlaceClick }) {
   const isString = typeof data === 'string';
   const activityText = isString ? data : data.activity || data.highlight || data.description || '';
   const locationText = isString ? null : data.location;
-  const costText = isString ? null : data.approxCost;
+  const rawCost = isString ? null : data.approxCost;
+  const formattedCost = rawCost ? String(rawCost).replace(/\$/g, '').trim() : null;
   const diningName = isString ? null : data.name;
   const diningCuisine = isString ? null : data.cuisine;
 
@@ -99,11 +100,11 @@ export default function ActivityCard({ type, title, data, onPlaceClick }) {
           </div>
 
           <div className="flex items-center gap-2">
-            {costText && (
+            {formattedCost && (
               <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold shadow-inner">
-                <DollarSign className="h-3 w-3 text-emerald-400" />
+                <Wallet className="h-3 w-3 text-emerald-400" />
                 <span>
-                  Est. Cost: <strong className="text-white">{costText}</strong>
+                  Estimated Spend: <strong className="text-white">{formattedCost}</strong>
                 </span>
               </div>
             )}

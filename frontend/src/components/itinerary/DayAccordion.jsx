@@ -37,6 +37,9 @@ export default function DayAccordion({
   } = day;
 
   const hasTimeline = Array.isArray(timeline) && timeline.length > 0;
+  const formattedCost = estimatedDailyCost
+    ? String(estimatedDailyCost).replace(/\$/g, '').trim()
+    : null;
 
   return (
     <div className="w-full max-w-4xl mx-auto mb-6 rounded-3xl glass-effect border border-slate-800/80 hover:border-slate-700/80 overflow-hidden transition-all duration-300 shadow-xl backdrop-blur-xl bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950">
@@ -69,10 +72,10 @@ export default function DayAccordion({
           <div>
             <div className="flex items-center gap-2 text-indigo-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
               <Calendar className="h-3.5 w-3.5" />
-              <span>Day {dayNumber} Chronological Schedule</span>
+              <span>Day {dayNumber} Schedule</span>
             </div>
             <h3 className="text-lg sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-1">
-              {theme || `Exploring Highlights & Local Marvels`}
+              {theme || 'Exploring Highlights & Marvels'}
             </h3>
           </div>
         </div>
@@ -116,14 +119,11 @@ export default function DayAccordion({
               <div className="flex items-center justify-between text-xs sm:text-sm text-slate-300 pb-3 border-b border-slate-800/80">
                 <span className="flex items-center gap-2 font-medium">
                   <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                  <span>
-                    Curated chronological travel progression. Click any place card for live Google
-                    details.
-                  </span>
+                  <span>Click any location to view photos, opening hours, and maps.</span>
                 </span>
                 {hasTimeline && (
                   <span className="font-mono font-bold text-indigo-400 text-xs">
-                    {timeline.length} SCHEDULED STATIONS
+                    {timeline.length} ACTIVITIES
                   </span>
                 )}
               </div>
@@ -163,7 +163,7 @@ export default function DayAccordion({
                   {evening && (
                     <ActivityCard
                       type="evening"
-                      title="Evening & Twilight Experience"
+                      title="Evening Experience"
                       data={evening}
                       onPlaceClick={onPlaceClick}
                     />
@@ -171,7 +171,7 @@ export default function DayAccordion({
                   {diningRecommendation && (
                     <ActivityCard
                       type="dining"
-                      title="Featured Gastronomy Highlight"
+                      title="Featured Dining Highlight"
                       data={diningRecommendation}
                       onPlaceClick={onPlaceClick}
                     />
@@ -179,23 +179,23 @@ export default function DayAccordion({
                 </div>
               )}
 
-              {/* Bottom Day Card Section: Estimated Daily Cost & Local Tip */}
+              {/* Bottom Day Card Section: Estimated Spend & Local Tip */}
               <div className="pt-6 mt-6 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Estimated Daily Cost */}
-                {estimatedDailyCost && (
+                {/* Estimated Spend */}
+                {formattedCost && (
                   <div className="bg-gradient-to-br from-emerald-950/40 via-slate-900/80 to-slate-900 p-5 rounded-2xl border border-emerald-500/30 flex items-start gap-3.5 shadow-md">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
                       <Wallet className="h-5 w-5 animate-pulse" />
                     </div>
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1">
-                        Estimated Daily Cost
+                        Estimated Spend
                       </h4>
                       <p className="text-slate-200 text-sm sm:text-base font-extrabold tracking-wide">
-                        {estimatedDailyCost}
+                        {formattedCost}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-1">
-                        Includes projected entry tickets, local dining & internal transit
+                        Covers local activities, dining & internal transit
                       </p>
                     </div>
                   </div>

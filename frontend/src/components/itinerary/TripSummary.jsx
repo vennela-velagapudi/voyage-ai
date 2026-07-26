@@ -7,7 +7,6 @@ import {
   Users,
   Sparkles,
   Lightbulb,
-  Compass,
   Heart,
   FileText,
   Tag,
@@ -37,46 +36,41 @@ export default function TripSummary({ itinerary, userParams = {} }) {
 
   const notesText = userParams.notes ? userParams.notes.trim() : null;
 
-  // Generate a friendly, heartwarming introductory paragraph summarizing the selected trip
+  // Generate a friendly introductory paragraph summarizing the selected trip
   const formattedInterests =
     interestsList.length > 0
       ? interestsList.length === 1
         ? interestsList[0]
         : interestsList.slice(0, -1).join(', ') + ' and ' + interestsList[interestsList.length - 1]
-      : 'discovery and authentic sights';
+      : 'discovery and local attractions';
 
-  const friendlyIntro = `Get ready for an unforgettable adventure to ${destination}! We have crafted this personalized ${durationDays}-day journey designed especially for a ${budget} ${travelStyle} trip. Centered around your passions for ${formattedInterests}, every single hour has been thoughtfully routed to maximize joy, cultural immersion, and stress-free exploration${
-    notesText ? ' while keeping all your custom requirements front and center' : ''
-  }. Explore your daily roadmap below!`;
+  const friendlyIntro = `Here is your custom ${durationDays}-day itinerary for ${destination}, tailored for a ${budget} ${travelStyle} travel style. Built around your interests in ${formattedInterests}, this schedule is organized into daily timelines to make your trip enjoyable and seamless${
+    notesText ? ', while respecting your notes and custom preferences' : ''
+  }.`;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-indigo-500/40 backdrop-blur-2xl mb-12 text-left bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950"
+      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-indigo-500/40 backdrop-blur-2xl mb-8 text-left bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950"
     >
       {/* Decorative gradient atmosphere */}
       <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-sky-500/15 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent pointer-events-none shadow-[0_0_20px_rgba(99,102,241,0.8)]" />
 
-      {/* Top Tag & Badge */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+      {/* Top Tag */}
+      <div className="flex items-center justify-between gap-3 mb-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/40 text-indigo-300 text-xs font-bold uppercase tracking-wider shadow-inner">
           <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse" />
-          <span>Personalized Trip Summary</span>
-        </div>
-
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-slate-300 text-xs font-semibold">
-          <Compass className="h-3.5 w-3.5 text-sky-400" />
-          <span>AI Curated Blueprint</span>
+          <span>Trip Summary</span>
         </div>
       </div>
 
-      {/* Trip Title */}
+      {/* Trip Title - Short and Clean */}
       <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight sm:leading-snug mb-6">
-        {tripTitle || `Your Tailored Journey to ${destination}`}
+        {tripTitle || 'Your Itinerary'}
       </h1>
 
       {/* Destination Hero Photography */}
@@ -84,13 +78,13 @@ export default function TripSummary({ itinerary, userParams = {} }) {
         (Array.isArray(itinerary.destinationPhotos) && itinerary.destinationPhotos[0])) && (
         <ResponsiveImage
           src={itinerary.destinationImage || itinerary.destinationPhotos[0]}
-          alt={`Scenic view of ${destination}`}
+          alt={destination}
           className="w-full h-64 sm:h-80 sm:max-h-96 relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800/80 shadow-2xl mb-8 group"
           imageClassName="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102 brightness-[0.95]"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
           <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-xs font-bold shadow">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-xs font-bold shadow">
               <MapPin className="h-3.5 w-3.5 text-sky-400" />
               <span>{destination}</span>
             </span>
@@ -104,30 +98,26 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <AlertCircle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5 animate-pulse" />
           <div>
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 mb-1">
-              Destination Scope Expansion Notice
+              Destination Scope Notice
             </h4>
             <p className="text-slate-200 text-sm leading-relaxed font-normal">{expansionNotice}</p>
           </div>
         </div>
       )}
 
-      {/* Friendly Introductory Paragraph */}
-      <div className="bg-gradient-to-r from-indigo-950/50 via-slate-900/70 to-sky-950/40 p-5 sm:p-6 rounded-2xl border border-indigo-500/30 my-6 flex items-start gap-4 shadow-md">
-        <div className="w-11 h-11 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Smile
-            className="h-6 w-6 text-indigo-400 animate-bounce"
-            style={{ animationDuration: '4s' }}
-          />
+      {/* Introductory Paragraph */}
+      <div className="bg-slate-900/60 p-5 sm:p-6 rounded-2xl border border-slate-800/80 my-6 flex items-start gap-4 shadow-sm">
+        <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <Smile className="h-5 w-5 text-indigo-400" />
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-indigo-300 mb-1.5 flex items-center gap-1.5">
-            <span>Your Personalized Adventure Awaits</span>
-          </h3>
-          <p className="text-slate-200 text-base leading-relaxed font-medium">{friendlyIntro}</p>
+        <div className="flex-grow">
+          <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
+            {friendlyIntro}
+          </p>
         </div>
       </div>
 
-      {/* 6 Core Metrics & Preferences Grid */}
+      {/* 4 Core Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 my-8 pt-6 border-t border-slate-800/80">
         <div className="flex items-center gap-3 bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 hover:border-indigo-500/40 transition-colors shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 flex-shrink-0">
@@ -183,7 +173,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
               <Tag className="h-4 w-4 text-sky-400" />
-              <span>Selected Interests & Themes</span>
+              <span>Interests</span>
             </h4>
             <div className="flex flex-wrap gap-2 pt-1">
               {interestsList.length > 0 ? (
@@ -197,7 +187,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
                   </span>
                 ))
               ) : (
-                <span className="text-slate-500 text-sm italic">General city Highlights</span>
+                <span className="text-slate-500 text-sm italic">General highlights</span>
               )}
             </div>
           </div>
@@ -208,7 +198,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
               <FileText className="h-4 w-4 text-emerald-400" />
-              <span>Custom Preferences & Notes</span>
+              <span>Notes</span>
             </h4>
             {notesText ? (
               <p className="text-slate-200 text-sm italic leading-relaxed pt-1 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/60 font-mono">
@@ -216,21 +206,23 @@ export default function TripSummary({ itinerary, userParams = {} }) {
               </p>
             ) : (
               <p className="text-slate-500 text-sm italic pt-2">
-                No specific notes or dietary restrictions provided for this itinerary.
+                No custom notes or dietary instructions provided.
               </p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Executive Overview */}
+      {/* Trip Overview */}
       {overview && (
         <div className="bg-slate-900/60 rounded-2xl p-6 border border-slate-800/90 my-6 shadow-inner">
           <h3 className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2.5 flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-indigo-400" />
-            <span>AI Executive Journey Synthesis</span>
+            <span>Overview</span>
           </h3>
-          <p className="text-slate-200 text-base leading-relaxed font-normal">{overview}</p>
+          <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-normal">
+            {overview}
+          </p>
         </div>
       )}
 
@@ -241,9 +233,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
             <Lightbulb className="h-5 w-5 animate-pulse" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-emerald-300 mb-1">
-              Curated Financial & Logistics Advisory
-            </h4>
+            <h4 className="text-sm font-bold text-emerald-300 mb-1">Budget & Logistics</h4>
             <p className="text-slate-300 text-sm leading-relaxed font-normal">
               {estimatedTotalBudgetTip}
             </p>

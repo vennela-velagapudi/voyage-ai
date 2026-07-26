@@ -13,11 +13,11 @@ export default function ActionToolbar({
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="w-full max-w-4xl mx-auto my-8 p-4 sm:p-6 rounded-2xl glass-effect border border-slate-800/80 bg-slate-950/70 backdrop-blur-xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4"
+      className="w-full max-w-4xl mx-auto my-12 p-4 sm:p-6 rounded-2xl glass-effect border border-slate-800/80 bg-slate-950/70 backdrop-blur-xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4"
     >
       <div className="flex items-center gap-2 text-sm text-slate-300 font-medium text-center sm:text-left">
         <Sparkles className="h-4 w-4 text-indigo-400 flex-shrink-0 animate-pulse" />
-        <span>Modify parameters or generate alternative travel concepts.</span>
+        <span>Adjust your itinerary or start a new plan.</span>
       </div>
 
       <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">

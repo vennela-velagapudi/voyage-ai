@@ -86,20 +86,20 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * Formats enum price levels into familiar user-facing representations ($ to $$$$)
+ * Formats enum price levels into friendly, international user-facing representations without USD assumptions
  */
 function formatPriceLevel(priceLevel) {
   switch (priceLevel) {
     case 'PRICE_LEVEL_INEXPENSIVE':
-      return '$ (Inexpensive)';
+      return 'Budget-friendly';
     case 'PRICE_LEVEL_MODERATE':
-      return '$$ (Moderate)';
+      return 'Moderate';
     case 'PRICE_LEVEL_EXPENSIVE':
-      return '$$$ (Upscale)';
+      return 'Premium';
     case 'PRICE_LEVEL_VERY_EXPENSIVE':
-      return '$$$$ (Fine Dining)';
+      return 'Luxury';
     default:
-      return '$$ (Moderate)';
+      return 'Moderate';
   }
 }
 
@@ -138,21 +138,28 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
       ? { lat: place.location.latitude, lng: place.location.longitude }
       : null;
 
-  const openNow =
-    place.regularOpeningHours?.openNow !== undefined ? place.regularOpeningHours.openNow : true;
+  // Use a single source of truth for opening hours: prefer currentOpeningHours over regularOpeningHours
+  const hoursData = place.currentOpeningHours || place.regularOpeningHours || null;
+  const openNow = hoursData?.openNow !== undefined ? hoursData.openNow : null;
 
-  // Extract opening and closing hour string representation
-  let openingHours = '09:00 AM - 06:00 PM (Daily)';
-  let closingHours = '6:00 PM';
+  let openingHours = 'Not available';
   if (
-    Array.isArray(place.regularOpeningHours?.weekdayDescriptions) &&
-    place.regularOpeningHours.weekdayDescriptions.length > 0
+    hoursData &&
+    Array.isArray(hoursData.weekdayDescriptions) &&
+    hoursData.weekdayDescriptions.length > 0
   ) {
-    const todayDesc = place.regularOpeningHours.weekdayDescriptions[0];
-    openingHours = todayDesc.split(': ')[1] || todayDesc;
-    if (openingHours.includes('-')) {
-      const parts = openingHours.split('-');
-      closingHours = parts[1]?.trim() || '6:00 PM';
+    // Determine today's index in Monday-0 weekday array (Sunday=0 -> index 6; Monday=1 -> index 0)
+    const currentDayIndex = (new Date().getDay() + 6) % 7;
+    const todayDesc =
+      hoursData.weekdayDescriptions[currentDayIndex] || hoursData.weekdayDescriptions[0];
+    if (typeof todayDesc === 'string' && todayDesc.trim().length > 0) {
+      // Extract clean single time range following weekday prefix (e.g. "Monday: 9:00 AM – 5:00 PM")
+      const colonIndex = todayDesc.indexOf(':');
+      if (colonIndex !== -1 && colonIndex < 15) {
+        openingHours = todayDesc.slice(colonIndex + 1).trim();
+      } else {
+        openingHours = todayDesc.trim();
+      }
     }
   }
 
@@ -174,7 +181,7 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
     description,
     address,
     openingHours,
-    closingHours,
+    closingHours: null,
     openNow,
     website,
     googleMapsUrl,
@@ -204,7 +211,7 @@ export async function searchPlace({ query, destination }) {
 
   const url = 'https://places.googleapis.com/v1/places:searchText';
   const fieldMask =
-    'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.types,places.photos,places.websiteUri,places.regularOpeningHours,places.googleMapsUri,places.priceLevel,places.editorialSummary';
+    'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.types,places.photos,places.websiteUri,places.currentOpeningHours,places.regularOpeningHours,places.googleMapsUri,places.priceLevel,places.editorialSummary';
 
   try {
     const response = await fetch(url, {
@@ -256,7 +263,7 @@ export async function getPlaceDetails(placeId) {
   const resourcePath = placeId.startsWith('places/') ? placeId : `places/${placeId}`;
   const url = `https://places.googleapis.com/v1/${resourcePath}`;
   const fieldMask =
-    'id,displayName,formattedAddress,location,rating,userRatingCount,types,photos,websiteUri,regularOpeningHours,googleMapsUri,priceLevel,editorialSummary';
+    'id,displayName,formattedAddress,location,rating,userRatingCount,types,photos,websiteUri,currentOpeningHours,regularOpeningHours,googleMapsUri,priceLevel,editorialSummary';
 
   try {
     const response = await fetch(url, {
@@ -305,7 +312,7 @@ export async function searchNearby({ lat, lng, category = 'restaurant' }) {
 
   const url = 'https://places.googleapis.com/v1/places:searchNearby';
   const fieldMask =
-    'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.types,places.priceLevel,places.regularOpeningHours,places.googleMapsUri,places.photos,places.editorialSummary';
+    'places.id,places.displayName,places.formattedAddress,places.location,places.rating,places.userRatingCount,places.types,places.priceLevel,places.currentOpeningHours,places.regularOpeningHours,places.googleMapsUri,places.photos,places.editorialSummary';
 
   try {
     const response = await fetch(url, {

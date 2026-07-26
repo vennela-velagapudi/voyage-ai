@@ -45,38 +45,32 @@ export default function ItineraryDashboard({
       className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
       id="itinerary-dashboard"
     >
-      {/* Top Personalized Summary Card with friendly introduction */}
+      {/* Top Personalized Summary Card */}
       <TripSummary itinerary={itinerary} userParams={userParams} />
 
-      {/* Primary Action Toolbar */}
-      <ActionToolbar
-        onNewTrip={onNewTrip}
-        onEditForm={onEditForm}
-        onRegenerate={onRegenerate}
-        isRegenerating={isRegenerating}
-      />
-
-      {/* Daily Itinerary Header Bar */}
-      <div className="max-w-4xl mx-auto my-10 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-5 text-center sm:text-left">
+      {/* Main Itinerary Section Header */}
+      <div className="max-w-4xl mx-auto my-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-5 text-center sm:text-left">
         <div>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2.5">
-            <Compass className="h-7 w-7 text-sky-400 animate-pulse" />
-            <span>Daily Itinerary Schedule</span>
+            <Compass className="h-6 w-6 text-sky-400" />
+            <span>Your Itinerary</span>
           </h2>
-          <p className="text-slate-400 text-sm mt-1">
-            Click any attraction or dining experience to explore interactive real-time Google Places
-            details and maps.
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+            Click any place to view photos, opening hours, and maps.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-indigo-300 text-xs font-semibold shadow-inner">
-          <Sparkles className="h-4 w-4 text-indigo-400" />
-          <span>{itinerary.dailyItinerary.length} Interactive Days</span>
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-indigo-300 text-xs font-semibold shadow-inner">
+          <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+          <span>
+            {itinerary.dailyItinerary.length}{' '}
+            {itinerary.dailyItinerary.length === 1 ? 'Day' : 'Days'}
+          </span>
         </div>
       </div>
 
       {/* Daily Accordions Collection */}
-      <div className="space-y-6 max-w-4xl mx-auto">
+      <div className="space-y-6 max-w-4xl mx-auto mb-12">
         {itinerary.dailyItinerary.map((day, index) => (
           <DayAccordion
             key={day.dayNumber || index}
@@ -88,15 +82,13 @@ export default function ItineraryDashboard({
         ))}
       </div>
 
-      {/* Bottom Repeat Toolbar for Convenience */}
-      <div className="mt-14 max-w-4xl mx-auto">
-        <ActionToolbar
-          onNewTrip={onNewTrip}
-          onEditForm={onEditForm}
-          onRegenerate={onRegenerate}
-          isRegenerating={isRegenerating}
-        />
-      </div>
+      {/* Single Action Toolbar at the End of the Itinerary */}
+      <ActionToolbar
+        onNewTrip={onNewTrip}
+        onEditForm={onEditForm}
+        onRegenerate={onRegenerate}
+        isRegenerating={isRegenerating}
+      />
 
       {/* Interactive Right-Side Information Drawer */}
       <PlaceDrawer

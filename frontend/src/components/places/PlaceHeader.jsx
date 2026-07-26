@@ -1,10 +1,21 @@
 import React from 'react';
-import { Star, Tag, Clock, DollarSign, Sparkles } from 'lucide-react';
+import { Star, Tag, Clock, Wallet, Sparkles } from 'lucide-react';
+
+const formatPriceLevel = (level) => {
+  if (!level) return null;
+  const str = String(level);
+  if (str.includes('Inexpensive') || str === '$') return 'Budget-friendly';
+  if (str.includes('Moderate') || str === '$$') return 'Moderate';
+  if (str.includes('Upscale') || str.includes('Expensive') || str === '$$$') return 'Premium';
+  if (str.includes('Fine Dining') || str === '$$$$') return 'Luxury';
+  return str.replace(/\$/g, '').replace(/\(|\)/g, '').trim() || 'Moderate';
+};
 
 export default function PlaceHeader({ place }) {
   if (!place) return null;
 
   const { name, category, rating, reviewsCount, openNow, priceLevel, description } = place;
+  const formattedPrice = formatPriceLevel(priceLevel);
 
   return (
     <div className="space-y-4 mb-6">
@@ -15,21 +26,23 @@ export default function PlaceHeader({ place }) {
           <span>{category || 'Attraction'}</span>
         </span>
 
-        <span
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border ${
-            openNow
-              ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-              : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
-          }`}
-        >
-          <Clock className="h-3.5 w-3.5" />
-          <span>{openNow ? 'Open Now' : 'Closed Now'}</span>
-        </span>
+        {openNow !== null && openNow !== undefined && (
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border ${
+              openNow
+                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
+            }`}
+          >
+            <Clock className="h-3.5 w-3.5" />
+            <span>{openNow ? 'Open Now' : 'Closed Now'}</span>
+          </span>
+        )}
 
-        {priceLevel && (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-300 text-xs font-bold">
-            <DollarSign className="h-3 w-3 text-amber-400 -mr-1" />
-            <span>{priceLevel}</span>
+        {formattedPrice && (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-300 text-xs font-bold">
+            <Wallet className="h-3.5 w-3.5 text-amber-400" />
+            <span>{formattedPrice}</span>
           </span>
         )}
       </div>
@@ -60,7 +73,7 @@ export default function PlaceHeader({ place }) {
         <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 mt-2">
           <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-sky-400" />
-            <span>Google Editorial Overview</span>
+            <span>About this Place</span>
           </h4>
           <p className="text-slate-200 text-sm leading-relaxed font-normal">{description}</p>
         </div>

@@ -177,7 +177,7 @@ REQUIRED JSON SCHEMA:
           "category": "Night Activity"
         }
       ],
-      "estimatedDailyCost": "$120 - $180 (Est. activities, dining & local transit)",
+      "estimatedDailyCost": "Approx. 120–180 per person (Local dining, activities & internal transit)",
       "localTip": "An actionable insider hack, transit tip, or etiquette advice for this specific day"
     }
   ]
@@ -188,6 +188,7 @@ IMPORTANT TIMELINE INSTRUCTIONS:
 2. Each daily timeline array must contain a rich, chronological progression of activities throughout the day (aim for 5 to 8 entries per day).
 3. Always include diverse category values such as: "Breakfast", "Sightseeing", "Museum", "Lunch", "Shopping", "Coffee Break", "Activity", "Dinner", "Night Activity".
 4. Ensure each day clearly includes "estimatedDailyCost" and "localTip" at the day object root level as shown in the schema.
+5. Do NOT use dollar symbols ($) or currency signs anywhere in the JSON. Express cost ranges using neutral numeric estimates or descriptive tiers (e.g., "Approx. 120–180 per person" or "Moderate / Budget-friendly").
 `;
 
   try {

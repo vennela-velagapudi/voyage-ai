@@ -120,7 +120,9 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
                   </h3>
                   <p className="text-[11px] text-slate-400 truncate flex items-center gap-1">
                     <Sparkles className="h-3 w-3 text-indigo-400" />
-                    <span>Powered by Google Places API</span>
+                    <span>
+                      {destination ? `Location in ${destination}` : 'Location Information'}
+                    </span>
                   </p>
                 </div>
               </div>

@@ -107,12 +107,7 @@ export default function DestinationAutocomplete({
           htmlFor={id}
           className="text-sm font-semibold text-slate-200 flex items-center justify-between"
         >
-          <span className="flex items-center gap-1.5">
-            <span>{label}</span>
-            <span className="text-sky-400 text-xs font-mono bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/30">
-              Google Verified
-            </span>
-          </span>
+          <span>{label}</span>
           {isLoading && <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-400" />}
         </label>
       )}

@@ -37,9 +37,14 @@ import ErrorCard from '../itinerary/ErrorCard';
 import ItineraryDashboard from '../itinerary/ItineraryDashboard';
 
 const BUDGET_OPTIONS = [
-  { id: 'budget', label: 'Budget', description: 'Smart & thrifty ($)', icon: Wallet },
-  { id: 'moderate', label: 'Moderate', description: 'Balanced & comfy ($$)', icon: CreditCard },
-  { id: 'luxury', label: 'Luxury', description: 'Premium luxury ($$$)', icon: Gem },
+  {
+    id: 'budget',
+    label: 'Budget-friendly',
+    description: 'Smart & thrifty cost range',
+    icon: Wallet,
+  },
+  { id: 'moderate', label: 'Moderate', description: 'Balanced comfort & dining', icon: CreditCard },
+  { id: 'luxury', label: 'Luxury', description: 'Premium luxury & experiences', icon: Gem },
 ];
 
 const TRAVEL_STYLE_OPTIONS = [
@@ -142,8 +147,12 @@ export default function TripPlannerCard() {
     if (touched.destination && !isValidDestination(formData.destination)) {
       newErrors.destination = 'Please enter a valid city, state, country or destination name.';
     }
-    const daysNum = parseInt(formData.days, 10);
-    if (touched.days && (isNaN(daysNum) || daysNum < 1 || daysNum > 60)) {
+    const daysStr = String(formData.days || '').trim();
+    const daysNum = Number(daysStr);
+    if (
+      touched.days &&
+      (!daysStr || isNaN(daysNum) || !/^\d+$/.test(daysStr) || daysNum < 1 || daysNum > 60)
+    ) {
       newErrors.days = 'Please specify a trip duration between 1 and 60 days.';
     }
     if (
@@ -170,8 +179,10 @@ export default function TripPlannerCard() {
 
   const isValid = useMemo(() => {
     const destValid = isValidDestination(formData.destination);
-    const daysNum = parseInt(formData.days, 10);
-    const daysValid = !isNaN(daysNum) && daysNum >= 1 && daysNum <= 60;
+    const daysStr = String(formData.days || '').trim();
+    const daysNum = Number(daysStr);
+    const daysValid =
+      Boolean(daysStr) && !isNaN(daysNum) && /^\d+$/.test(daysStr) && daysNum >= 1 && daysNum <= 60;
     const budgetValid = Boolean(formData.budget);
     const styleValid = Boolean(formData.travelStyle);
     const styleOtherValid =
@@ -195,6 +206,8 @@ export default function TripPlannerCard() {
       setDestinationApiError(null);
     }
     setFormData((prev) => ({ ...prev, [field]: value }));
+    // Immediately mark field as touched while typing so validation feedback is instant
+    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const handleBlur = (field) => {

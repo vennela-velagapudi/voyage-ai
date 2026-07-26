@@ -4,7 +4,9 @@ import { MapPin, Clock, Globe, ExternalLink, Navigation } from 'lucide-react';
 export default function PlaceOverview({ place }) {
   if (!place) return null;
 
-  const { address, openingHours, closingHours, website, googleMapsUrl } = place;
+  const { address, openingHours, website, googleMapsUrl } = place;
+
+  const displayHours = openingHours || 'Not available';
 
   return (
     <div className="space-y-4 pt-4 border-t border-slate-800/80 mb-8">
@@ -20,7 +22,9 @@ export default function PlaceOverview({ place }) {
           </div>
           <div>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">Address</p>
-            <p className="text-slate-200 text-sm font-medium leading-relaxed mt-0.5">{address}</p>
+            <p className="text-slate-200 text-sm font-medium leading-relaxed mt-0.5">
+              {address || 'Not available'}
+            </p>
           </div>
         </div>
 
@@ -29,23 +33,11 @@ export default function PlaceOverview({ place }) {
           <div className="w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Clock className="h-4.5 w-4.5" />
           </div>
-          <div className="flex-grow grid grid-cols-2 gap-2">
-            <div>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
-                Opening Hours
-              </p>
-              <p className="text-slate-200 text-sm font-extrabold mt-0.5">
-                {openingHours || '09:00 AM'}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
-                Closing Time
-              </p>
-              <p className="text-slate-200 text-sm font-extrabold mt-0.5">
-                {closingHours || '06:00 PM'}
-              </p>
-            </div>
+          <div>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
+              Opening Hours
+            </p>
+            <p className="text-slate-200 text-sm font-extrabold mt-0.5">{displayHours}</p>
           </div>
         </div>
 

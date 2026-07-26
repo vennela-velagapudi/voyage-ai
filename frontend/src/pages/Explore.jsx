@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   MapPin,
   Sun,
-  DollarSign,
+  Wallet,
   ArrowRight,
   Sparkles,
   Compass,
@@ -22,7 +22,7 @@ const DESTINATIONS = [
     description:
       'Immerse yourself in timeless Japanese culture, world-class Shojin Ryori gastronomy, and tranquil historic gardens.',
     season: 'Spring (March - April) & Autumn (Oct - Nov)',
-    budget: '$2,500 - $4,500 (Moderate to Luxury)',
+    budget: 'Approx. 2500–4500 (Moderate to Luxury)',
     tag: 'Cultural Heritage',
     accent: 'indigo',
   },
@@ -33,7 +33,7 @@ const DESTINATIONS = [
     description:
       'Wander pastel colored cliffside villas, luxury yachts, Mediterranean vistas, and artisanal culinary terraces.',
     season: 'Late Spring to Summer (May - Sept)',
-    budget: '$3,200 - $6,000 (Luxury Couple)',
+    budget: 'Approx. 3200–6000 (Luxury Couple)',
     tag: 'Coastal & Luxury',
     accent: 'sky',
   },
@@ -44,7 +44,7 @@ const DESTINATIONS = [
     description:
       'Experience romantic cliff-side infinity pools, volcanic wineries, and legendary Aegean sunsets over Oia.',
     season: 'Summer to Early Autumn (June - Oct)',
-    budget: '$2,800 - $5,000 (Romantic Escape)',
+    budget: 'Approx. 2800–5000 (Romantic Escape)',
     tag: 'Romantic Escape',
     accent: 'purple',
   },
@@ -55,7 +55,7 @@ const DESTINATIONS = [
     description:
       'Hike rugged Rocky Mountain wilderness trails, canoe crystal-clear glacial waters, and soak in naturally hot thermal springs.',
     season: 'Summer (July - August) & Winter Skiing',
-    budget: '$1,800 - $3,400 (Adventure / Moderate)',
+    budget: 'Approx. 1800–3400 (Adventure / Moderate)',
     tag: 'Nature & Adventure',
     accent: 'emerald',
   },
@@ -66,7 +66,7 @@ const DESTINATIONS = [
     description:
       'Rejuvenate among emerald rice terraces in Ubud, vibrant beachside nightlife in Seminyak, and holistic wellness retreats.',
     season: 'Dry Season (April - October)',
-    budget: '$1,200 - $2,800 (Smart Budget / Moderate)',
+    budget: 'Approx. 1200–2800 (Smart Budget / Moderate)',
     tag: 'Wellness & Tropics',
     accent: 'amber',
   },
@@ -77,7 +77,7 @@ const DESTINATIONS = [
     description:
       'Ride world-renowned scenic mountain trains through Zermatt and Interlaken while tasting fine Swiss chocolate and fondue.',
     season: 'Summer Hiking (June - Sept) & Winter Ski',
-    budget: '$3,500 - $6,500 (Premium Experience)',
+    budget: 'Approx. 3500–6500 (Premium Experience)',
     tag: 'Scenic & Luxury',
     accent: 'rose',
   },
@@ -186,10 +186,10 @@ function DestinationCard({ dest, index, onPlan }) {
 
             <div className="flex items-start gap-2.5">
               <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-400 mt-0.5 flex-shrink-0">
-                <DollarSign className="h-3.5 w-3.5" />
+                <Wallet className="h-3.5 w-3.5" />
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Est. Budget: </span>
+                <span className="text-slate-400 font-medium">Estimated Spend: </span>
                 <strong className="text-white font-semibold">{dest.budget}</strong>
               </div>
             </div>
