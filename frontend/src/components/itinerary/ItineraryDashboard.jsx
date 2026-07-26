@@ -87,6 +87,32 @@ export default function ItineraryDashboard({
     });
   };
 
+  // 2b. Reorder Entire Days Up or Down
+  const handleMoveDay = (fromIndex, toIndex) => {
+    if (
+      fromIndex === toIndex ||
+      fromIndex < 0 ||
+      toIndex < 0 ||
+      toIndex >= tripData.dailyItinerary.length
+    )
+      return;
+    const updatedDays = [...tripData.dailyItinerary];
+    const [movedDay] = updatedDays.splice(fromIndex, 1);
+    updatedDays.splice(toIndex, 0, movedDay);
+
+    // Keep days chronologically numbered while retaining all reordered activities and customizations
+    const reorderedDays = updatedDays.map((d, idx) => ({ ...d, dayNumber: idx + 1 }));
+    const newTripData = { ...tripData, dailyItinerary: reorderedDays };
+
+    // Instantly update UI state
+    setTripData(newTripData);
+
+    // Refresh & regenerate itinerary around new day order as baseline
+    if (onRegenerate) {
+      onRegenerate(newTripData);
+    }
+  };
+
   // 3. Replace single activity via Gemini AI without touching rest of itinerary
   const handleReplaceActivity = async (dayIndex, activityIndex, currentActivity) => {
     const key = `${dayIndex}-${activityIndex}`;
@@ -160,7 +186,7 @@ export default function ItineraryDashboard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
+      className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-3 sm:py-8 overflow-x-hidden"
       id="itinerary-dashboard"
     >
       {/* Top Personalized Summary Card (Updates dynamically as edits occur) */}
@@ -201,6 +227,12 @@ export default function ItineraryDashboard({
             onReplaceActivity={handleReplaceActivity}
             onRegenerateDay={handleRegenerateDay}
             onReorderActivities={handleReorderActivities}
+            onMoveDayUp={() => index > 0 && handleMoveDay(index, index - 1)}
+            onMoveDayDown={() =>
+              index < tripData.dailyItinerary.length - 1 && handleMoveDay(index, index + 1)
+            }
+            isFirstDay={index === 0}
+            isLastDay={index === tripData.dailyItinerary.length - 1}
             onOpenEmergency={() => setIsEmergencyOpen(true)}
             isRegeneratingDay={regeneratingDayIndex === index}
             replacingKey={replacingKey}

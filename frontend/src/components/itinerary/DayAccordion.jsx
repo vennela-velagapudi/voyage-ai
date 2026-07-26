@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar,
   ChevronDown,
+  ChevronUp,
   Sparkles,
   Wallet,
   Lightbulb,
@@ -23,6 +24,10 @@ export default function DayAccordion({
   onRegenerateDay,
   onReorderActivities,
   onOpenEmergency,
+  onMoveDayUp,
+  onMoveDayDown,
+  isFirstDay = false,
+  isLastDay = false,
   isRegeneratingDay = false,
   replacingKey = '',
   isDefaultOpen = false,
@@ -59,15 +64,15 @@ export default function DayAccordion({
       {/* Accordion Header Toggle Button & Regenerate Option */}
       <div
         onClick={handleToggleClick}
-        className={`w-full px-4 sm:px-8 py-4 sm:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer group select-none ${
+        className={`w-full px-3.5 sm:px-8 py-3.5 sm:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer group select-none ${
           isOpen
             ? 'bg-slate-900/95 border-b border-slate-800/80'
             : 'bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90 hover:bg-slate-800/60'
         }`}
       >
-        <div className="flex items-center gap-3 sm:gap-5 w-full sm:w-auto min-w-0 pr-2">
+        <div className="flex items-center gap-2.5 sm:gap-5 w-full sm:w-auto min-w-0 pr-1">
           <div
-            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+            className={`w-11 h-11 sm:w-14 sm:h-14 rounded-2xl flex flex-col items-center justify-center text-white shadow-lg flex-shrink-0 transition-transform duration-200 group-hover:scale-105 ${
               isOpen
                 ? 'bg-gradient-to-br from-indigo-500 via-indigo-600 to-sky-500 ring-2 ring-indigo-400/30'
                 : 'bg-gradient-to-br from-indigo-600/80 to-sky-600/80'
@@ -76,31 +81,72 @@ export default function DayAccordion({
             <span className="text-[10px] sm:text-xs font-extrabold uppercase leading-none opacity-90">
               Day
             </span>
-            <span className="text-lg sm:text-xl font-display font-black leading-none mt-1">
+            <span className="text-base sm:text-xl font-display font-black leading-none mt-1">
               {dayNumber || dayIndex + 1}
             </span>
           </div>
 
           <div className="min-w-0 flex-grow">
-            <div className="flex items-center gap-2 text-indigo-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
-              <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-indigo-400 text-[11px] sm:text-sm font-bold uppercase tracking-wider">
+              <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
               <span>Day {dayNumber || dayIndex + 1} Schedule</span>
             </div>
-            <h3 className="text-base sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-1 truncate">
+            <h3 className="text-sm sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-0.5 truncate">
               {theme || 'Exploring Highlights & Marvels'}
             </h3>
           </div>
         </div>
 
-        {/* Action Controls in Header: Regenerate Day & Toggle Arrow */}
-        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 sm:gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+        {/* Action Controls in Header: Move Day Up/Down, Regenerate Day & Toggle Arrow */}
+        <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-1.5 sm:gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+          {/* Reorder Entire Days Up & Down Controls */}
+          <div
+            className="flex items-center gap-0.5 bg-slate-950/90 p-0.5 rounded-xl border border-slate-800/80"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              disabled={isFirstDay}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onMoveDayUp) onMoveDayUp();
+              }}
+              title="Move entire day earlier in itinerary"
+              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                isFirstDay
+                  ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
+                  : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+              }`}
+              aria-label="Move entire day earlier"
+            >
+              <ChevronUp className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              disabled={isLastDay}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onMoveDayDown) onMoveDayDown();
+              }}
+              title="Move entire day later in itinerary"
+              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                isLastDay
+                  ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
+                  : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+              }`}
+              aria-label="Move entire day later"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+
           {/* Regenerate a Single Day Button */}
           <button
             type="button"
             onClick={handleRegenerateClick}
             disabled={isRegeneratingDay}
             title="Regenerate this entire day itinerary with AI"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all shadow-xs cursor-pointer ${
+            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all shadow-xs cursor-pointer ${
               isRegeneratingDay
                 ? 'bg-indigo-600/30 border-indigo-500/50 text-indigo-200 cursor-wait animate-pulse'
                 : 'bg-indigo-600/20 hover:bg-indigo-600/35 border-indigo-500/40 hover:border-indigo-400 text-indigo-300'
@@ -120,7 +166,7 @@ export default function DayAccordion({
           )}
 
           <div
-            className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
               isOpen
                 ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-sm'
                 : 'bg-slate-800/80 border-slate-700/60 text-slate-400 group-hover:text-white group-hover:border-slate-600'
@@ -146,7 +192,7 @@ export default function DayAccordion({
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="overflow-hidden"
           >
-            <div className="p-6 sm:p-8 pt-6 border-t border-slate-800/80 bg-slate-950/50 space-y-8 relative">
+            <div className="p-3 sm:p-8 pt-4 sm:pt-6 border-t border-slate-800/80 bg-slate-950/50 space-y-6 sm:space-y-8 relative overflow-x-hidden">
               {/* Shimmer loading overlay during single day regeneration */}
               {isRegeneratingDay && (
                 <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs z-30 flex flex-col items-center justify-center p-6 text-center">
@@ -161,23 +207,25 @@ export default function DayAccordion({
               )}
 
               {/* Daily Theme Subnote */}
-              <div className="flex items-center justify-between text-xs sm:text-sm text-slate-300 pb-3 border-b border-slate-800/80">
-                <span className="flex items-center gap-2 font-medium">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-slate-300 pb-3 border-b border-slate-800/80">
+                <span className="flex items-center gap-1.5 font-medium pr-2">
                   <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                  <span>Drag activities using the handle to customize your schedule.</span>
+                  <span>Use the up/down arrows to smoothly reorder your activities or days.</span>
                 </span>
                 {hasTimeline ? (
-                  <span className="font-mono font-bold text-indigo-400 text-xs">
+                  <span className="font-mono font-bold text-indigo-400 text-[11px] sm:text-xs">
                     {timeline.length} ACTIVITIES
                   </span>
                 ) : (
-                  <span className="font-mono font-bold text-rose-400 text-xs">0 ACTIVITIES</span>
+                  <span className="font-mono font-bold text-rose-400 text-[11px] sm:text-xs">
+                    0 ACTIVITIES
+                  </span>
                 )}
               </div>
 
               {/* Primary Chronological Vertical Timeline Layout */}
               {hasTimeline ? (
-                <div className="pt-2 pl-2 sm:pl-4">
+                <div className="pt-1.5 pl-1 sm:pl-4">
                   {timeline.map((item, index) => {
                     const activityKey = `${dayIndex}-${index}`;
                     const isReplacingThis = replacingKey === activityKey;

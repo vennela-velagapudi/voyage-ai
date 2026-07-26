@@ -29,25 +29,25 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="w-full max-w-lg rounded-3xl glass-effect bg-slate-900 border border-rose-500/50 shadow-2xl shadow-rose-950/50 overflow-hidden text-left relative"
+          className="w-full max-w-lg rounded-3xl glass-effect bg-slate-900 border border-rose-500/50 shadow-2xl shadow-rose-950/50 overflow-hidden text-left relative overflow-x-hidden"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-rose-950 via-slate-900 to-rose-950 p-6 border-b border-rose-500/30 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shadow-inner">
-                <ShieldAlert className="h-6 w-6 animate-pulse" />
+          <div className="bg-gradient-to-r from-rose-950 via-slate-900 to-rose-950 p-4 sm:p-6 border-b border-rose-500/30 flex items-center justify-between">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 pr-2">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shadow-inner flex-shrink-0">
+                <ShieldAlert className="h-5 sm:h-6 w-5 sm:w-6 animate-pulse" />
               </div>
-              <div>
-                <span className="text-xs font-bold text-rose-300 uppercase tracking-wider block">
+              <div className="min-w-0">
+                <span className="text-[10px] sm:text-xs font-bold text-rose-300 uppercase tracking-wider block truncate">
                   Emergency Information
                 </span>
-                <h3 className="text-xl font-display font-black text-white capitalize">
+                <h3 className="text-base sm:text-xl font-display font-black text-white capitalize truncate">
                   {destination || 'Destination'} Support
                 </h3>
               </div>
@@ -55,16 +55,16 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700 transition-colors cursor-pointer"
+              className="p-2 rounded-full bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700 transition-colors cursor-pointer flex-shrink-0"
               aria-label="Close emergency modal"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4 sm:h-5 w-4 sm:w-5" />
             </button>
           </div>
 
           {/* Body Content */}
-          <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium">
+          <div className="p-3.5 sm:p-6 space-y-4 sm:space-y-6 max-h-[75vh] overflow-y-auto overflow-x-hidden">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-medium break-words">
               Keep these verified local helpline numbers accessible during your stay in{' '}
               <strong className="text-rose-300 capitalize">
                 {destination || 'your destination'}

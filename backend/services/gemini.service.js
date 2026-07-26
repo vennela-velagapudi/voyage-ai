@@ -202,7 +202,7 @@ async function generateItineraryChunk({
       (d) => d.dayNumber >= startDay && d.dayNumber <= endDay
     );
     if (chunkExistingDays.length > 0) {
-      existingItineraryGuidance = `\nCRITICAL SMART REGENERATION INSTRUCTION (USER EDITS ARE THE BASELINE):\nThe user has actively edited their trip itinerary (by deleting activities, replacing items, and reordering their schedule). Treat this attached customized itinerary for Days ${startDay}–${endDay} as your IMMUTABLE BASELINE:\n${JSON.stringify(chunkExistingDays, null, 2)}\nWhen refreshing the itinerary, you MUST obey these rules:\n1. Do NOT restore activities that were deleted by the user; deleted activities must stay deleted.\n2. PRESERVE all alternative activities that the user replaced.\n3. PRESERVE the user's updated activity order.\n4. Intelligently rebuild and optimize around these remaining activities, only adding complementary items if required to maintain a logical morning-to-night schedule.\n`;
+      existingItineraryGuidance = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY SCHEDULE REBUILDING AROUND USER EDITS):\nThe user has actively customized their trip itinerary by deleting activities, replacing items, and reordering their schedule or days. Treat this current customized itinerary for Days ${startDay}–${endDay} as your IMMUTABLE BASELINE:\n${JSON.stringify(chunkExistingDays, null, 2)}\nWhen refreshing and regenerating the itinerary, you MUST obey these rules:\n1. RESPECT DELETED ITEMS: Do NOT restore activities that were deleted by the user; deleted activities must stay deleted and never reappear.\n2. RESPECT REPLACED ACTIVITIES: Keep all alternative activities that the user replaced intact and in their designated time slots.\n3. RESPECT REORDERED ACTIVITIES & DAYS: Maintain the user's updated chronological ordering of activities and days.\n4. INTELLIGENTLY REBUILD INCOMPLETE DAYS: When deleting an activity leaves a day incomplete or with large gaps, you must intelligently rebuild that day's schedule based on the remaining activities by synthesizing exciting NEW complementary activities (entirely distinct from any removed item).\n5. MAINTAIN LOGICAL TIMING AND TRAVEL FLOW: Ensure seamless travel transit times, realistic activity durations, and a complete morning-to-night chronological flow.\n`;
     }
   }
 
@@ -698,7 +698,15 @@ export async function generateSingleDay({
 
   let existingDayBaseline = '';
   if (existingDay && Array.isArray(existingDay.timeline)) {
-    existingDayBaseline = `\nCRITICAL SMART REGENERATION INSTRUCTION (USER EDITS ARE BASELINE):\nThe user has actively edited Day ${dayNumber} by deleting, replacing, or reordering activities. Treat this current customized timeline as your IMMUTABLE BASELINE:\n${JSON.stringify(existingDay.timeline, null, 2)}\nYou MUST build the refreshed day's schedule around these remaining activities:\n1. Keep deleted activities REMOVED; do not re-insert deleted items.\n2. PRESERVE user-replaced activities and their time slots.\n3. PRESERVE the custom ordering of activities.\n4. Only add new complementary activities if necessary to bridge large time gaps and maintain a balanced, chronological schedule.\n`;
+    existingDayBaseline = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY REBUILDING):
+The user has actively edited Day ${dayNumber} by deleting, replacing, or reordering activities. Treat this current customized timeline as your IMMUTABLE BASELINE:
+${JSON.stringify(existingDay.timeline, null, 2)}
+You MUST rebuild and refresh this day's schedule around these remaining activities:
+1. RESPECT DELETED ITEMS: Keep deleted activities REMOVED; do not re-insert or restore any previously removed items.
+2. RESPECT REPLACED ACTIVITIES: Preserve all user-replaced activities and their time slots.
+3. RESPECT REORDERED ACTIVITIES: Preserve the custom ordering of activities.
+4. INTELLIGENTLY REBUILD INCOMPLETE SCHEDULES: If activity deletions left gaps or reduced the day below a complete schedule, synthesize exciting NEW complementary activities (entirely different from any deleted items) to create a full, rich travel day.
+5. MAINTAIN LOGICAL TIMING AND FLOW: Ensure balanced transit durations and chronological flow from morning until evening.\n`;
   }
 
   return await executeWithRetry(async (_attempt, isRetry) => {
