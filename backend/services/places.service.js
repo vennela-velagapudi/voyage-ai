@@ -20,6 +20,46 @@ function getApiKey() {
 }
 
 /**
+ * Processes Google Places photo objects to sort and construct real Google Places Media API URLs.
+ * CRITICAL REQUIREMENT: If multiple photos are available, prioritize and select the highest-quality landscape photo.
+ * Do NOT use AI-generated, stock placeholder, or random images.
+ */
+function extractSortedPhotos(photoRefs, apiKey) {
+  if (!Array.isArray(photoRefs) || photoRefs.length === 0) {
+    return [];
+  }
+
+  // Clone and sort: prioritize landscape orientation (width > height), then by total pixel area / resolution
+  const sorted = [...photoRefs].sort((a, b) => {
+    const wA = Number(a.widthPx) || 0;
+    const hA = Number(a.heightPx) || 0;
+    const wB = Number(b.widthPx) || 0;
+    const hB = Number(b.heightPx) || 0;
+
+    const isLandA = wA > hA;
+    const isLandB = wB > hB;
+
+    if (isLandA && !isLandB) return -1;
+    if (!isLandA && isLandB) return 1;
+
+    // If both share the same aspect ratio preference, sort by total pixel resolution (highest quality first)
+    return wB * hB - wA * hA;
+  });
+
+  const photoUrls = [];
+  // Take up to 5 highest-quality real Google Places photos
+  sorted.slice(0, 5).forEach((photo) => {
+    if (photo.name) {
+      photoUrls.push(
+        `https://places.googleapis.com/v1/${photo.name}/media?maxHeightPx=1200&maxWidthPx=1600&key=${apiKey}`
+      );
+    }
+  });
+
+  return photoUrls;
+}
+
+/**
  * Calculate walking or driving distance between two coordinates using Haversine formula
  */
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -116,17 +156,8 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
     }
   }
 
-  // Build real accessible photo URLs from Google Places media endpoint
-  const photos = [];
-  if (Array.isArray(place.photos) && place.photos.length > 0) {
-    place.photos.slice(0, 5).forEach((photo) => {
-      if (photo.name) {
-        photos.push(
-          `https://places.googleapis.com/v1/${photo.name}/media?maxHeightPx=800&maxWidthPx=1200&key=${apiKey}`
-        );
-      }
-    });
-  }
+  // Extract real accessible photo URLs from Google Places media endpoint, sorted by highest quality landscape photo
+  const photos = extractSortedPhotos(place.photos, apiKey);
 
   const priceLevel = formatPriceLevel(place.priceLevel);
   let distance = 'Nearby in destination city';
@@ -222,7 +253,6 @@ export async function getPlaceDetails(placeId) {
     throw err;
   }
 
-  // Handle formatted place resource names vs IDs
   const resourcePath = placeId.startsWith('places/') ? placeId : `places/${placeId}`;
   const url = `https://places.googleapis.com/v1/${resourcePath}`;
   const fieldMask =
@@ -322,5 +352,203 @@ export async function searchNearby({ lat, lng, category = 'restaurant' }) {
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
     throw error;
+  }
+}
+
+/**
+ * Validates whether a proposed destination string represents a genuine travel destination
+ * (City, Country, State/Region, Famous tourist destination, National park, Island, Landmark).
+ */
+export async function validateDestination(destination) {
+  const apiKey = getApiKey();
+  if (!destination || typeof destination !== 'string' || destination.trim().length < 2) {
+    return {
+      valid: false,
+      error:
+        "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+    };
+  }
+
+  const cleanQuery = destination.trim();
+  const url = 'https://places.googleapis.com/v1/places:searchText';
+  const fieldMask =
+    'places.id,places.displayName,places.types,places.formattedAddress,places.addressComponents,places.photos';
+
+  const validDestinationTypes = new Set([
+    'locality',
+    'country',
+    'administrative_area_level_1',
+    'administrative_area_level_2',
+    'administrative_area_level_3',
+    'postal_town',
+    'sublocality',
+    'sublocality_level_1',
+    'colloquial_area',
+    'neighborhood',
+    'tourist_attraction',
+    'national_park',
+    'natural_feature',
+    'island',
+    'archipelago',
+    'park',
+    'place_of_worship',
+    'amusement_park',
+    'point_of_interest',
+    'landmark',
+  ]);
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': fieldMask,
+      },
+      body: JSON.stringify({
+        textQuery: cleanQuery,
+        maxResultCount: 3,
+      }),
+    });
+
+    if (!response.ok) {
+      return {
+        valid: false,
+        error:
+          "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+      };
+    }
+
+    const data = await response.json();
+    if (!data.places || data.places.length === 0) {
+      return {
+        valid: false,
+        error:
+          "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+      };
+    }
+
+    for (const place of data.places) {
+      if (Array.isArray(place.types)) {
+        const hasValidType = place.types.some((t) => validDestinationTypes.has(t));
+        if (hasValidType) {
+          const isOnlyGenericEstablishment = place.types.every((t) =>
+            [
+              'establishment',
+              'point_of_interest',
+              'service',
+              'store',
+              'food',
+              'restaurant',
+              'association_or_organization',
+            ].includes(t)
+          );
+          if (
+            !isOnlyGenericEstablishment ||
+            place.types.includes('tourist_attraction') ||
+            place.types.includes('amusement_park') ||
+            place.types.includes('museum') ||
+            place.types.includes('park')
+          ) {
+            const photos = extractSortedPhotos(place.photos, apiKey);
+
+            return {
+              valid: true,
+              formattedDestination: place.displayName?.text || cleanQuery,
+              place: place,
+              photos: photos,
+              primaryPhoto: photos[0] || null,
+            };
+          }
+        }
+      }
+    }
+
+    return {
+      valid: false,
+      error:
+        "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+    };
+  } catch (error) {
+    console.error('[Destination Validation Error]:', error.message);
+    return {
+      valid: false,
+      error:
+        "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+    };
+  }
+}
+
+/**
+ * Returns real-time Google Places Autocomplete suggestions for trip destinations.
+ */
+export async function autocompleteDestinations(input) {
+  const apiKey = getApiKey();
+  if (!input || typeof input !== 'string' || input.trim().length < 2) {
+    return [];
+  }
+
+  const url = 'https://places.googleapis.com/v1/places:autocomplete';
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+      },
+      body: JSON.stringify({
+        input: input.trim(),
+      }),
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data.suggestions)) {
+      return [];
+    }
+
+    const validTypes = new Set([
+      'locality',
+      'country',
+      'political',
+      'administrative_area_level_1',
+      'administrative_area_level_2',
+      'postal_town',
+      'sublocality',
+      'tourist_attraction',
+      'national_park',
+      'natural_feature',
+      'island',
+      'archipelago',
+      'park',
+      'amusement_park',
+      'geocode',
+    ]);
+
+    const suggestions = [];
+    data.suggestions.forEach((item) => {
+      const pred = item.placePrediction;
+      if (pred && pred.text && pred.text.text) {
+        const types = pred.types || [];
+        const isSuitable = types.some((t) => validTypes.has(t));
+        if (isSuitable || types.length === 0) {
+          suggestions.push({
+            placeId: pred.placeId,
+            label: pred.text.text,
+            mainText: pred.structuredFormat?.mainText?.text || pred.text.text,
+            secondaryText: pred.structuredFormat?.secondaryText?.text || '',
+            types: types,
+          });
+        }
+      }
+    });
+
+    return suggestions;
+  } catch (error) {
+    console.error('[Autocomplete Error]:', error.message);
+    return [];
   }
 }

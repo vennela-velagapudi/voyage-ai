@@ -12,7 +12,9 @@ import {
   FileText,
   Tag,
   Smile,
+  AlertCircle,
 } from 'lucide-react';
+import ResponsiveImage from '../common/ResponsiveImage';
 
 export default function TripSummary({ itinerary, userParams = {} }) {
   if (!itinerary) return null;
@@ -24,6 +26,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
   const travelStyle = itinerary.travelStyle || userParams.travelStyle || 'travel';
   const overview = itinerary.overview;
   const estimatedTotalBudgetTip = itinerary.estimatedTotalBudgetTip;
+  const expansionNotice = itinerary.expansionNotice || userParams.expansionNotice;
 
   // Retrieve interests and notes cleanly from userParams or fallback
   const interestsList = Array.isArray(userParams.interests)
@@ -75,6 +78,38 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight sm:leading-snug mb-6">
         {tripTitle || `Your Tailored Journey to ${destination}`}
       </h1>
+
+      {/* Destination Hero Photography */}
+      {(itinerary.destinationImage ||
+        (Array.isArray(itinerary.destinationPhotos) && itinerary.destinationPhotos[0])) && (
+        <ResponsiveImage
+          src={itinerary.destinationImage || itinerary.destinationPhotos[0]}
+          alt={`Scenic view of ${destination}`}
+          className="w-full h-64 sm:h-80 sm:max-h-96 relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800/80 shadow-2xl mb-8 group"
+          imageClassName="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102 brightness-[0.95]"
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
+          <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between pointer-events-none">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-xs font-bold shadow">
+              <MapPin className="h-3.5 w-3.5 text-sky-400" />
+              <span>{destination}</span>
+            </span>
+          </div>
+        </ResponsiveImage>
+      )}
+
+      {/* Expanded Duration Notice Banner */}
+      {expansionNotice && (
+        <div className="bg-gradient-to-r from-amber-950/60 via-slate-900/90 to-amber-950/40 p-4 sm:p-5 rounded-2xl border border-amber-500/40 mb-6 flex items-start gap-3.5 shadow-md">
+          <AlertCircle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5 animate-pulse" />
+          <div>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-amber-300 mb-1">
+              Destination Scope Expansion Notice
+            </h4>
+            <p className="text-slate-200 text-sm leading-relaxed font-normal">{expansionNotice}</p>
+          </div>
+        </div>
+      )}
 
       {/* Friendly Introductory Paragraph */}
       <div className="bg-gradient-to-r from-indigo-950/50 via-slate-900/70 to-sky-950/40 p-5 sm:p-6 rounded-2xl border border-indigo-500/30 my-6 flex items-start gap-4 shadow-md">

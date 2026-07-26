@@ -27,6 +27,8 @@ import {
   PenTool,
 } from 'lucide-react';
 import FormInput from './FormInput';
+import DestinationAutocomplete from './DestinationAutocomplete';
+import DestinationValidationModal from './DestinationValidationModal';
 import OptionSelector from './OptionSelector';
 import InterestChips from './InterestChips';
 import { ApiService } from '../../services/apiService';
@@ -68,16 +70,11 @@ const isValidDestination = (val) => {
   if (!val || typeof val !== 'string') return false;
   const trimmed = val.trim();
   if (trimmed.length < 2) return false;
-  // Reject if only numbers or only symbols (must contain at least one alphabetical letter)
   if (!/[a-zA-Z]/.test(trimmed)) return false;
-  // Reject repeated random characters (e.g. "aaaaa", "!!!!!", "@@@@@", "11111")
   const stripped = trimmed.replace(/[\s,.'&-]+/g, '').toLowerCase();
   if (stripped.length > 1 && /^(.)\1+$/.test(stripped)) return false;
-  // Reject known keyboard mashing sequence strings (e.g. 12345, @@@@@, asdfghjkl, qwerty)
   if (/(asdfgh|qwert|zxcvb|hjkl|12345|poiuy|lkjhg|mnbvc)/i.test(stripped)) return false;
-  // Reject unsupported illegal symbol overload
   if (!/^[a-zA-Z0-9\s,.'&()/-]+$/.test(trimmed)) return false;
-  // Must have at least two alphabetic characters in total
   if (trimmed.replace(/[^a-zA-Z]/g, '').length < 2) return false;
   return true;
 };
@@ -87,10 +84,8 @@ const isMeaningfulText = (val) => {
   if (!val || typeof val !== 'string') return false;
   const trimmed = val.trim();
   if (trimmed.length < 2) return false;
-  // Must contain letters and NO digits or random symbols
   if (!/[a-zA-Z]/.test(trimmed) || /\d/.test(trimmed)) return false;
   if (!/^[a-zA-Z\s,.'&-]+$/.test(trimmed)) return false;
-  // Reject repeated characters or keyboard mashing
   const stripped = trimmed.replace(/[\s,.'&-]+/g, '').toLowerCase();
   if (stripped.length > 1 && /^(.)\1+$/.test(stripped)) return false;
   if (/(asdfgh|qwert|zxcvb|hjkl|poiuy|lkjhg|mnbvc)/i.test(stripped)) return false;
@@ -106,6 +101,11 @@ export default function TripPlannerCard() {
   const [status, setStatus] = useState('form');
   const [itinerary, setItinerary] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [destinationApiError, setDestinationApiError] = useState(null);
+
+  // Destination Intelligence Modal State
+  const [validationWarning, setValidationWarning] = useState(null);
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     destination: prefillDestination,
@@ -191,6 +191,9 @@ export default function TripPlannerCard() {
   }, [formData]);
 
   const handleChange = (field, value) => {
+    if (field === 'destination') {
+      setDestinationApiError(null);
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -216,18 +219,25 @@ export default function TripPlannerCard() {
   };
 
   // Handle generation via backend AI API
-  const executeGeneration = async () => {
-    if (!isValid) {
+  const executeGeneration = async (customOverrides = {}, bypassDurationCheck = false) => {
+    const activeData = { ...formData, ...customOverrides };
+    const destValid = isValidDestination(activeData.destination);
+    const daysNum = parseInt(activeData.days, 10);
+    const daysValid = !isNaN(daysNum) && daysNum >= 1 && daysNum <= 60;
+
+    if (!destValid || !daysValid || !isValid) {
       setTouched({ destination: true, days: true, travelStyleOther: true, interestsOther: true });
-      return;
+      if (!Object.keys(customOverrides).length) return;
     }
+
     setStatus('loading');
     setApiError(null);
+    setDestinationApiError(null);
+    setIsValidationModalOpen(false);
     scrollToView();
 
     try {
-      // Map 'other' write-in fields into clean strings for Gemini AI reasoning
-      const payload = { ...formData };
+      const payload = { ...activeData, forceGenerate: Boolean(bypassDurationCheck) };
       if (payload.travelStyle === 'other' && payload.travelStyleOther) {
         payload.travelStyle = payload.travelStyleOther.trim();
       }
@@ -244,15 +254,58 @@ export default function TripPlannerCard() {
       scrollToView();
     } catch (error) {
       console.error('[AI Trip Generation Error]:', error);
-      setApiError(error);
-      setStatus('error');
-      scrollToView();
+      const statusCode = error.response?.status;
+      const backendErrorMsg = error.response?.data?.error;
+      const warningData = error.response?.data?.validationWarning;
+
+      // Intercept intelligent duration guidance (HTTP 422) and pop up guidance modal
+      if (statusCode === 422 && warningData) {
+        setValidationWarning(warningData);
+        setIsValidationModalOpen(true);
+        setStatus('form');
+        scrollToView();
+      } else if (statusCode === 400) {
+        // Handle destination validation failure (HTTP 400) directly beneath destination input
+        setDestinationApiError(
+          backendErrorMsg ||
+            "We couldn't find this destination. Please enter a valid city, country, or tourist destination."
+        );
+        setStatus('form');
+        setTouched((prev) => ({ ...prev, destination: true }));
+        scrollToView();
+      } else {
+        setApiError(error);
+        setStatus('error');
+        scrollToView();
+      }
     }
   };
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
     executeGeneration();
+  };
+
+  // Modal Action Handlers
+  const handleModalChangeDestination = (newDest) => {
+    handleChange('destination', newDest);
+    setIsValidationModalOpen(false);
+    setValidationWarning(null);
+    executeGeneration({ destination: newDest }, false);
+  };
+
+  const handleModalReduceDuration = (newDays) => {
+    const strDays = String(newDays || 1);
+    handleChange('days', strDays);
+    setIsValidationModalOpen(false);
+    setValidationWarning(null);
+    executeGeneration({ days: strDays }, false);
+  };
+
+  const handleModalContinueAnyway = () => {
+    setIsValidationModalOpen(false);
+    setValidationWarning(null);
+    executeGeneration({}, true);
   };
 
   const handleNewTrip = () => {
@@ -269,6 +322,9 @@ export default function TripPlannerCard() {
     setTouched({ destination: false, days: false, travelStyleOther: false, interestsOther: false });
     setItinerary(null);
     setApiError(null);
+    setDestinationApiError(null);
+    setValidationWarning(null);
+    setIsValidationModalOpen(false);
     setStatus('form');
     scrollToView();
   };
@@ -285,7 +341,9 @@ export default function TripPlannerCard() {
 
   // Render error state
   if (status === 'error') {
-    return <ErrorCard error={apiError} onRetry={executeGeneration} onEdit={handleEditForm} />;
+    return (
+      <ErrorCard error={apiError} onRetry={() => executeGeneration()} onEdit={handleEditForm} />
+    );
   }
 
   // Render AI generated itinerary state
@@ -296,7 +354,7 @@ export default function TripPlannerCard() {
         userParams={formData}
         onNewTrip={handleNewTrip}
         onEditForm={handleEditForm}
-        onRegenerate={executeGeneration}
+        onRegenerate={() => executeGeneration()}
         isRegenerating={false}
       />
     );
@@ -320,22 +378,22 @@ export default function TripPlannerCard() {
           <span>Design Your Itinerary</span>
         </h2>
         <p className="text-slate-400 text-sm mt-1.5">
-          Provide your travel parameters below. Our intelligent engine optimizes your perfect trip
-          route.
+          Provide your travel parameters below. Our intelligent engine validates your destination
+          and optimizes your perfect trip route.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8" noValidate>
-        {/* Row 1: Destination & Duration */}
+        {/* Row 1: Destination Autocomplete & Duration */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <FormInput
+          <DestinationAutocomplete
             id="input-destination"
-            label="Destination City or Country"
-            placeholder="e.g. Tokyo, New York, Goa, Paris, Bali, Swiss Alps"
+            label="Destination City, Country or Landmark"
+            placeholder="e.g. Tokyo, Paris, Bali, Swiss Alps, Kyoto..."
             value={formData.destination}
-            onChange={(e) => handleChange('destination', e.target.value)}
+            onChange={(val) => handleChange('destination', val)}
             onBlur={() => handleBlur('destination')}
-            error={errors.destination}
+            error={destinationApiError || errors.destination}
             icon={MapPin}
           />
           <FormInput
@@ -485,6 +543,16 @@ export default function TripPlannerCard() {
           </motion.button>
         </div>
       </form>
+
+      {/* Destination Intelligence Guidance Modal */}
+      <DestinationValidationModal
+        isOpen={isValidationModalOpen}
+        warning={validationWarning}
+        onClose={() => setIsValidationModalOpen(false)}
+        onChangeDestination={handleModalChangeDestination}
+        onReduceDuration={handleModalReduceDuration}
+        onContinueAnyway={handleModalContinueAnyway}
+      />
     </motion.div>
   );
 }

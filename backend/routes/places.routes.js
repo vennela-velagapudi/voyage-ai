@@ -3,9 +3,13 @@ import {
   searchPlaceController,
   getPlaceDetailsController,
   searchNearbyController,
+  autocompleteController,
 } from '../controllers/places.controller.js';
 
 const router = Router();
+
+// GET /api/places/autocomplete?input=...
+router.get('/autocomplete', autocompleteController);
 
 // GET /api/places/search?query=...&destination=...
 router.get('/search', searchPlaceController);

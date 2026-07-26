@@ -41,4 +41,11 @@ export const ApiService = {
       params: { lat, lng, category },
     });
   },
+
+  // Get real-time Google Places destination autocomplete suggestions
+  async getDestinationSuggestions(input) {
+    return apiClient.get('/places/autocomplete', {
+      params: { input },
+    });
+  },
 };

@@ -63,7 +63,7 @@ function sanitizeAndValidateResponse(rawText) {
 
 /**
  * Generates a structured travel itinerary using Google Gemini generative AI.
- * @param {object} params - Travel parameters: destination, days, budget, travelStyle, interests, notes.
+ * @param {object} params - Travel parameters: destination, days, budget, travelStyle, interests, notes, expansionNote, placeCategory.
  * @returns {Promise<object>} Guaranteed structured JSON itinerary object with chronological timelines.
  */
 export async function generateTripItinerary({
@@ -73,6 +73,8 @@ export async function generateTripItinerary({
   travelStyle,
   interests,
   notes,
+  expansionNote,
+  placeCategory,
 }) {
   const apiKey = process.env.GEMINI_API_KEY;
 
@@ -94,6 +96,10 @@ export async function generateTripItinerary({
     },
   });
 
+  const expansionGuidance = expansionNote
+    ? `\nIMPORTANT DESTINATION EXPANSION NOTE:\n${expansionNote}\nBecause the requested trip duration extends beyond a typical visit to this specific venue/landmark, construct an exciting itinerary that expands outward to incorporate the broader surrounding city, authentic cultural neighborhood gems, nearby dining districts, and regional tourist highlights across all ${days} days. Clearly reflect this broader city/regional journey in the overview.\n`
+    : '';
+
   const prompt = `
 You are Voyage AI, an elite, professional travel itinerary architect.
 Construct a highly engaging, realistic, and optimized travel itinerary based EXACTLY on the user's criteria.
@@ -101,12 +107,12 @@ For each day, design a comprehensive chronological timeline of experiences from 
 Return ONLY a valid JSON object matching the exact schema specified below. Do NOT include introductory text, explanations, or markdown formatting outside the JSON structure.
 
 USER TRAVEL PARAMETERS:
-- Destination: ${destination}
+- Destination: ${destination} (${placeCategory || 'Destination'})
 - Total Days: ${days}
 - Budget Profile: ${budget}
 - Travel Style / Companion: ${travelStyle}
 - Key Interests: ${Array.isArray(interests) ? interests.join(', ') : interests}
-- Additional Preferences / Notes: ${notes || 'None provided'}
+- Additional Preferences / Notes: ${notes || 'None provided'}${expansionGuidance}
 
 REQUIRED JSON SCHEMA:
 {
@@ -188,9 +194,13 @@ IMPORTANT TIMELINE INSTRUCTIONS:
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
     const validatedData = sanitizeAndValidateResponse(responseText);
+
+    if (expansionNote) {
+      validatedData.expansionNotice = expansionNote;
+    }
+
     return validatedData;
   } catch (error) {
-    // If the error originates from Google AI SDK (e.g. invalid API key, quota exceeded), wrap with clean message
     if (error.message && error.message.includes('API_KEY_INVALID')) {
       const authError = new Error(
         'Invalid Google Gemini API Key provided in environment variables.'

@@ -1,4 +1,6 @@
 import { generateTripItinerary } from '../services/gemini.service.js';
+import { validateDestination } from '../services/places.service.js';
+import { analyzeDestinationDuration } from '../services/destinationIntelligence.service.js';
 
 /**
  * Controller to handle AI trip itinerary generation requests.
@@ -6,7 +8,7 @@ import { generateTripItinerary } from '../services/gemini.service.js';
  */
 export async function createTripItinerary(req, res) {
   try {
-    const { destination, days, budget, travelStyle, interests, notes } = req.body;
+    const { destination, days, budget, travelStyle, interests, notes, forceGenerate } = req.body;
 
     // 1. Rigorous Request Validation
     if (!destination || typeof destination !== 'string' || destination.trim().length < 2) {
@@ -52,17 +54,64 @@ export async function createTripItinerary(req, res) {
       });
     }
 
-    // 2. Execute AI Generation via Service Layer
+    // 2. Strict Destination Validation via Google Places API BEFORE calling Gemini
+    const validationResult = await validateDestination(destination.trim());
+    if (!validationResult.valid) {
+      return res.status(400).json({
+        success: false,
+        error:
+          validationResult.error ||
+          "We couldn't find this destination. Please enter a valid city, country, or tourist destination.",
+      });
+    }
+
+    // 3. Destination Intelligence & Visit Duration Validation
+    const durationAnalysis = analyzeDestinationDuration({
+      place: validationResult.place,
+      requestedDays: parsedDays,
+      forceGenerate: Boolean(forceGenerate),
+    });
+
+    // If unrealistic duration is requested without manual continuation bypass, halt and return structured feedback
+    if (!durationAnalysis.suitable && durationAnalysis.requiresConfirmation) {
+      return res.status(422).json({
+        success: false,
+        requiresConfirmation: true,
+        validationWarning: {
+          destination:
+            durationAnalysis.placeName ||
+            validationResult.formattedDestination ||
+            destination.trim(),
+          placeCategory: durationAnalysis.placeCategory,
+          requestedDays: durationAnalysis.requestedDays,
+          recommendedDuration: durationAnalysis.recommendedDuration,
+          message: durationAnalysis.message,
+          suggestedDestination: durationAnalysis.suggestedDestination,
+          suggestedDays: durationAnalysis.suggestedDays,
+        },
+      });
+    }
+
+    // 4. Execute AI Generation via Gemini Service Layer using validated destination and intelligent expansion instructions
     const itinerary = await generateTripItinerary({
-      destination: destination.trim(),
+      destination: validationResult.formattedDestination || destination.trim(),
       days: parsedDays,
       budget: budget.trim(),
       travelStyle: travelStyle.trim(),
       interests: Array.isArray(interests) ? interests : [interests],
       notes: typeof notes === 'string' ? notes.trim() : '',
+      expansionNote: durationAnalysis.isExpanded ? durationAnalysis.expansionNote : null,
+      placeCategory: durationAnalysis.placeCategory || 'Destination',
     });
 
-    // 3. Return Clean Success Payload
+    if (validationResult.primaryPhoto) {
+      itinerary.destinationImage = validationResult.primaryPhoto;
+    }
+    if (Array.isArray(validationResult.photos) && validationResult.photos.length > 0) {
+      itinerary.destinationPhotos = validationResult.photos;
+    }
+
+    // 5. Return Clean Success Payload
     return res.status(200).json({
       success: true,
       data: itinerary,
