@@ -35,9 +35,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 via-slate-900/80 to-sky-500/10 text-indigo-300 text-xs sm:text-sm font-semibold tracking-wide shadow-inner mb-8 backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-indigo-500/30 bg-surface-card/90 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-semibold tracking-wide shadow-inner mb-8 backdrop-blur-md"
           >
-            <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse" />
+            <Sparkles className="h-4 w-4 text-indigo-500 dark:text-indigo-400 animate-pulse" />
             <span>AI-Powered Next Generation Travel Itineraries</span>
           </motion.div>
 
@@ -46,11 +46,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-            className="font-display font-black text-5xl sm:text-6xl md:text-7xl tracking-tight text-white mb-6 leading-[1.08]"
+            className="font-display font-black text-5xl sm:text-6xl md:text-7xl tracking-tight text-text-main mb-6 leading-[1.08]"
             id="hero-title"
           >
             Plan Your Perfect Trip <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-500 via-sky-500 to-indigo-400 dark:from-indigo-400 dark:via-sky-400 dark:to-indigo-300 bg-clip-text text-transparent">
               with Intelligent AI
             </span>
           </motion.h1>
@@ -60,7 +60,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-            className="text-lg sm:text-xl md:text-2xl text-slate-300 font-normal max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-lg sm:text-xl md:text-2xl text-text-body font-normal max-w-2xl mx-auto mb-10 leading-relaxed"
             id="hero-subtitle"
           >
             Experience personalized itineraries crafted in seconds. Match your exact dates, budget
@@ -84,9 +84,9 @@ export default function Home() {
             </button>
             <button
               onClick={() => navigate('/explore')}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold transition-all shadow-md cursor-pointer text-base sm:text-lg"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4.5 rounded-2xl bg-surface-card/90 hover:bg-surface-hover text-text-body border border-border-theme font-bold transition-all shadow-md cursor-pointer text-base sm:text-lg"
             >
-              <Compass className="h-5 w-5 text-sky-400" />
+              <Compass className="h-5 w-5 text-sky-500 dark:text-sky-400" />
               <span>Explore Routes</span>
             </button>
           </motion.div>
@@ -96,18 +96,18 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.45 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto pt-8 border-t border-slate-800/80 text-left sm:text-center text-slate-400 text-sm"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto pt-8 border-t border-border-theme text-left sm:text-center text-text-muted text-sm"
           >
             <div className="flex items-center sm:justify-center gap-2.5">
-              <Zap className="h-5 w-5 text-amber-400 flex-shrink-0" />
+              <Zap className="h-5 w-5 text-amber-500 dark:text-amber-400 flex-shrink-0" />
               <span>Instant Itinerary Optimization</span>
             </div>
             <div className="flex items-center sm:justify-center gap-2.5">
-              <Globe className="h-5 w-5 text-sky-400 flex-shrink-0" />
+              <Globe className="h-5 w-5 text-sky-500 dark:text-sky-400 flex-shrink-0" />
               <span>Global Destination Support</span>
             </div>
             <div className="flex items-center sm:justify-center gap-2.5">
-              <ShieldCheck className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+              <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               <span>Tailored Budget & Pace Control</span>
             </div>
           </motion.div>
@@ -116,41 +116,41 @@ export default function Home() {
         {/* How It Works Section */}
         <div className="my-16 max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-display font-black text-white tracking-tight mb-3">
+            <h2 className="text-3xl sm:text-4xl font-display font-black text-text-main tracking-tight mb-3">
               How Voyage AI Transforms Travel Planning
             </h2>
-            <p className="text-slate-400 text-base max-w-xl mx-auto">
+            <p className="text-text-muted text-base max-w-xl mx-auto">
               From blank canvas to a fully staged daily travel itinerary in under 30 seconds.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-3xl glass-effect border border-slate-800/80 bg-slate-950/60 relative overflow-hidden flex flex-col justify-between hover:border-indigo-500/40 transition-all">
+            <div className="p-8 rounded-3xl glass-effect border border-border-theme bg-surface-card/75 relative overflow-hidden flex flex-col justify-between hover:border-indigo-500/40 transition-all">
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
                   01
                 </div>
-                <h3 className="text-xl font-display font-extrabold text-white mb-3 flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-indigo-400" />
+                <h3 className="text-xl font-display font-extrabold text-text-main mb-3 flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                   <span>Define Parameters</span>
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-text-muted text-sm leading-relaxed">
                   Enter your destination, desired duration (up to 60 days), budget limits, companion
                   types, and unique personal interests or dietary preferences.
                 </p>
               </div>
             </div>
 
-            <div className="p-8 rounded-3xl glass-effect border border-slate-800/80 bg-slate-950/60 relative overflow-hidden flex flex-col justify-between hover:border-sky-500/40 transition-all">
+            <div className="p-8 rounded-3xl glass-effect border border-border-theme bg-surface-card/75 relative overflow-hidden flex flex-col justify-between hover:border-sky-500/40 transition-all">
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
                   02
                 </div>
-                <h3 className="text-xl font-display font-extrabold text-white mb-3 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-sky-400" />
+                <h3 className="text-xl font-display font-extrabold text-text-main mb-3 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-sky-600 dark:text-sky-400" />
                   <span>AI Route Curation</span>
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-text-muted text-sm leading-relaxed">
                   Our Google Gemini generative AI analyzes thousands of geographical attractions,
                   culinary hotspots, and seasonal hidden gems to structure seamless day-by-day
                   pacing.
@@ -158,16 +158,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="p-8 rounded-3xl glass-effect border border-slate-800/80 bg-slate-950/60 relative overflow-hidden flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+            <div className="p-8 rounded-3xl glass-effect border border-border-theme bg-surface-card/75 relative overflow-hidden flex flex-col justify-between hover:border-emerald-500/40 transition-all">
               <div>
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-6 font-display font-black text-xl shadow-inner">
                   03
                 </div>
-                <h3 className="text-xl font-display font-extrabold text-white mb-3 flex items-center gap-2">
-                  <Award className="h-5 w-5 text-emerald-400" />
+                <h3 className="text-xl font-display font-extrabold text-text-main mb-3 flex items-center gap-2">
+                  <Award className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   <span>Interactive Dashboard</span>
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-text-muted text-sm leading-relaxed">
                   Receive a production-quality, expandable daily travel schedule featuring
                   breakfast-to-dinner breakdowns, approximate ticket expenses, and local life hacks.
                 </p>
@@ -177,7 +177,7 @@ export default function Home() {
         </div>
 
         {/* Bottom Call to Action Banner */}
-        <div className="mt-20 mb-10 max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-indigo-900/60 via-slate-900/90 to-sky-900/60 p-10 sm:p-14 border border-indigo-500/40 text-center relative overflow-hidden shadow-2xl backdrop-blur-xl">
+        <div className="mt-20 mb-10 max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-indigo-950 via-slate-900 to-sky-950 p-10 sm:p-14 border border-indigo-500/40 text-center relative overflow-hidden shadow-2xl backdrop-blur-xl text-white">
           <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 

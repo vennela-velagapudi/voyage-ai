@@ -120,29 +120,29 @@ function DestinationCard({ dest, index, onPlan }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -6 }}
-      className="rounded-3xl glass-effect border border-slate-800/80 hover:border-indigo-500/50 overflow-hidden shadow-2xl transition-all duration-300 bg-slate-950/80 flex flex-col justify-between group"
+      className="rounded-3xl glass-effect border border-border-theme hover:border-indigo-500/50 overflow-hidden shadow-2xl transition-all duration-300 bg-surface-card/90 flex flex-col justify-between group"
     >
       <div>
         {/* Image & Tag Header */}
-        <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
+        <div className="relative h-56 w-full overflow-hidden bg-surface-inner">
           {photoUrl ? (
             <ResponsiveImage
               src={photoUrl}
               alt={dest.name}
-              className="w-full h-full relative overflow-hidden bg-slate-900"
+              className="w-full h-full relative overflow-hidden bg-surface-inner"
               imageClassName="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-[0.85] group-hover:brightness-100"
             />
           ) : (
             /* Graceful "No photo available" architectural banner; zero fake/fabricated images */
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-indigo-950/40 via-slate-900 to-slate-950 text-slate-400">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-2 shadow-inner">
+            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-surface-inner text-text-muted">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400 mb-2 shadow-inner">
                 {fetchingPhoto ? (
                   <Camera className="h-5 w-5 animate-pulse" />
                 ) : (
                   <ImageIcon className="h-5 w-5 opacity-60" />
                 )}
               </div>
-              <p className="text-xs font-mono text-slate-500 uppercase tracking-wider">
+              <p className="text-xs font-mono text-text-subtle uppercase tracking-wider">
                 {fetchingPhoto ? 'Checking Google Places Media...' : 'Official Photo Unavailable'}
               </p>
             </div>
@@ -169,28 +169,28 @@ function DestinationCard({ dest, index, onPlan }) {
 
         {/* Description and Metadata */}
         <div className="p-6 pb-4 space-y-4">
-          <p className="text-slate-400 text-sm leading-relaxed line-clamp-3 font-normal">
+          <p className="text-text-muted text-sm leading-relaxed line-clamp-3 font-normal">
             {dest.description}
           </p>
 
-          <div className="space-y-2 pt-3 border-t border-slate-800/80 text-xs text-slate-300">
+          <div className="space-y-2 pt-3 border-t border-border-theme text-xs text-text-body">
             <div className="flex items-start gap-2.5">
-              <div className="p-1 rounded-md bg-amber-500/10 text-amber-400 mt-0.5 flex-shrink-0">
+              <div className="p-1 rounded-md bg-amber-500/10 text-amber-500 dark:text-amber-400 mt-0.5 flex-shrink-0">
                 <Sun className="h-3.5 w-3.5" />
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Best Season: </span>
-                <strong className="text-slate-200 font-semibold">{dest.season}</strong>
+                <span className="text-text-muted font-medium">Best Season: </span>
+                <strong className="text-text-main font-semibold">{dest.season}</strong>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-400 mt-0.5 flex-shrink-0">
+              <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0">
                 <Wallet className="h-3.5 w-3.5" />
               </div>
               <div>
-                <span className="text-slate-400 font-medium">Estimated Spend: </span>
-                <strong className="text-white font-semibold">{dest.budget}</strong>
+                <span className="text-text-muted font-medium">Estimated Spend: </span>
+                <strong className="text-text-main font-semibold">{dest.budget}</strong>
               </div>
             </div>
           </div>
@@ -237,18 +237,18 @@ export default function Explore() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-sky-400 text-xs sm:text-sm font-semibold mb-6 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-card border border-border-theme text-sky-600 dark:text-sky-400 text-xs sm:text-sm font-semibold mb-6 shadow-sm"
           >
             <Compass className="h-4 w-4 animate-spin" style={{ animationDuration: '10s' }} />
             <span>Curated Global Hotspots</span>
           </motion.div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight mb-4 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black text-text-main tracking-tight mb-4 leading-tight">
             Explore Iconic <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-sky-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-sky-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
               Travel Destinations
             </span>
           </h1>
-          <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
+          <p className="text-text-body text-base sm:text-lg leading-relaxed">
             Get inspired by world-renowned routes. Select any destination below to instantly launch
             our AI itinerary generator with pre-configured parameters.
           </p>

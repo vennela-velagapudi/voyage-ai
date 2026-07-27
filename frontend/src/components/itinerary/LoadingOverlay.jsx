@@ -26,7 +26,7 @@ export default function LoadingOverlay({ destination = 'your destination' }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="w-full max-w-4xl mx-auto my-6 p-10 sm:p-16 rounded-3xl glass-effect border border-indigo-500/30 text-center relative overflow-hidden shadow-[0_0_50px_rgba(79,70,229,0.15)] backdrop-blur-2xl flex flex-col items-center justify-center min-h-[420px]"
+      className="w-full max-w-4xl mx-auto my-6 p-10 sm:p-16 rounded-3xl glass-effect bg-surface-card/90 border border-indigo-500/30 text-center relative overflow-hidden shadow-[0_0_50px_rgba(79,70,229,0.15)] backdrop-blur-2xl flex flex-col items-center justify-center min-h-[420px]"
     >
       {/* Decorative floating lights */}
       <div className="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -45,7 +45,7 @@ export default function LoadingOverlay({ destination = 'your destination' }) {
         <motion.div
           animate={{ rotate: -360 }}
           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-          className="absolute inset-2 rounded-full border border-sky-400/30 w-[84px] h-[84px]"
+          className="absolute inset-2 rounded-full border border-sky-500/30 w-[84px] h-[84px]"
         />
 
         {/* Center icon */}
@@ -63,7 +63,7 @@ export default function LoadingOverlay({ destination = 'your destination' }) {
           transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
           className="absolute w-full h-full pointer-events-none"
         >
-          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-slate-900 border border-indigo-400 flex items-center justify-center text-indigo-400 shadow-sm">
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-surface-inner border border-indigo-500 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-sm">
             <Sparkles className="h-3.5 w-3.5" />
           </div>
         </motion.div>
@@ -72,7 +72,7 @@ export default function LoadingOverlay({ destination = 'your destination' }) {
           transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
           className="absolute w-full h-full pointer-events-none"
         >
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-slate-900 border border-sky-400 flex items-center justify-center text-sky-400 shadow-sm">
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-surface-inner border border-sky-500 text-sky-600 dark:text-sky-400 flex items-center justify-center shadow-sm">
             <Compass className="h-3.5 w-3.5" />
           </div>
         </motion.div>
@@ -87,22 +87,22 @@ export default function LoadingOverlay({ destination = 'your destination' }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="text-xl sm:text-2xl font-display font-extrabold bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent tracking-tight"
+            className="text-xl sm:text-2xl font-display font-extrabold text-text-main tracking-tight"
           >
             {PROGRESS_MESSAGES[messageIndex]}
           </motion.p>
         </AnimatePresence>
       </div>
 
-      <div className="mt-3 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium">
-        <MapPin className="h-4 w-4 text-sky-400 animate-bounce" />
+      <div className="mt-3 flex items-center justify-center gap-2 text-text-muted text-sm font-medium">
+        <MapPin className="h-4 w-4 text-sky-600 dark:text-sky-400 animate-bounce" />
         <span>
-          Architecting custom journey for <strong className="text-slate-200">{destination}</strong>
+          Architecting custom journey for <strong className="text-text-main">{destination}</strong>
         </span>
       </div>
 
       {/* Subtext info */}
-      <p className="text-xs text-slate-500 mt-8 max-w-sm">
+      <p className="text-xs text-text-subtle mt-8 max-w-sm">
         Our Gemini AI engine is performing multi-day schedule optimization. This typically takes
         10–25 seconds.
       </p>

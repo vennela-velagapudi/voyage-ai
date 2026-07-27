@@ -192,20 +192,20 @@ export default function ItineraryDashboard({
       <TripSummary itinerary={tripData} userParams={userParams} />
 
       {/* Main Itinerary Section Header */}
-      <div className="w-full max-w-4xl mx-auto my-6 sm:my-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-5 text-center sm:text-left">
+      <div className="w-full max-w-4xl mx-auto my-6 sm:my-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-border-theme pb-5 text-center sm:text-left">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2.5">
-            <Compass className="h-6 w-6 text-sky-400" />
+          <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-text-main tracking-tight flex items-center justify-center sm:justify-start gap-2.5">
+            <Compass className="h-6 w-6 text-sky-600 dark:text-sky-400" />
             <span>Your Interactive Itinerary</span>
           </h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+          <p className="text-text-muted text-xs sm:text-sm mt-1">
             Reorder activities via drag handles, replace items with AI, or regenerate individual
             days.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-indigo-300 text-xs font-semibold shadow-inner">
-          <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-card border border-border-theme text-indigo-700 dark:text-indigo-300 text-xs font-semibold shadow-inner">
+          <Sparkles className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
           <span>
             {tripData.dailyItinerary.length} {tripData.dailyItinerary.length === 1 ? 'Day' : 'Days'}
           </span>
@@ -213,18 +213,18 @@ export default function ItineraryDashboard({
       </div>
 
       {/* Dedicated Rearrange & Generate New Plan Control */}
-      <div className="w-full max-w-4xl mx-auto mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-slate-900/90 to-slate-900 border border-indigo-500/30 shadow-lg">
+      <div className="w-full max-w-4xl mx-auto mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-surface-card/90 border border-indigo-500/30 shadow-lg">
         <div className="flex items-center gap-3 text-left w-full sm:w-auto min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
             <RefreshCw
-              className={`h-5 w-5 text-indigo-400 ${isRegenerating ? 'animate-spin' : ''}`}
+              className={`h-5 w-5 text-indigo-600 dark:text-indigo-400 ${isRegenerating ? 'animate-spin' : ''}`}
             />
           </div>
           <div className="min-w-0">
-            <h4 className="text-sm font-extrabold text-white font-display truncate">
+            <h4 className="text-sm font-extrabold text-text-main font-display truncate">
               Customized Day Order
             </h4>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-text-body">
               Use up/down arrows on days, then regenerate to optimize your schedule around this new
               order.
             </p>
@@ -277,13 +277,13 @@ export default function ItineraryDashboard({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="w-full max-w-4xl mx-auto -mb-8 mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-900/90 border border-slate-800/80 shadow-md flex items-center gap-3.5 text-left"
+        className="w-full max-w-4xl mx-auto -mb-8 mt-4 p-4 sm:p-5 rounded-2xl bg-surface-card/85 border border-border-theme shadow-md flex items-center gap-3.5 text-left"
       >
-        <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0">
-          <Sparkles className="h-5 w-5 text-indigo-400 animate-pulse" />
+        <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+          <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
         </div>
-        <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
-          <strong className="text-white">Smart AI Regeneration:</strong> Future itinerary
+        <p className="text-xs sm:text-sm text-text-body font-medium leading-relaxed">
+          <strong className="text-text-main">Smart AI Regeneration:</strong> Future itinerary
           generations will use your current customized itinerary as the starting point. Your edits
           help the AI create better recommendations.
         </p>

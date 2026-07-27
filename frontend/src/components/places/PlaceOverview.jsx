@@ -12,21 +12,21 @@ export default function PlaceOverview({ place }) {
       : 'Hours not available';
 
   return (
-    <div className="space-y-6 pt-4 border-t border-slate-800/80 mb-8">
+    <div className="space-y-6 pt-4 border-t border-border-theme mb-8">
       <div className="space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-text-muted">
           Location & Operating Details
         </h3>
 
         <div className="space-y-3">
           {/* Address Card */}
-          <div className="flex items-start gap-3 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80 shadow-2xs">
-            <div className="w-9 h-9 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 bg-surface-inner/60 p-3.5 rounded-xl border border-border-theme shadow-2xs">
+            <div className="w-9 h-9 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400 flex items-center justify-center flex-shrink-0 mt-0.5">
               <MapPin className="h-4.5 w-4.5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">Address</p>
-              <p className="text-slate-200 text-xs sm:text-sm font-medium leading-relaxed mt-0.5 break-words">
+              <p className="text-xs text-text-muted font-bold uppercase tracking-wide">Address</p>
+              <p className="text-text-body text-xs sm:text-sm font-medium leading-relaxed mt-0.5 break-words">
                 {address && address !== 'Not available' && address !== 'Address unavailable'
                   ? address
                   : 'Address unavailable'}
@@ -35,15 +35,15 @@ export default function PlaceOverview({ place }) {
           </div>
 
           {/* Hours Card */}
-          <div className="flex items-start gap-3 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80 shadow-2xs">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="flex items-start gap-3 bg-surface-inner/60 p-3.5 rounded-xl border border-border-theme shadow-2xs">
+            <div className="w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
               <Clock className="h-4.5 w-4.5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
+              <p className="text-xs text-text-muted font-bold uppercase tracking-wide">
                 Opening Hours
               </p>
-              <p className="text-slate-200 text-xs sm:text-sm font-extrabold mt-0.5 break-words">
+              <p className="text-text-body text-xs sm:text-sm font-extrabold mt-0.5 break-words">
                 {displayHours}
               </p>
             </div>
@@ -55,22 +55,22 @@ export default function PlaceOverview({ place }) {
               href={website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-3 bg-slate-900/70 hover:bg-slate-800 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/40 text-slate-200 hover:text-white transition-all group cursor-pointer shadow-2xs min-w-0"
+              className="flex items-center justify-between gap-3 bg-surface-inner/70 hover:bg-surface-hover p-3.5 rounded-xl border border-border-theme hover:border-indigo-500/40 text-text-body hover:text-text-main transition-all group cursor-pointer shadow-2xs min-w-0"
             >
               <div className="flex items-center gap-3 truncate min-w-0">
-                <div className="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
                   <Globe className="h-4.5 w-4.5" />
                 </div>
                 <div className="truncate text-left min-w-0">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wide">
                     Official Website
                   </p>
-                  <p className="text-xs sm:text-sm font-medium truncate text-indigo-300 group-hover:underline">
+                  <p className="text-xs sm:text-sm font-medium truncate text-indigo-600 dark:text-indigo-300 group-hover:underline">
                     {website}
                   </p>
                 </div>
               </div>
-              <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-white flex-shrink-0" />
+              <ExternalLink className="h-4 w-4 text-text-subtle group-hover:text-text-main flex-shrink-0" />
             </a>
           )}
         </div>

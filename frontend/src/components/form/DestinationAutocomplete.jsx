@@ -105,16 +105,18 @@ export default function DestinationAutocomplete({
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-semibold text-slate-200 flex items-center justify-between"
+          className="text-sm font-semibold text-text-main flex items-center justify-between"
         >
           <span>{label}</span>
-          {isLoading && <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-400" />}
+          {isLoading && (
+            <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-600 dark:text-indigo-400" />
+          )}
         </label>
       )}
 
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-          <InputIcon className="h-5 w-5 text-indigo-400" />
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted">
+          <InputIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
         </div>
         <input
           id={id}
@@ -126,10 +128,10 @@ export default function DestinationAutocomplete({
           }}
           onBlur={onBlur}
           placeholder={placeholder}
-          className={`w-full pl-11 pr-4 py-3.5 min-h-[48px] lg:min-h-0 rounded-xl bg-slate-900/80 text-slate-100 placeholder-slate-500 text-base sm:text-sm lg:text-sm border transition-all duration-200 focus:outline-none focus:ring-2 ${
+          className={`w-full pl-11 pr-4 py-3.5 min-h-[48px] lg:min-h-0 rounded-xl bg-surface-inner text-text-main placeholder-text-subtle text-base sm:text-sm lg:text-sm border transition-all duration-200 focus:outline-none focus:ring-2 ${
             error
-              ? 'border-rose-500/80 focus:ring-rose-500/30 text-rose-100 bg-rose-950/10'
-              : 'border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20'
+              ? 'border-rose-500/80 focus:ring-rose-500/30 text-rose-600 dark:text-rose-100 bg-rose-500/10'
+              : 'border-border-theme hover:border-border-subtle focus:border-indigo-500 focus:ring-indigo-500/20'
           }`}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
@@ -145,7 +147,7 @@ export default function DestinationAutocomplete({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-slate-950/98 backdrop-blur-xl border border-indigo-500/30 rounded-2xl shadow-2xl max-h-72 sm:max-h-80 overflow-y-auto divide-y divide-slate-800/80 scrollbar-thin scrollbar-thumb-slate-800"
+            className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-surface-card/98 backdrop-blur-xl border border-indigo-500/30 rounded-2xl shadow-2xl max-h-72 sm:max-h-80 overflow-y-auto divide-y divide-border-theme scrollbar-thin"
           >
             {suggestions.map((item) => {
               const Icon = getSuggestionIcon(item.types);
@@ -154,17 +156,17 @@ export default function DestinationAutocomplete({
                   <button
                     type="button"
                     onClick={() => handleSelect(item)}
-                    className="w-full text-left px-4 py-3.5 min-h-[48px] flex items-center gap-3 hover:bg-slate-800/70 transition-colors duration-150 cursor-pointer group"
+                    className="w-full text-left px-4 py-3.5 min-h-[48px] flex items-center gap-3 hover:bg-surface-hover/80 transition-colors duration-150 cursor-pointer group"
                   >
-                    <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-indigo-500/40 flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-4 w-4 text-sky-400 group-hover:text-white transition-colors" />
+                    <div className="w-8 h-8 rounded-xl bg-surface-inner border border-border-theme group-hover:border-indigo-500/40 flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-4 w-4 text-sky-600 dark:text-sky-400 group-hover:text-indigo-600 dark:group-hover:text-white transition-colors" />
                     </div>
                     <div className="truncate flex-grow">
-                      <p className="text-sm font-extrabold text-white truncate group-hover:text-indigo-300 transition-colors">
+                      <p className="text-sm font-extrabold text-text-main truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                         {item.mainText || item.label}
                       </p>
                       {item.secondaryText && (
-                        <p className="text-xs text-slate-400 truncate mt-0.5">
+                        <p className="text-xs text-text-muted truncate mt-0.5">
                           {item.secondaryText}
                         </p>
                       )}
@@ -183,9 +185,9 @@ export default function DestinationAutocomplete({
           id={`${id}-error`}
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-2 pt-1 text-xs text-rose-400 font-semibold leading-relaxed"
+          className="flex items-start gap-2 pt-1 text-xs text-rose-600 dark:text-rose-400 font-semibold leading-relaxed"
         >
-          <AlertCircle className="h-4 w-4 flex-shrink-0 text-rose-400 mt-0.5 animate-pulse" />
+          <AlertCircle className="h-4 w-4 flex-shrink-0 text-rose-600 dark:text-rose-400 mt-0.5 animate-pulse" />
           <span>{error}</span>
         </motion.div>
       )}

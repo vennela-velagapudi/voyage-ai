@@ -31,9 +31,9 @@ const getCategoryConfig = (category) => {
   if (cleanCat.includes('breakfast')) {
     return {
       icon: Utensils,
-      color: 'text-amber-400',
+      color: 'text-amber-600 dark:text-amber-400',
       bg: 'bg-amber-500/15 border-amber-500/30',
-      badge: 'bg-amber-500/20 text-amber-300',
+      badge: 'bg-amber-500/20 text-amber-700 dark:text-amber-300',
     };
   }
   if (
@@ -45,9 +45,9 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: Coffee,
-      color: 'text-amber-300',
+      color: 'text-amber-600 dark:text-amber-300',
       bg: 'bg-amber-600/15 border-amber-600/30',
-      badge: 'bg-amber-600/20 text-amber-200',
+      badge: 'bg-amber-600/20 text-amber-700 dark:text-amber-200',
     };
   }
   if (
@@ -58,17 +58,17 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: Utensils,
-      color: 'text-rose-400',
+      color: 'text-rose-600 dark:text-rose-400',
       bg: 'bg-rose-500/15 border-rose-500/30',
-      badge: 'bg-rose-500/20 text-rose-300',
+      badge: 'bg-rose-500/20 text-rose-700 dark:text-rose-300',
     };
   }
   if (cleanCat.includes('dinner') || cleanCat.includes('supper')) {
     return {
       icon: Utensils,
-      color: 'text-fuchsia-400',
+      color: 'text-fuchsia-600 dark:text-fuchsia-400',
       bg: 'bg-fuchsia-500/15 border-fuchsia-500/30',
-      badge: 'bg-fuchsia-500/20 text-fuchsia-300',
+      badge: 'bg-fuchsia-500/20 text-fuchsia-700 dark:text-fuchsia-300',
     };
   }
   if (
@@ -79,9 +79,9 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: Landmark,
-      color: 'text-purple-400',
+      color: 'text-purple-600 dark:text-purple-400',
       bg: 'bg-purple-500/15 border-purple-500/30',
-      badge: 'bg-purple-500/20 text-purple-300',
+      badge: 'bg-purple-500/20 text-purple-700 dark:text-purple-300',
     };
   }
   if (
@@ -91,9 +91,9 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: ShoppingBag,
-      color: 'text-emerald-400',
+      color: 'text-emerald-600 dark:text-emerald-400',
       bg: 'bg-emerald-500/15 border-emerald-500/30',
-      badge: 'bg-emerald-500/20 text-emerald-300',
+      badge: 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300',
     };
   }
   if (
@@ -104,9 +104,9 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: Moon,
-      color: 'text-violet-400',
+      color: 'text-violet-600 dark:text-violet-400',
       bg: 'bg-violet-500/15 border-violet-500/30',
-      badge: 'bg-violet-500/20 text-violet-300',
+      badge: 'bg-violet-500/20 text-violet-700 dark:text-violet-300',
     };
   }
   if (
@@ -117,17 +117,17 @@ const getCategoryConfig = (category) => {
   ) {
     return {
       icon: Camera,
-      color: 'text-sky-400',
+      color: 'text-sky-600 dark:text-sky-400',
       bg: 'bg-sky-500/15 border-sky-500/30',
-      badge: 'bg-sky-500/20 text-sky-300',
+      badge: 'bg-sky-500/20 text-sky-700 dark:text-sky-300',
     };
   }
 
   return {
     icon: Compass,
-    color: 'text-indigo-400',
+    color: 'text-indigo-600 dark:text-indigo-400',
     bg: 'bg-indigo-500/15 border-indigo-500/30',
-    badge: 'bg-indigo-500/20 text-indigo-300',
+    badge: 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300',
   };
 };
 
@@ -210,7 +210,7 @@ export default function TimelineItem({
 
           {/* Vertical track connector */}
           {!isLast && (
-            <div className="w-0.5 flex-grow bg-gradient-to-b from-indigo-500/50 via-slate-700 to-slate-800 my-1 min-h-[50px] group-hover:from-indigo-400 transition-colors relative flex items-center justify-center" />
+            <div className="w-0.5 flex-grow bg-border-theme my-1 min-h-[50px] group-hover:bg-indigo-500 transition-colors relative flex items-center justify-center" />
           )}
         </div>
 
@@ -222,7 +222,7 @@ export default function TimelineItem({
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handlePlaceClick(e)}
             aria-label={`Explore interactive details for ${title}`}
-            className={`p-3 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 cursor-pointer relative overflow-hidden text-left w-full ${
+            className={`p-3 sm:p-6 rounded-2xl bg-surface-card/95 border border-border-theme hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] cursor-pointer relative overflow-hidden text-left w-full ${
               isReplacing ? 'opacity-70 pointer-events-none ring-2 ring-indigo-500/50' : ''
             }`}
           >
@@ -230,18 +230,18 @@ export default function TimelineItem({
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
             {/* Header Row: Time, Category, Duration & Cost Tag */}
-            <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 mb-2.5 pb-2 border-b border-slate-800/70">
+            <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 mb-2.5 pb-2 border-b border-border-theme">
               <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                <div className="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-extrabold text-indigo-300 bg-indigo-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-indigo-500/30">
-                  <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-indigo-400" />
+                <div className="inline-flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs font-extrabold text-indigo-700 dark:text-indigo-300 bg-indigo-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-indigo-500/30">
+                  <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-indigo-600 dark:text-indigo-400" />
                   <span>{time || 'Scheduled'}</span>
                 </div>
                 {duration && (
-                  <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 bg-slate-950/60 px-2 sm:px-2.5 py-0.5 rounded-full border border-slate-800">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-text-muted bg-surface-inner px-2 sm:px-2.5 py-0.5 rounded-full border border-border-theme">
                     {duration}
                   </span>
                 )}
-                <span className="text-[10px] sm:text-[11px] font-extrabold text-emerald-300 bg-emerald-500/10 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                <span className="text-[10px] sm:text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                   {formatCost(cost)}
                 </span>
               </div>
@@ -249,7 +249,7 @@ export default function TimelineItem({
               <div className="flex items-center gap-1.5">
                 {category && (
                   <div
-                    className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-slate-950/70`}
+                    className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-full border border-current opacity-90 ${config.color} bg-surface-inner/90`}
                   >
                     <Tag className="h-3 w-3" />
                     <span>{category}</span>
@@ -260,7 +260,7 @@ export default function TimelineItem({
 
             {/* Title & Aligned Action Controls Row */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-2.5 mb-3 sm:mb-2.5">
-              <h4 className="text-base sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2 min-w-0 w-full break-words pr-1">
+              <h4 className="text-base sm:text-xl font-display font-black text-text-main group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2 min-w-0 w-full break-words pr-1">
                 <span className="break-words min-w-0">
                   {title || 'Curated Activity Experience'}
                 </span>
@@ -268,11 +268,11 @@ export default function TimelineItem({
 
               {/* Aligned Interactive Action Toolbar on Right Side */}
               <div
-                className="flex flex-wrap items-center gap-2 sm:gap-1.5 w-full sm:w-auto justify-start sm:justify-end flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60"
+                className="flex flex-wrap items-center gap-2 sm:gap-1.5 w-full sm:w-auto justify-start sm:justify-end flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border-theme"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Reorder Up & Down Arrows Grouped at Handle Position */}
-                <div className="flex items-center gap-0.5 bg-slate-950/90 p-0.5 rounded-xl border border-slate-800/80 mr-0.5">
+                <div className="flex items-center gap-0.5 bg-surface-inner p-0.5 rounded-xl border border-border-theme mr-0.5">
                   <button
                     type="button"
                     disabled={isFirst}
@@ -283,8 +283,8 @@ export default function TimelineItem({
                     title="Move activity earlier"
                     className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                       isFirst
-                        ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
-                        : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+                        ? 'opacity-30 cursor-not-allowed border-transparent text-text-subtle'
+                        : 'hover:bg-surface-hover border-transparent hover:border-border-theme text-text-muted hover:text-text-main'
                     }`}
                     aria-label="Move activity earlier"
                   >
@@ -301,8 +301,8 @@ export default function TimelineItem({
                     title="Move activity later"
                     className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                       isLast
-                        ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
-                        : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+                        ? 'opacity-30 cursor-not-allowed border-transparent text-text-subtle'
+                        : 'hover:bg-surface-hover border-transparent hover:border-border-theme text-text-muted hover:text-text-main'
                     }`}
                     aria-label="Move activity later"
                   >
@@ -318,8 +318,8 @@ export default function TimelineItem({
                   title="Replace this activity with an AI alternative"
                   className={`min-h-[44px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 sm:gap-1 px-3.5 py-2.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer shadow-xs ${
                     isReplacing
-                      ? 'bg-indigo-600/30 border-indigo-500/40 text-indigo-300 cursor-wait'
-                      : 'bg-indigo-500/15 hover:bg-indigo-500/25 border-indigo-500/30 hover:border-indigo-400 text-indigo-300'
+                      ? 'bg-indigo-600/30 border-indigo-500/40 text-indigo-700 dark:text-indigo-300 cursor-wait'
+                      : 'bg-indigo-500/15 hover:bg-indigo-500/25 border-indigo-500/30 hover:border-indigo-400 text-indigo-700 dark:text-indigo-300'
                   }`}
                 >
                   <RefreshCw
@@ -333,7 +333,7 @@ export default function TimelineItem({
                   type="button"
                   onClick={handleDeleteClick}
                   title="Delete this activity"
-                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-xl text-slate-400 hover:text-rose-400 bg-slate-950/60 hover:bg-rose-500/15 border border-slate-800 hover:border-rose-500/40 transition-all cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-xl text-text-muted hover:text-rose-600 dark:hover:text-rose-400 bg-surface-inner/80 hover:bg-rose-500/15 border border-border-theme hover:border-rose-500/40 transition-all cursor-pointer"
                   aria-label="Delete activity"
                 >
                   <Trash2 className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -342,49 +342,49 @@ export default function TimelineItem({
                 {/* Explore Place button */}
                 <span
                   onClick={handlePlaceClick}
-                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 inline-flex items-center justify-center gap-1.5 sm:gap-1 text-xs font-extrabold text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 group-hover:border-indigo-400/60 px-3.5 py-2.5 sm:px-2.5 sm:py-1.5 rounded-xl transition-all shadow-xs cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 inline-flex items-center justify-center gap-1.5 sm:gap-1 text-xs font-extrabold text-indigo-700 dark:text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 group-hover:border-indigo-400/60 px-3.5 py-2.5 sm:px-2.5 sm:py-1.5 rounded-xl transition-all shadow-xs cursor-pointer"
                   title="View Google Places Photos & Opening Hours"
                 >
-                  <MapPin className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-sky-400 flex-shrink-0" />
+                  <MapPin className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
                   <ArrowUpRight className="h-4 w-4 sm:h-3.5 sm:w-3.5 flex-shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </div>
 
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-normal mb-3.5 break-words">
+            <p className="text-text-body text-xs sm:text-sm leading-relaxed font-normal mb-3.5 break-words">
               {description || 'Enjoy this custom experience tailored to your travel parameters.'}
             </p>
 
             {/* Consultant Intelligence Badges Grid */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2.5 border-t border-slate-800/50 min-w-0 max-w-full">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2.5 border-t border-border-theme min-w-0 max-w-full">
               {/* Smart Suitability Note */}
               {suitabilityNote && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-purple-500/10 border border-purple-500/30 text-purple-200 break-words max-w-full">
-                  <Users className="h-3.5 w-3.5 text-purple-400 flex-shrink-0" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-purple-500/10 border border-purple-500/30 text-purple-700 dark:text-purple-200 break-words max-w-full">
+                  <Users className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
                   <span className="truncate">{suitabilityNote}</span>
                 </span>
               )}
 
               {/* Local Travel Note */}
               {travelNote && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-teal-500/10 border border-teal-500/30 text-teal-200 break-words max-w-full">
-                  <Lightbulb className="h-3.5 w-3.5 text-teal-400 flex-shrink-0" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-200 break-words max-w-full">
+                  <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
                   <span className="truncate">{travelNote}</span>
                 </span>
               )}
 
               {/* Scam Prevention Alert */}
               {scamTip && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/40 text-amber-300 shadow-inner break-words max-w-full">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/40 text-amber-700 dark:text-amber-300 shadow-inner break-words max-w-full">
+                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                   <span className="truncate">Tip: {scamTip}</span>
                 </span>
               )}
 
               {/* Women's Safety Insight */}
               {safetyNote && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-200 break-words max-w-full">
-                  <ShieldCheck className="h-3.5 w-3.5 text-rose-400 flex-shrink-0" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-200 break-words max-w-full">
+                  <ShieldCheck className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400 flex-shrink-0" />
                   <span className="truncate">Safety: {safetyNote}</span>
                 </span>
               )}
@@ -393,10 +393,10 @@ export default function TimelineItem({
               <button
                 type="button"
                 onClick={handleEmergencyClick}
-                className="min-h-[40px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-rose-950/70 hover:bg-rose-900 border border-rose-500/50 text-rose-300 transition-colors shadow-xs ml-auto cursor-pointer flex-shrink-0 w-full sm:w-auto mt-1 sm:mt-0"
+                className="min-h-[40px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/50 text-rose-700 dark:text-rose-300 transition-colors shadow-xs ml-auto cursor-pointer flex-shrink-0 w-full sm:w-auto mt-1 sm:mt-0"
                 title="View Local Emergency Helplines & Hospital routing"
               >
-                <ShieldAlert className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-rose-400 animate-pulse flex-shrink-0" />
+                <ShieldAlert className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-rose-600 dark:text-rose-400 animate-pulse flex-shrink-0" />
                 <span>Emergency Support</span>
               </button>
             </div>
@@ -408,17 +408,19 @@ export default function TimelineItem({
               className="pl-4 sm:pl-10 pt-2.5 pb-1 min-w-0 max-w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-slate-950/90 border border-indigo-500/40 text-slate-300 text-[11px] sm:text-xs font-bold shadow-md max-w-full break-words">
-                <Navigation className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-sky-400 rotate-45 flex-shrink-0" />
-                <span className="text-white font-extrabold capitalize">
+              <div className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-surface-inner border border-indigo-500/40 text-text-body text-[11px] sm:text-xs font-bold shadow-md max-w-full break-words">
+                <Navigation className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-sky-600 dark:text-sky-400 rotate-45 flex-shrink-0" />
+                <span className="text-text-main font-extrabold capitalize">
                   {transportToNext.mode || 'Transit'}
                 </span>
-                <span className="text-slate-500">•</span>
-                <span className="text-indigo-300">{transportToNext.duration || '15 mins'}</span>
+                <span className="text-text-subtle">•</span>
+                <span className="text-indigo-700 dark:text-indigo-300">
+                  {transportToNext.duration || '15 mins'}
+                </span>
                 {transportToNext.cost && (
                   <>
-                    <span className="text-slate-500">•</span>
-                    <span className="text-emerald-300 font-extrabold">
+                    <span className="text-text-subtle">•</span>
+                    <span className="text-emerald-700 dark:text-emerald-300 font-extrabold">
                       {formatCost(transportToNext.cost)}
                     </span>
                   </>

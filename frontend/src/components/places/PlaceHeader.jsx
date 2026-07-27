@@ -21,8 +21,8 @@ export default function PlaceHeader({ place }) {
     <div className="space-y-4 mb-6">
       {/* Category & Status Pills */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-extrabold uppercase tracking-wider">
-          <Tag className="h-3.5 w-3.5 text-indigo-400" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold uppercase tracking-wider">
+          <Tag className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
           <span>{category || 'Attraction'}</span>
         </span>
 
@@ -30,8 +30,8 @@ export default function PlaceHeader({ place }) {
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border ${
               openNow
-                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
+                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
+                : 'bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-400'
             }`}
           >
             <Clock className="h-3.5 w-3.5" />
@@ -40,28 +40,28 @@ export default function PlaceHeader({ place }) {
         )}
 
         {formattedPrice && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-300 text-xs font-bold">
-            <Wallet className="h-3.5 w-3.5 text-amber-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-inner border border-border-theme text-amber-700 dark:text-amber-300 text-xs font-bold">
+            <Wallet className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
             <span>{formattedPrice}</span>
           </span>
         )}
       </div>
 
       {/* Place Name */}
-      <h2 className="text-xl sm:text-3xl font-display font-black text-white tracking-tight leading-snug break-words">
+      <h2 className="text-xl sm:text-3xl font-display font-black text-text-main tracking-tight leading-snug break-words">
         {name || 'Destination Highlight'}
       </h2>
 
       {/* Google Rating & Review Count */}
-      <div className="flex items-center gap-3 bg-slate-900/70 p-3 rounded-xl border border-slate-800/80 shadow-inner">
-        <div className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/40 font-extrabold text-sm shadow-sm">
-          <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
+      <div className="flex items-center gap-3 bg-surface-inner/70 p-3 rounded-xl border border-border-theme shadow-inner">
+        <div className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/40 font-extrabold text-sm shadow-sm">
+          <Star className="h-4 w-4 text-amber-500 fill-amber-500 dark:text-amber-400 dark:fill-amber-400" />
           <span>{rating?.toFixed(1) || '4.6'}</span>
         </div>
 
-        <div className="text-xs text-slate-300 font-medium">
+        <div className="text-xs text-text-muted font-medium">
           <span>Based on </span>
-          <strong className="text-white font-mono">
+          <strong className="text-text-main font-mono">
             {reviewsCount ? Number(reviewsCount).toLocaleString() : '200+'}
           </strong>
           <span> Google Reviews</span>
@@ -69,12 +69,12 @@ export default function PlaceHeader({ place }) {
       </div>
 
       {/* Short Description */}
-      <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 mt-2">
-        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-sky-400" />
+      <div className="bg-surface-inner/40 p-4 rounded-xl border border-border-theme mt-2">
+        <h4 className="text-[11px] font-bold uppercase tracking-wider text-text-muted mb-1.5 flex items-center gap-1.5">
+          <Sparkles className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
           <span>About this Place</span>
         </h4>
-        <p className="text-slate-200 text-sm leading-relaxed font-normal">
+        <p className="text-text-body text-sm leading-relaxed font-normal">
           {description || 'Description unavailable'}
         </p>
       </div>

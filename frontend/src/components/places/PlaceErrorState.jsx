@@ -11,23 +11,23 @@ export default function PlaceErrorState({ error, placeName, onRetry, destination
 
   return (
     <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-5 my-auto">
-      <div className="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-inner">
+      <div className="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-inner">
         <AlertCircle className="h-8 w-8 animate-pulse" />
       </div>
 
       <div className="space-y-2 max-w-md">
-        <h3 className="text-lg sm:text-xl font-display font-extrabold text-white">
+        <h3 className="text-lg sm:text-xl font-display font-extrabold text-text-main">
           Location Details Unavailable
         </h3>
-        <p className="text-slate-300 text-sm leading-relaxed">
+        <p className="text-text-body text-sm leading-relaxed">
           {error?.message ||
             'We were unable to load real-time Google Places details for this attraction. Your API key or internet connection might be unconfigured.'}
         </p>
       </div>
 
-      <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 w-full max-w-xs text-left text-xs text-slate-400 flex items-center gap-3">
-        <MapPin className="h-4 w-4 text-sky-400 flex-shrink-0" />
-        <span className="truncate text-slate-300 font-medium">
+      <div className="bg-surface-card/80 p-4 rounded-xl border border-border-theme w-full max-w-xs text-left text-xs text-text-muted flex items-center gap-3">
+        <MapPin className="h-4 w-4 text-sky-600 dark:text-sky-400 flex-shrink-0" />
+        <span className="truncate text-text-body font-medium">
           {placeName || 'Selected Location'}
         </span>
       </div>
@@ -37,7 +37,7 @@ export default function PlaceErrorState({ error, placeName, onRetry, destination
           <button
             type="button"
             onClick={onRetry}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold flex items-center gap-2 transition-colors border border-slate-700 cursor-pointer shadow-sm"
+            className="px-5 py-2.5 rounded-xl bg-surface-inner hover:bg-surface-hover text-text-body hover:text-text-main text-sm font-bold flex items-center gap-2 transition-colors border border-border-theme cursor-pointer shadow-sm"
           >
             <RefreshCw className="h-4 w-4" />
             <span>Retry Loading</span>

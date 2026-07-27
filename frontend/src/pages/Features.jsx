@@ -21,7 +21,8 @@ const CAPABILITIES = [
       "Powered by Google's cutting-edge AI reasoning models. Evaluates thousands of attractions, local transport links, and seasonal nuances to compute mathematically balanced travel itineraries.",
     badge: 'Core Intelligence',
     color: 'indigo',
-    gradient: 'from-indigo-500/20 to-purple-500/10 border-indigo-500/30 text-indigo-400',
+    gradient:
+      'from-indigo-500/20 to-purple-500/10 border-indigo-500/30 text-indigo-600 dark:text-indigo-400',
   },
   {
     icon: Wallet,
@@ -30,7 +31,8 @@ const CAPABILITIES = [
       'Avoid financial guesswork. Select Budget, Moderate, or Luxury tiers and let the AI estimate practical activity ticket costs and advise on cost-effective regional transit.',
     badge: 'Financial Control',
     color: 'emerald',
-    gradient: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/30 text-emerald-400',
+    gradient:
+      'from-emerald-500/20 to-teal-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400',
   },
   {
     icon: Users,
@@ -39,7 +41,7 @@ const CAPABILITIES = [
       'Whether planning a romantic candle-lit couple retreat, an educational family vacation with children, or an efficient solo adventure, every daily schedule adapts to your exact social dynamic.',
     badge: 'Personalized Routing',
     color: 'sky',
-    gradient: 'from-sky-500/20 to-indigo-500/10 border-sky-500/30 text-sky-400',
+    gradient: 'from-sky-500/20 to-indigo-500/10 border-sky-500/30 text-sky-600 dark:text-sky-400',
   },
   {
     icon: Utensils,
@@ -48,7 +50,8 @@ const CAPABILITIES = [
       'No more searching for dietary accommodations. Input strict vegetarian, vegan, halal, or gourmet wine-pairing requirements, and receive highly regarded restaurant recommendations for every evening.',
     badge: 'Culinary Curations',
     color: 'rose',
-    gradient: 'from-rose-500/20 to-orange-500/10 border-rose-500/30 text-rose-400',
+    gradient:
+      'from-rose-500/20 to-orange-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400',
   },
   {
     icon: Calendar,
@@ -57,7 +60,8 @@ const CAPABILITIES = [
       'Say goodbye to overwhelming text walls. Our collapsible Day Accordion UI organizes every 24-hour cycle into structured morning, afternoon, and evening sessions with estimated pricing.',
     badge: 'SaaS UX Mastery',
     color: 'purple',
-    gradient: 'from-purple-500/20 to-pink-500/10 border-purple-500/30 text-purple-400',
+    gradient:
+      'from-purple-500/20 to-pink-500/10 border-purple-500/30 text-purple-600 dark:text-purple-400',
   },
   {
     icon: Lightbulb,
@@ -66,7 +70,8 @@ const CAPABILITIES = [
       'Gain tactical travel advantages. Each daily blueprint includes exclusive local tips—such as arrival times to bypass crowds, dress code guidance for temples, or reservation tricks.',
     badge: 'Travel Hacks',
     color: 'amber',
-    gradient: 'from-amber-500/20 to-yellow-500/10 border-amber-500/30 text-amber-400',
+    gradient:
+      'from-amber-500/20 to-yellow-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400',
   },
 ];
 
@@ -88,18 +93,18 @@ export default function Features() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800 text-purple-400 text-xs sm:text-sm font-semibold mb-6 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-card border border-border-theme text-purple-600 dark:text-purple-400 text-xs sm:text-sm font-semibold mb-6 shadow-sm"
           >
-            <Sparkles className="h-4 w-4 animate-pulse text-purple-400" />
+            <Sparkles className="h-4 w-4 animate-pulse text-purple-600 dark:text-purple-400" />
             <span>Next-Gen Travel Technology</span>
           </motion.div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black text-white tracking-tight mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-black text-text-main tracking-tight mb-6 leading-tight">
             Engineered for Perfect <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 dark:from-purple-400 dark:via-indigo-400 dark:to-sky-400 bg-clip-text text-transparent">
               Travel Experiences
             </span>
           </h1>
-          <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
+          <p className="text-text-body text-base sm:text-lg leading-relaxed">
             Explore how Voyage AI bridges advanced artificial intelligence with premium interactive
             interface design to completely revolutionize itinerary planning.
           </p>
@@ -116,7 +121,7 @@ export default function Features() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.02 }}
-                className="p-8 rounded-3xl glass-effect border border-slate-800/80 hover:border-indigo-500/50 bg-slate-950/80 shadow-2xl flex flex-col justify-between transition-all duration-300 group relative overflow-hidden"
+                className="p-8 rounded-3xl glass-effect border border-border-theme hover:border-indigo-500/50 bg-surface-card/90 shadow-2xl flex flex-col justify-between transition-all duration-300 group relative overflow-hidden"
               >
                 {/* Subtle light accent */}
                 <div className="absolute -top-px left-1/3 right-1/3 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -128,23 +133,23 @@ export default function Features() {
                     >
                       <Icon className="h-7 w-7" />
                     </div>
-                    <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold uppercase tracking-wider">
+                    <span className="px-3 py-1 rounded-full bg-surface-hover/80 border border-border-theme text-text-body text-xs font-semibold uppercase tracking-wider">
                       {feature.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-display font-extrabold text-white mb-3 tracking-tight group-hover:text-indigo-200 transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-display font-extrabold text-text-main mb-3 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-200 transition-colors">
                     {feature.title}
                   </h3>
 
-                  <p className="text-slate-400 text-sm sm:text-base leading-relaxed font-normal">
+                  <p className="text-text-muted text-sm sm:text-base leading-relaxed font-normal">
                     {feature.description}
                   </p>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-slate-900 flex items-center justify-between text-xs text-slate-500 font-semibold uppercase tracking-wider">
+                <div className="pt-6 mt-6 border-t border-border-theme flex items-center justify-between text-xs text-text-subtle font-semibold uppercase tracking-wider">
                   <span>Voyage V1 Architecture</span>
-                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
                     <ShieldCheck className="h-3.5 w-3.5" /> Verified
                   </span>
                 </div>
@@ -154,7 +159,7 @@ export default function Features() {
         </div>
 
         {/* Bottom Call to Action Banner */}
-        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-r from-indigo-900/40 via-slate-900/90 to-purple-900/40 p-10 sm:p-14 border border-indigo-500/40 text-center relative overflow-hidden shadow-2xl backdrop-blur-2xl">
+        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 p-10 sm:p-14 border border-indigo-500/40 text-center relative overflow-hidden shadow-2xl backdrop-blur-2xl text-white">
           <h2 className="text-2xl sm:text-4xl font-display font-extrabold text-white mb-4 tracking-tight">
             Put These Capabilities to Work Today
           </h2>

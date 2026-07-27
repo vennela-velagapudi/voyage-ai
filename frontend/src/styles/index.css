@@ -1,18 +1,135 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+@custom-variant amoled (&:where(.amoled, .amoled *));
+@custom-variant blue (&:where(.blue, .blue *));
+@custom-variant high-contrast (&:where(.high-contrast, .high-contrast *));
+
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Outfit', sans-serif;
   --color-primary: var(--color-indigo-600);
   --color-primary-dark: var(--color-indigo-700);
   --color-accent: var(--color-sky-400);
+
+  /* Scalable Semantic Theme Architecture Tokens */
+  --color-surface-base: var(--surface-base);
+  --color-surface-card: var(--surface-card);
+  --color-surface-inner: var(--surface-inner);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-theme: var(--border-theme);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-active: var(--border-active);
+  --color-text-main: var(--text-main);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
 }
 
-/* Custom base rules and variables */
-:root {
+/* Global Design Token Configuration */
+:root,
+.dark {
   color-scheme: dark;
+  --surface-base: #020617; /* slate-950 */
+  --surface-card: #0f172a; /* slate-900 */
+  --surface-inner: #020617; /* slate-950 */
+  --surface-hover: #1e293b; /* slate-800 */
+  --border-theme: #1e293b; /* slate-800 */
+  --border-subtle: #334155; /* slate-700 */
+  --border-active: #6366f1; /* indigo-500 */
+  --text-main: #ffffff;
+  --text-body: #cbd5e1; /* slate-300 */
+  --text-muted: #94a3b8; /* slate-400 */
+  --text-subtle: #64748b; /* slate-500 */
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --ambient-indigo: rgba(79, 70, 229, 0.15);
+  --ambient-sky: rgba(14, 165, 233, 0.15);
+  --ambient-purple: rgba(147, 51, 234, 0.15);
+  --ambient-emerald: rgba(16, 185, 129, 0.15);
 }
 
+.light {
+  color-scheme: light;
+  --surface-base: #f8fafc; /* slate-50 */
+  --surface-card: #ffffff; /* pure white */
+  --surface-inner: #f1f5f9; /* slate-100 */
+  --surface-hover: #e2e8f0; /* slate-200 */
+  --border-theme: #cbd5e1; /* slate-300 */
+  --border-subtle: #e2e8f0; /* slate-200 */
+  --border-active: #4f46e5; /* indigo-600 */
+  --text-main: #0f172a; /* slate-900 */
+  --text-body: #334155; /* slate-700 */
+  --text-muted: #475569; /* slate-600 */
+  --text-subtle: #64748b; /* slate-500 */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --glass-shadow:
+    0 20px 25px -5px rgba(148, 163, 184, 0.25), 0 8px 10px -6px rgba(148, 163, 184, 0.15);
+  --ambient-indigo: rgba(79, 70, 229, 0.08);
+  --ambient-sky: rgba(14, 165, 233, 0.08);
+  --ambient-purple: rgba(147, 51, 234, 0.08);
+  --ambient-emerald: rgba(16, 185, 129, 0.08);
+}
+
+/* Future Extensible Themes (AMOLED, Midnight Blue, High Contrast) */
+.amoled {
+  color-scheme: dark;
+  --surface-base: #000000;
+  --surface-card: #050505;
+  --surface-inner: #000000;
+  --surface-hover: #121212;
+  --border-theme: #222222;
+  --border-subtle: #181818;
+  --border-active: #6366f1;
+  --text-main: #ffffff;
+  --text-body: #e2e8f0;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
+  --glass-bg: rgba(5, 5, 5, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 1);
+}
+
+.blue {
+  color-scheme: dark;
+  --surface-base: #030712;
+  --surface-card: #0b1329;
+  --surface-inner: #050a18;
+  --surface-hover: #132042;
+  --border-theme: #1a2a56;
+  --border-subtle: #111d3d;
+  --border-active: #38bdf8;
+  --text-main: #f8fafc;
+  --text-body: #bfdbfe;
+  --text-muted: #93c5fd;
+  --text-subtle: #60a5fa;
+  --glass-bg: rgba(11, 19, 41, 0.8);
+  --glass-border: rgba(56, 189, 248, 0.2);
+}
+
+.high-contrast {
+  color-scheme: dark;
+  --surface-base: #000000;
+  --surface-card: #000000;
+  --surface-inner: #000000;
+  --surface-hover: #1a1a1a;
+  --border-theme: #ffffff;
+  --border-subtle: #cccccc;
+  --border-active: #00ffff;
+  --text-main: #ffffff;
+  --text-body: #ffffff;
+  --text-muted: #e0e0e0;
+  --text-subtle: #cccccc;
+  --glass-bg: rgba(0, 0, 0, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.9);
+}
+
+/* Base HTML & Responsive Fluid Rules */
 html {
   width: 100%;
   scroll-behavior: smooth;
@@ -38,30 +155,45 @@ body {
   width: 100%;
 }
 
-/* Smooth Transitions */
+/* Smooth 250ms Theme Transitions for Backgrounds, Colors, Borders & Shadows */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  transition: none !important;
+}
+
+/* Custom transitions for layout animations */
 .transition-all-custom {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Glassmorphism utility */
+/* Theme-aware Glassmorphism & Shadow Utilities */
 .glass-effect {
-  background: rgba(15, 23, 42, 0.65);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
-/* Premium gradient borders */
 .gradient-border {
   position: relative;
   background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(56, 189, 248, 0.2));
   padding: 1px;
 }
 
-/* Glow animations */
 .glow-effect {
   box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.3);
 }
+
 .glow-effect-accent {
   box-shadow: 0 0 40px -10px rgba(56, 189, 248, 0.3);
 }

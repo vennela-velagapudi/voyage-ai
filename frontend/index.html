@@ -16,8 +16,33 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('voyage_theme');
+          var theme =
+            savedTheme ||
+            (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          if (theme === 'light') {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+            document.documentElement.style.colorScheme = 'dark';
+          }
+          if (!savedTheme) {
+            localStorage.setItem('voyage_theme', theme);
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        }
+      })();
+    </script>
   </head>
-  <body class="bg-slate-950 text-slate-50 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+  <body class="bg-surface-base text-text-main font-sans antialiased selection:bg-indigo-500 selection:text-white transition-all-custom">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

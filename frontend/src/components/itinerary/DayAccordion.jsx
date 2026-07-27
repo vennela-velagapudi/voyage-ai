@@ -60,14 +60,14 @@ export default function DayAccordion({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mb-6 rounded-3xl glass-effect border border-slate-800/80 hover:border-slate-700/80 overflow-hidden transition-all duration-300 shadow-xl backdrop-blur-xl bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950">
+    <div className="w-full max-w-4xl mx-auto mb-6 rounded-3xl glass-effect border border-border-theme hover:border-border-subtle overflow-hidden transition-all duration-300 shadow-xl backdrop-blur-xl bg-surface-card/95">
       {/* Accordion Header Toggle Button & Regenerate Option */}
       <div
         onClick={handleToggleClick}
         className={`w-full px-3.5 sm:px-8 py-3.5 sm:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left transition-colors duration-200 cursor-pointer group select-none ${
           isOpen
-            ? 'bg-slate-900/95 border-b border-slate-800/80'
-            : 'bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90 hover:bg-slate-800/60'
+            ? 'bg-surface-inner border-b border-border-theme'
+            : 'bg-surface-card hover:bg-surface-inner'
         }`}
       >
         <div className="flex items-center gap-2.5 sm:gap-5 w-full sm:w-auto min-w-0 pr-1">
@@ -87,21 +87,21 @@ export default function DayAccordion({
           </div>
 
           <div className="min-w-0 flex-grow">
-            <div className="flex items-center gap-1.5 text-indigo-400 text-[11px] sm:text-sm font-bold uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-[11px] sm:text-sm font-bold uppercase tracking-wider">
               <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" />
               <span>Day {dayNumber || dayIndex + 1} Schedule</span>
             </div>
-            <h3 className="text-sm sm:text-2xl font-display font-black text-white group-hover:text-indigo-200 transition-colors tracking-tight mt-0.5 truncate">
+            <h3 className="text-sm sm:text-2xl font-display font-black text-text-main group-hover:text-indigo-600 dark:group-hover:text-indigo-200 transition-colors tracking-tight mt-0.5 truncate">
               {theme || 'Exploring Highlights & Marvels'}
             </h3>
           </div>
         </div>
 
         {/* Action Controls in Header: Move Day Up/Down, Regenerate Day & Toggle Arrow */}
-        <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-2 sm:gap-3 flex-shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-2 sm:gap-3 flex-shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-border-theme">
           {/* Reorder Entire Days Up & Down Controls */}
           <div
-            className="flex items-center gap-0.5 bg-slate-950/90 p-0.5 rounded-xl border border-slate-800/80"
+            className="flex items-center gap-0.5 bg-surface-card/90 p-0.5 rounded-xl border border-border-theme"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -114,8 +114,8 @@ export default function DayAccordion({
               title="Move entire day earlier in itinerary"
               className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                 isFirstDay
-                  ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
-                  : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+                  ? 'opacity-30 cursor-not-allowed border-transparent text-text-subtle'
+                  : 'hover:bg-surface-hover border-transparent hover:border-border-theme text-text-muted hover:text-text-main'
               }`}
               aria-label="Move entire day earlier"
             >
@@ -131,8 +131,8 @@ export default function DayAccordion({
               title="Move entire day later in itinerary"
               className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                 isLastDay
-                  ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
-                  : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
+                  ? 'opacity-30 cursor-not-allowed border-transparent text-text-subtle'
+                  : 'hover:bg-surface-hover border-transparent hover:border-border-theme text-text-muted hover:text-text-main'
               }`}
               aria-label="Move entire day later"
             >
@@ -149,11 +149,11 @@ export default function DayAccordion({
             className={`min-h-[44px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 sm:gap-1.5 px-2.5 sm:px-3 py-2.5 sm:py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all shadow-xs cursor-pointer min-w-0 ${
               isRegeneratingDay
                 ? 'bg-indigo-600/30 border-indigo-500/50 text-indigo-200 cursor-wait animate-pulse'
-                : 'bg-indigo-600/20 hover:bg-indigo-600/35 border-indigo-500/40 hover:border-indigo-400 text-indigo-300'
+                : 'bg-indigo-500/15 hover:bg-indigo-500/25 border-indigo-500/40 hover:border-indigo-500 text-indigo-700 dark:text-indigo-300'
             }`}
           >
             <RefreshCw
-              className={`h-4 w-4 sm:h-3.5 sm:w-3.5 text-indigo-400 flex-shrink-0 ${isRegeneratingDay ? 'animate-spin' : ''}`}
+              className={`h-4 w-4 sm:h-3.5 sm:w-3.5 text-indigo-600 dark:text-indigo-400 flex-shrink-0 ${isRegeneratingDay ? 'animate-spin' : ''}`}
             />
             <span className="truncate">
               {isRegeneratingDay ? 'Regenerating...' : 'Regenerate Day'}
@@ -161,8 +161,8 @@ export default function DayAccordion({
           </button>
 
           {hasTimeline && !isOpen && (
-            <span className="hidden md:inline-flex items-center gap-1 text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800">
-              <Clock className="h-3 w-3 text-indigo-400 flex-shrink-0" />
+            <span className="hidden md:inline-flex items-center gap-1 text-xs text-text-muted bg-surface-inner px-3 py-1.5 rounded-full border border-border-theme">
+              <Clock className="h-3 w-3 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
               <span>{timeline.length} activities</span>
             </span>
           )}
@@ -170,8 +170,8 @@ export default function DayAccordion({
           <div
             className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
               isOpen
-                ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-sm'
-                : 'bg-slate-800/80 border-slate-700/60 text-slate-400 group-hover:text-white group-hover:border-slate-600'
+                ? 'bg-indigo-600/20 border-indigo-500 text-indigo-700 dark:text-indigo-300 shadow-sm'
+                : 'bg-surface-hover border-border-theme text-text-muted group-hover:text-text-main group-hover:border-border-subtle'
             }`}
           >
             <motion.div
@@ -194,32 +194,32 @@ export default function DayAccordion({
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="overflow-hidden"
           >
-            <div className="w-full p-2 sm:p-8 pt-4 sm:pt-6 border-t border-slate-800/80 bg-slate-950/50 space-y-6 sm:space-y-8 relative">
+            <div className="w-full p-2 sm:p-8 pt-4 sm:pt-6 border-t border-border-theme bg-surface-card/50 space-y-6 sm:space-y-8 relative">
               {/* Shimmer loading overlay during single day regeneration */}
               {isRegeneratingDay && (
-                <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs z-30 flex flex-col items-center justify-center p-6 text-center">
+                <div className="absolute inset-0 bg-surface-base/80 backdrop-blur-xs z-30 flex flex-col items-center justify-center p-6 text-center">
                   <div className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin mb-3" />
-                  <p className="text-white text-base font-bold">
+                  <p className="text-text-main text-base font-bold">
                     Regenerating Day {dayNumber || dayIndex + 1} Schedule...
                   </p>
-                  <p className="text-slate-400 text-xs mt-1">
+                  <p className="text-text-muted text-xs mt-1">
                     Our Gemini travel AI is designing a fresh timeline.
                   </p>
                 </div>
               )}
 
               {/* Daily Theme Subnote */}
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-slate-300 pb-3 border-b border-slate-800/80">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-text-body pb-3 border-b border-border-theme">
                 <span className="flex items-center gap-1.5 font-medium pr-2">
-                  <Sparkles className="h-4 w-4 text-amber-400 flex-shrink-0" />
+                  <Sparkles className="h-4 w-4 text-amber-500 dark:text-amber-400 flex-shrink-0" />
                   <span>Use the up/down arrows to smoothly reorder your activities or days.</span>
                 </span>
                 {hasTimeline ? (
-                  <span className="font-mono font-bold text-indigo-400 text-[11px] sm:text-xs">
+                  <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px] sm:text-xs">
                     {timeline.length} ACTIVITIES
                   </span>
                 ) : (
-                  <span className="font-mono font-bold text-rose-400 text-[11px] sm:text-xs">
+                  <span className="font-mono font-bold text-rose-600 dark:text-rose-400 text-[11px] sm:text-xs">
                     0 ACTIVITIES
                   </span>
                 )}
@@ -267,12 +267,12 @@ export default function DayAccordion({
                 </div>
               ) : (
                 /* Empty State when all activities in a day are deleted */
-                <div className="py-12 px-6 rounded-2xl bg-slate-900/50 border border-slate-800/90 text-center space-y-3">
-                  <AlertCircle className="h-10 w-10 text-amber-400 mx-auto opacity-80 animate-bounce" />
-                  <p className="text-lg sm:text-xl font-display font-bold text-slate-200">
+                <div className="py-12 px-6 rounded-2xl bg-surface-inner/60 border border-border-theme text-center space-y-3">
+                  <AlertCircle className="h-10 w-10 text-amber-500 dark:text-amber-400 mx-auto opacity-80 animate-bounce" />
+                  <p className="text-lg sm:text-xl font-display font-bold text-text-body">
                     No activities scheduled for this day.
                   </p>
-                  <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+                  <p className="text-xs sm:text-sm text-text-muted max-w-md mx-auto">
                     You have cleared today&apos;s timeline. Click <strong>Regenerate Day</strong>{' '}
                     above to generate a new AI schedule for Day {dayNumber || dayIndex + 1}.
                   </p>
@@ -280,21 +280,21 @@ export default function DayAccordion({
               )}
 
               {/* Bottom Day Card Section: Estimated Spend & Local Tip */}
-              <div className="pt-6 mt-6 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="pt-6 mt-6 border-t border-border-theme grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Estimated Spend */}
                 {formattedCost && (
-                  <div className="bg-gradient-to-br from-emerald-950/40 via-slate-900/80 to-slate-900 p-5 rounded-2xl border border-emerald-500/30 flex items-start gap-3.5 shadow-md">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
+                  <div className="bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/30 flex items-start gap-3.5 shadow-md">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
                       <Wallet className="h-5 w-5 animate-pulse" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">
                         Estimated Spend
                       </h4>
-                      <p className="text-slate-200 text-sm sm:text-base font-extrabold tracking-wide">
+                      <p className="text-text-body text-sm sm:text-base font-extrabold tracking-wide">
                         {formattedCost}
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-1">
+                      <p className="text-[11px] text-text-muted mt-1">
                         Covers local dining, activities & internal transit in INR
                       </p>
                     </div>
@@ -303,15 +303,15 @@ export default function DayAccordion({
 
                 {/* Local Tip */}
                 {localTip && (
-                  <div className="bg-gradient-to-br from-amber-950/40 via-slate-900/80 to-slate-900 p-5 rounded-2xl border border-amber-500/30 flex items-start gap-3.5 shadow-md">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
+                  <div className="bg-amber-500/10 p-5 rounded-2xl border border-amber-500/30 flex items-start gap-3.5 shadow-md">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
                       <Lightbulb className="h-5 w-5 animate-pulse" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
                         Insider Local Tip
                       </h4>
-                      <p className="text-slate-200 text-sm sm:text-base font-medium leading-relaxed">
+                      <p className="text-text-body text-sm sm:text-base font-medium leading-relaxed">
                         {typeof localTip === 'string'
                           ? localTip
                           : localTip.activity || localTip.description || JSON.stringify(localTip)}
