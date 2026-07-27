@@ -126,7 +126,7 @@ export default function DestinationAutocomplete({
           }}
           onBlur={onBlur}
           placeholder={placeholder}
-          className={`w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-900/80 text-slate-100 placeholder-slate-500 text-sm border transition-all duration-200 focus:outline-none focus:ring-2 ${
+          className={`w-full pl-11 pr-4 py-3.5 min-h-[48px] lg:min-h-0 rounded-xl bg-slate-900/80 text-slate-100 placeholder-slate-500 text-base sm:text-sm lg:text-sm border transition-all duration-200 focus:outline-none focus:ring-2 ${
             error
               ? 'border-rose-500/80 focus:ring-rose-500/30 text-rose-100 bg-rose-950/10'
               : 'border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20'
@@ -145,7 +145,7 @@ export default function DestinationAutocomplete({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-slate-950/95 backdrop-blur-xl border border-indigo-500/30 rounded-2xl shadow-2xl max-h-72 overflow-y-auto divide-y divide-slate-800/80 scrollbar-thin scrollbar-thumb-slate-800"
+            className="absolute left-0 right-0 top-full mt-1.5 z-40 bg-slate-950/98 backdrop-blur-xl border border-indigo-500/30 rounded-2xl shadow-2xl max-h-72 sm:max-h-80 overflow-y-auto divide-y divide-slate-800/80 scrollbar-thin scrollbar-thumb-slate-800"
           >
             {suggestions.map((item) => {
               const Icon = getSuggestionIcon(item.types);
@@ -154,7 +154,7 @@ export default function DestinationAutocomplete({
                   <button
                     type="button"
                     onClick={() => handleSelect(item)}
-                    className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-slate-800/70 transition-colors duration-150 cursor-pointer group"
+                    className="w-full text-left px-4 py-3.5 min-h-[48px] flex items-center gap-3 hover:bg-slate-800/70 transition-colors duration-150 cursor-pointer group"
                   >
                     <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-indigo-500/40 flex items-center justify-center flex-shrink-0">
                       <Icon className="h-4 w-4 text-sky-400 group-hover:text-white transition-colors" />

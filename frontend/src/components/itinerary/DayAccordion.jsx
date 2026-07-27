@@ -98,7 +98,7 @@ export default function DayAccordion({
         </div>
 
         {/* Action Controls in Header: Move Day Up/Down, Regenerate Day & Toggle Arrow */}
-        <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-1.5 sm:gap-3 flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-2 sm:gap-3 flex-shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
           {/* Reorder Entire Days Up & Down Controls */}
           <div
             className="flex items-center gap-0.5 bg-slate-950/90 p-0.5 rounded-xl border border-slate-800/80"
@@ -112,14 +112,14 @@ export default function DayAccordion({
                 if (onMoveDayUp) onMoveDayUp();
               }}
               title="Move entire day earlier in itinerary"
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                 isFirstDay
                   ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
                   : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
               }`}
               aria-label="Move entire day earlier"
             >
-              <ChevronUp className="h-4 w-4" />
+              <ChevronUp className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
             </button>
             <button
               type="button"
@@ -129,14 +129,14 @@ export default function DayAccordion({
                 if (onMoveDayDown) onMoveDayDown();
               }}
               title="Move entire day later in itinerary"
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                 isLastDay
                   ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
                   : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
               }`}
               aria-label="Move entire day later"
             >
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
             </button>
           </div>
 
@@ -146,27 +146,29 @@ export default function DayAccordion({
             onClick={handleRegenerateClick}
             disabled={isRegeneratingDay}
             title="Regenerate this entire day itinerary with AI"
-            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all shadow-xs cursor-pointer ${
+            className={`min-h-[44px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 sm:gap-1.5 px-2.5 sm:px-3 py-2.5 sm:py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all shadow-xs cursor-pointer min-w-0 ${
               isRegeneratingDay
                 ? 'bg-indigo-600/30 border-indigo-500/50 text-indigo-200 cursor-wait animate-pulse'
                 : 'bg-indigo-600/20 hover:bg-indigo-600/35 border-indigo-500/40 hover:border-indigo-400 text-indigo-300'
             }`}
           >
             <RefreshCw
-              className={`h-3.5 w-3.5 text-indigo-400 ${isRegeneratingDay ? 'animate-spin' : ''}`}
+              className={`h-4 w-4 sm:h-3.5 sm:w-3.5 text-indigo-400 flex-shrink-0 ${isRegeneratingDay ? 'animate-spin' : ''}`}
             />
-            <span>{isRegeneratingDay ? 'Regenerating...' : 'Regenerate Day'}</span>
+            <span className="truncate">
+              {isRegeneratingDay ? 'Regenerating...' : 'Regenerate Day'}
+            </span>
           </button>
 
           {hasTimeline && !isOpen && (
             <span className="hidden md:inline-flex items-center gap-1 text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-full border border-slate-800">
-              <Clock className="h-3 w-3 text-indigo-400" />
+              <Clock className="h-3 w-3 text-indigo-400 flex-shrink-0" />
               <span>{timeline.length} activities</span>
             </span>
           )}
 
           <div
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
+            className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center transition-all flex-shrink-0 ml-auto sm:ml-1 ${
               isOpen
                 ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-sm'
                 : 'bg-slate-800/80 border-slate-700/60 text-slate-400 group-hover:text-white group-hover:border-slate-600'
@@ -192,7 +194,7 @@ export default function DayAccordion({
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="overflow-hidden"
           >
-            <div className="p-3 sm:p-8 pt-4 sm:pt-6 border-t border-slate-800/80 bg-slate-950/50 space-y-6 sm:space-y-8 relative overflow-x-hidden">
+            <div className="w-full p-2 sm:p-8 pt-4 sm:pt-6 border-t border-slate-800/80 bg-slate-950/50 space-y-6 sm:space-y-8 relative">
               {/* Shimmer loading overlay during single day regeneration */}
               {isRegeneratingDay && (
                 <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-xs z-30 flex flex-col items-center justify-center p-6 text-center">

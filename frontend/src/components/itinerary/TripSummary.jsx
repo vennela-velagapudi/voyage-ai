@@ -110,7 +110,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-indigo-500/40 backdrop-blur-2xl mb-8 text-left bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950"
+      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-4.5 sm:p-7 lg:p-10 shadow-2xl relative overflow-hidden border border-indigo-500/40 backdrop-blur-2xl mb-6 sm:mb-8 text-left bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950"
     >
       {/* Decorative gradient atmosphere */}
       <div className="absolute -top-32 -right-32 w-80 h-80 bg-indigo-500/15 rounded-full blur-[100px] pointer-events-none" />
@@ -118,15 +118,15 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent pointer-events-none shadow-[0_0_20px_rgba(99,102,241,0.8)]" />
 
       {/* Top Tag */}
-      <div className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/40 text-indigo-300 text-xs font-bold uppercase tracking-wider shadow-inner">
-          <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse" />
+          <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse flex-shrink-0" />
           <span>Trip Summary</span>
         </div>
       </div>
 
       {/* Trip Title */}
-      <h1 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight sm:leading-snug mb-6">
+      <h1 className="font-display font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight sm:leading-snug mb-5 sm:mb-6 break-words">
         {tripTitle || 'Your Itinerary'}
       </h1>
 
@@ -136,14 +136,14 @@ export default function TripSummary({ itinerary, userParams = {} }) {
         <ResponsiveImage
           src={itinerary.destinationImage || itinerary.destinationPhotos[0]}
           alt={destination}
-          className="w-full h-64 sm:h-80 sm:max-h-96 relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800/80 shadow-2xl mb-8 group"
+          className="w-full h-52 sm:h-72 lg:h-80 lg:max-h-96 relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800/80 shadow-2xl mb-6 sm:mb-8 group"
           imageClassName="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102 brightness-[0.95]"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
           <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-xs font-bold shadow">
-              <MapPin className="h-3.5 w-3.5 text-sky-400" />
-              <span>{destination}</span>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 text-slate-200 text-xs font-bold shadow max-w-full truncate">
+              <MapPin className="h-3.5 w-3.5 text-sky-400 flex-shrink-0" />
+              <span className="truncate">{destination}</span>
             </span>
           </div>
         </ResponsiveImage>
@@ -163,11 +163,11 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       )}
 
       {/* Introductory Paragraph */}
-      <div className="bg-slate-900/60 p-5 sm:p-6 rounded-2xl border border-slate-800/80 my-6 flex items-start gap-4 shadow-sm">
+      <div className="bg-slate-900/60 p-4 sm:p-6 rounded-2xl border border-slate-800/80 my-6 flex items-start gap-3.5 sm:gap-4 shadow-sm">
         <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 flex items-center justify-center flex-shrink-0 mt-0.5">
           <Smile className="h-5 w-5 text-indigo-400" />
         </div>
-        <div className="flex-grow">
+        <div className="flex-grow min-w-0">
           <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
             {friendlyIntro}
           </p>
@@ -175,18 +175,18 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       </div>
 
       {/* Dynamic Interactive Travel Pace & Transit Summary Metrics */}
-      <div className="bg-slate-950/80 p-5 rounded-3xl border border-slate-800 mb-6 shadow-inner">
+      <div className="bg-slate-950/80 p-4 sm:p-5 rounded-3xl border border-slate-800 mb-6 shadow-inner">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3.5 flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-indigo-400" />
+          <Gauge className="h-4 w-4 text-indigo-400 flex-shrink-0" />
           <span>Dynamic Schedule Statistics</span>
         </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800/80 flex flex-col justify-center">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
               Total Activities
             </span>
             <span className="text-white font-display font-black text-xl flex items-center gap-1.5">
-              <Clock className="h-4 w-4 text-indigo-400" />
+              <Clock className="h-4 w-4 text-indigo-400 flex-shrink-0" />
               <span>{totalActivities}</span>
             </span>
           </div>
@@ -215,7 +215,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
             <span className="text-[11px] font-bold uppercase tracking-wider block mb-1 opacity-90">
               Estimated Pace
             </span>
-            <span className="text-white font-display font-extrabold text-xs sm:text-sm truncate block">
+            <span className="text-white font-display font-extrabold text-xs sm:text-sm block">
               {estimatedPace}
             </span>
           </div>
@@ -223,12 +223,12 @@ export default function TripSummary({ itinerary, userParams = {} }) {
       </div>
 
       {/* 4 Core Metrics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 my-6 pt-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 my-6 pt-2">
         <div className="flex items-center gap-3 bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 hover:border-indigo-500/40 transition-colors shadow-sm">
           <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 flex-shrink-0">
             <MapPin className="h-5 w-5" />
           </div>
-          <div className="overflow-hidden">
+          <div className="overflow-hidden min-w-0">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
               Destination
             </p>
@@ -240,7 +240,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div className="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 flex-shrink-0">
             <Calendar className="h-5 w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
               Duration
             </p>
@@ -254,7 +254,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
             <Wallet className="h-5 w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Budget</p>
             <p className="text-white text-sm font-extrabold capitalize">{budget}</p>
           </div>
@@ -264,7 +264,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0">
             <Users className="h-5 w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Style</p>
             <p className="text-white text-sm font-extrabold capitalize">{travelStyle}</p>
           </div>
@@ -337,7 +337,7 @@ export default function TripSummary({ itinerary, userParams = {} }) {
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/30 shadow-inner">
             <Lightbulb className="h-5 w-5 animate-pulse" />
           </div>
-          <div>
+          <div className="min-w-0 flex-grow">
             <h4 className="text-sm font-bold text-emerald-300 mb-1">Budget & Logistics Guidance</h4>
             <p className="text-slate-300 text-sm leading-relaxed font-normal">
               {estimatedTotalBudgetTip}

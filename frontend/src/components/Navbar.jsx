@@ -21,7 +21,11 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo - Clickable and navigates to Home (/) */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="flex items-center gap-2.5 group" id="nav-logo-link">
+            <Link
+              to="/"
+              className="flex items-center gap-2.5 group min-h-[44px] min-w-[44px]"
+              id="nav-logo-link"
+            >
               <div className="p-2 rounded-xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 group-hover:scale-105 transition-transform">
                 <PlaneTakeoff className="h-6 w-6" />
               </div>
@@ -59,7 +63,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               id="mobile-menu-btn"
-              className="inline-flex items-center justify-center p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 focus:outline-none border border-slate-800"
+              className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 focus:outline-none border border-slate-800 transition-colors"
               aria-expanded={isOpen}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -70,18 +74,18 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-b border-slate-800 bg-slate-950/95 backdrop-blur-2xl">
-          <div className="px-4 pt-3 pb-6 space-y-2">
+        <div className="md:hidden border-b border-slate-800 bg-slate-950/98 backdrop-blur-2xl shadow-2xl">
+          <div className="px-4 pt-3 pb-6 space-y-2.5">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
                 id={`mobile-nav-link-${link.name.toLowerCase()}`}
                 onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2.5 rounded-xl text-base font-medium transition-colors ${
+                className={`flex items-center min-h-[44px] px-4 py-3 rounded-xl text-base font-medium transition-colors ${
                   isActive(link.path)
-                    ? 'text-indigo-400 bg-indigo-500/15 border border-indigo-500/20 font-bold'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-900/60'
+                    ? 'text-indigo-400 bg-indigo-500/15 border border-indigo-500/20 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-900/80'
                 }`}
               >
                 {link.name}

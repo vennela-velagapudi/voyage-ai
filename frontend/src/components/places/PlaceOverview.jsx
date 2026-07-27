@@ -26,7 +26,7 @@ export default function PlaceOverview({ place }) {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">Address</p>
-              <p className="text-slate-200 text-sm font-medium leading-relaxed mt-0.5">
+              <p className="text-slate-200 text-xs sm:text-sm font-medium leading-relaxed mt-0.5 break-words">
                 {address && address !== 'Not available' && address !== 'Address unavailable'
                   ? address
                   : 'Address unavailable'}
@@ -43,7 +43,9 @@ export default function PlaceOverview({ place }) {
               <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
                 Opening Hours
               </p>
-              <p className="text-slate-200 text-sm font-extrabold mt-0.5">{displayHours}</p>
+              <p className="text-slate-200 text-xs sm:text-sm font-extrabold mt-0.5 break-words">
+                {displayHours}
+              </p>
             </div>
           </div>
 
@@ -53,17 +55,17 @@ export default function PlaceOverview({ place }) {
               href={website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-3 bg-slate-900/70 hover:bg-slate-800 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/40 text-slate-200 hover:text-white transition-all group cursor-pointer shadow-2xs"
+              className="flex items-center justify-between gap-3 bg-slate-900/70 hover:bg-slate-800 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/40 text-slate-200 hover:text-white transition-all group cursor-pointer shadow-2xs min-w-0"
             >
-              <div className="flex items-center gap-3 truncate">
+              <div className="flex items-center gap-3 truncate min-w-0">
                 <div className="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0">
                   <Globe className="h-4.5 w-4.5" />
                 </div>
-                <div className="truncate text-left">
+                <div className="truncate text-left min-w-0">
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-wide">
                     Official Website
                   </p>
-                  <p className="text-sm font-medium truncate text-indigo-300 group-hover:underline">
+                  <p className="text-xs sm:text-sm font-medium truncate text-indigo-300 group-hover:underline">
                     {website}
                   </p>
                 </div>
@@ -79,11 +81,11 @@ export default function PlaceOverview({ place }) {
             href={googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-sky-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-xl shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all transform hover:-translate-y-0.5 cursor-pointer"
+            className="w-full min-h-[48px] sm:min-h-0 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-sky-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 sm:gap-2.5 shadow-xl shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all transform hover:-translate-y-0.5 cursor-pointer text-center"
           >
-            <Navigation className="h-5 w-5 fill-white/20 animate-pulse" />
+            <Navigation className="h-5 w-5 sm:h-5 sm:w-5 fill-white/20 animate-pulse flex-shrink-0" />
             <span>Open Direct in Google Maps</span>
-            <ExternalLink className="h-4 w-4 opacity-80 ml-1" />
+            <ExternalLink className="h-4 w-4 sm:h-4 sm:w-4 opacity-80 ml-1 flex-shrink-0" />
           </a>
         </div>
       </div>

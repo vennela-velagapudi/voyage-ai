@@ -31,7 +31,7 @@ export default function FormInput({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className={`w-full bg-slate-900/80 text-slate-100 placeholder-slate-500 text-sm rounded-xl px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 ${
+          className={`w-full bg-slate-900/80 text-slate-100 placeholder-slate-500 text-base sm:text-sm lg:text-sm min-h-[48px] lg:min-h-0 rounded-xl px-4 py-3 border transition-all duration-200 focus:outline-none focus:ring-2 ${
             error
               ? 'border-rose-500 focus:ring-rose-500/30'
               : 'border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20'

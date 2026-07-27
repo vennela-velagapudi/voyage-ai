@@ -215,14 +215,14 @@ export default function TimelineItem({
         </div>
 
         {/* Interactive Activity Details Card */}
-        <div className="flex-grow pb-5 min-w-0 max-w-[calc(100%-2.75rem)] sm:max-w-none">
+        <div className="flex-1 min-w-0 pb-5">
           <div
             onClick={handlePlaceClick}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handlePlaceClick(e)}
             aria-label={`Explore interactive details for ${title}`}
-            className={`p-3.5 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 cursor-pointer relative overflow-hidden text-left ${
+            className={`p-3 sm:p-6 rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-indigo-500/60 transition-all duration-300 shadow-lg hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.25)] bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900 cursor-pointer relative overflow-hidden text-left w-full ${
               isReplacing ? 'opacity-70 pointer-events-none ring-2 ring-indigo-500/50' : ''
             }`}
           >
@@ -259,14 +259,16 @@ export default function TimelineItem({
             </div>
 
             {/* Title & Aligned Action Controls Row */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 mb-2.5">
-              <h4 className="text-sm sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2 min-w-0 break-words pr-1">
-                <span>{title || 'Curated Activity Experience'}</span>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-2.5 mb-3 sm:mb-2.5">
+              <h4 className="text-base sm:text-xl font-display font-black text-white group-hover:text-indigo-300 transition-colors tracking-tight flex items-center gap-2 min-w-0 w-full break-words pr-1">
+                <span className="break-words min-w-0">
+                  {title || 'Curated Activity Experience'}
+                </span>
               </h4>
 
               {/* Aligned Interactive Action Toolbar on Right Side */}
               <div
-                className="flex flex-wrap items-center gap-1 sm:gap-1.5 w-full sm:w-auto justify-start sm:justify-end flex-shrink-0 pt-1 sm:pt-0"
+                className="flex flex-wrap items-center gap-2 sm:gap-1.5 w-full sm:w-auto justify-start sm:justify-end flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Reorder Up & Down Arrows Grouped at Handle Position */}
@@ -279,14 +281,14 @@ export default function TimelineItem({
                       if (onMoveUp) onMoveUp();
                     }}
                     title="Move activity earlier"
-                    className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                       isFirst
                         ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
                         : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
                     }`}
                     aria-label="Move activity earlier"
                   >
-                    <ChevronUp className="h-4 w-4" />
+                    <ChevronUp className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
                   </button>
 
                   <button
@@ -297,14 +299,14 @@ export default function TimelineItem({
                       if (onMoveDown) onMoveDown();
                     }}
                     title="Move activity later"
-                    className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    className={`min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-lg border transition-all cursor-pointer ${
                       isLast
                         ? 'opacity-30 cursor-not-allowed border-transparent text-slate-600'
                         : 'hover:bg-slate-800 border-transparent hover:border-slate-700 text-slate-300 hover:text-white'
                     }`}
                     aria-label="Move activity later"
                   >
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
                   </button>
                 </div>
 
@@ -314,13 +316,15 @@ export default function TimelineItem({
                   onClick={handleReplaceClick}
                   disabled={isReplacing}
                   title="Replace this activity with an AI alternative"
-                  className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer shadow-xs ${
+                  className={`min-h-[44px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 sm:gap-1 px-3.5 py-2.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-extrabold border transition-all cursor-pointer shadow-xs ${
                     isReplacing
                       ? 'bg-indigo-600/30 border-indigo-500/40 text-indigo-300 cursor-wait'
                       : 'bg-indigo-500/15 hover:bg-indigo-500/25 border-indigo-500/30 hover:border-indigo-400 text-indigo-300'
                   }`}
                 >
-                  <RefreshCw className={`h-3.5 w-3.5 ${isReplacing ? 'animate-spin' : ''}`} />
+                  <RefreshCw
+                    className={`h-4 w-4 sm:h-3.5 sm:w-3.5 flex-shrink-0 ${isReplacing ? 'animate-spin' : ''}`}
+                  />
                   <span>{isReplacing ? 'Replacing...' : 'Replace'}</span>
                 </button>
 
@@ -329,20 +333,20 @@ export default function TimelineItem({
                   type="button"
                   onClick={handleDeleteClick}
                   title="Delete this activity"
-                  className="p-1.5 rounded-xl text-slate-400 hover:text-rose-400 bg-slate-950/60 hover:bg-rose-500/15 border border-slate-800 hover:border-rose-500/40 transition-all cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-1.5 rounded-xl text-slate-400 hover:text-rose-400 bg-slate-950/60 hover:bg-rose-500/15 border border-slate-800 hover:border-rose-500/40 transition-all cursor-pointer"
                   aria-label="Delete activity"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
                 </button>
 
                 {/* Explore Place button */}
                 <span
                   onClick={handlePlaceClick}
-                  className="inline-flex items-center gap-1 text-xs font-extrabold text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 group-hover:border-indigo-400/60 px-2.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 inline-flex items-center justify-center gap-1.5 sm:gap-1 text-xs font-extrabold text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 group-hover:border-indigo-400/60 px-3.5 py-2.5 sm:px-2.5 sm:py-1.5 rounded-xl transition-all shadow-xs cursor-pointer"
                   title="View Google Places Photos & Opening Hours"
                 >
-                  <MapPin className="h-3.5 w-3.5 text-sky-400" />
-                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <MapPin className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-sky-400 flex-shrink-0" />
+                  <ArrowUpRight className="h-4 w-4 sm:h-3.5 sm:w-3.5 flex-shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </div>
             </div>
@@ -352,10 +356,10 @@ export default function TimelineItem({
             </p>
 
             {/* Consultant Intelligence Badges Grid */}
-            <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-800/50 min-w-0 max-w-full">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-2.5 border-t border-slate-800/50 min-w-0 max-w-full">
               {/* Smart Suitability Note */}
               {suitabilityNote && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-semibold bg-purple-500/10 border border-purple-500/30 text-purple-200 break-words max-w-full">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-purple-500/10 border border-purple-500/30 text-purple-200 break-words max-w-full">
                   <Users className="h-3.5 w-3.5 text-purple-400 flex-shrink-0" />
                   <span className="truncate">{suitabilityNote}</span>
                 </span>
@@ -363,7 +367,7 @@ export default function TimelineItem({
 
               {/* Local Travel Note */}
               {travelNote && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-semibold bg-teal-500/10 border border-teal-500/30 text-teal-200 break-words max-w-full">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-teal-500/10 border border-teal-500/30 text-teal-200 break-words max-w-full">
                   <Lightbulb className="h-3.5 w-3.5 text-teal-400 flex-shrink-0" />
                   <span className="truncate">{travelNote}</span>
                 </span>
@@ -371,7 +375,7 @@ export default function TimelineItem({
 
               {/* Scam Prevention Alert */}
               {scamTip && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold bg-amber-500/15 border border-amber-500/40 text-amber-300 shadow-inner break-words max-w-full">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-amber-500/15 border border-amber-500/40 text-amber-300 shadow-inner break-words max-w-full">
                   <AlertTriangle className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
                   <span className="truncate">Tip: {scamTip}</span>
                 </span>
@@ -379,7 +383,7 @@ export default function TimelineItem({
 
               {/* Women's Safety Insight */}
               {safetyNote && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-200 break-words max-w-full">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-xl text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-200 break-words max-w-full">
                   <ShieldCheck className="h-3.5 w-3.5 text-rose-400 flex-shrink-0" />
                   <span className="truncate">Safety: {safetyNote}</span>
                 </span>
@@ -389,10 +393,10 @@ export default function TimelineItem({
               <button
                 type="button"
                 onClick={handleEmergencyClick}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold bg-rose-950/70 hover:bg-rose-900 border border-rose-500/50 text-rose-300 transition-colors shadow-xs ml-auto cursor-pointer flex-shrink-0"
+                className="min-h-[40px] sm:min-h-0 inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-2.5 sm:py-1 rounded-xl text-xs font-bold bg-rose-950/70 hover:bg-rose-900 border border-rose-500/50 text-rose-300 transition-colors shadow-xs ml-auto cursor-pointer flex-shrink-0 w-full sm:w-auto mt-1 sm:mt-0"
                 title="View Local Emergency Helplines & Hospital routing"
               >
-                <ShieldAlert className="h-3.5 w-3.5 text-rose-400 animate-pulse" />
+                <ShieldAlert className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-rose-400 animate-pulse flex-shrink-0" />
                 <span>Emergency Support</span>
               </button>
             </div>

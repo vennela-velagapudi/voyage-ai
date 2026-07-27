@@ -48,7 +48,7 @@ export default function PlaceHeader({ place }) {
       </div>
 
       {/* Place Name */}
-      <h2 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight leading-snug">
+      <h2 className="text-xl sm:text-3xl font-display font-black text-white tracking-tight leading-snug break-words">
         {name || 'Destination Highlight'}
       </h2>
 

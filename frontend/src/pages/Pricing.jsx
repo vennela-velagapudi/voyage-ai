@@ -17,14 +17,14 @@ export default function Pricing() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative overflow-hidden pt-12 pb-28 min-h-screen flex items-center justify-center">
-      {/* Background Decorative Atmosphere */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[650px] pointer-events-none -z-10 overflow-hidden">
+    <div className="w-full relative overflow-hidden pt-12 pb-28 min-h-screen flex items-center justify-center">
+      {/* Background Decorative Atmosphere contained in bounds */}
+      <div className="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-[550px] h-[550px] bg-indigo-600/15 rounded-full blur-[150px]" />
         <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[140px]" />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-6">
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Main Informational Banner */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

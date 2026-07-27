@@ -185,14 +185,14 @@ export default function ItineraryDashboard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-3 sm:py-8 overflow-x-hidden"
+      className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-3 sm:py-8"
       id="itinerary-dashboard"
     >
       {/* Top Personalized Summary Card (Updates dynamically as edits occur) */}
       <TripSummary itinerary={tripData} userParams={userParams} />
 
       {/* Main Itinerary Section Header */}
-      <div className="max-w-4xl mx-auto my-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-5 text-center sm:text-left">
+      <div className="w-full max-w-4xl mx-auto my-6 sm:my-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-5 text-center sm:text-left">
         <div>
           <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2.5">
             <Compass className="h-6 w-6 text-sky-400" />
@@ -213,7 +213,7 @@ export default function ItineraryDashboard({
       </div>
 
       {/* Dedicated Rearrange & Generate New Plan Control */}
-      <div className="max-w-4xl mx-auto mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-slate-900/90 to-slate-900 border border-indigo-500/30 shadow-lg">
+      <div className="w-full max-w-4xl mx-auto mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-slate-900/90 to-slate-900 border border-indigo-500/30 shadow-lg">
         <div className="flex items-center gap-3 text-left w-full sm:w-auto min-w-0">
           <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center flex-shrink-0">
             <RefreshCw
@@ -246,7 +246,7 @@ export default function ItineraryDashboard({
       </div>
 
       {/* Daily Accordions Collection */}
-      <div className="space-y-6 max-w-4xl mx-auto mb-12">
+      <div className="w-full space-y-6 max-w-4xl mx-auto mb-12">
         {tripData.dailyItinerary.map((day, index) => (
           <DayAccordion
             key={day.dayNumber || index}

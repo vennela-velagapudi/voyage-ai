@@ -55,10 +55,10 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
 
             <button
               onClick={onClose}
-              className="p-2 rounded-full bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700 transition-colors cursor-pointer flex-shrink-0"
+              className="min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 flex items-center justify-center p-2.5 sm:p-2 rounded-full bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700 transition-colors cursor-pointer flex-shrink-0"
               aria-label="Close emergency modal"
             >
-              <X className="h-4 sm:h-5 w-4 sm:w-5" />
+              <X className="h-5 sm:h-5 w-5 sm:w-5 flex-shrink-0" />
             </button>
           </div>
 
@@ -78,7 +78,7 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 flex items-center justify-center flex-shrink-0">
                   <Siren className="h-5 w-5" />
                 </div>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden min-w-0">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                     Police
                   </span>
@@ -90,7 +90,7 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                 <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center flex-shrink-0">
                   <HeartPulse className="h-5 w-5" />
                 </div>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden min-w-0">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                     Ambulance
                   </span>
@@ -102,7 +102,7 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                 <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center flex-shrink-0">
                   <Flame className="h-5 w-5" />
                 </div>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden min-w-0">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                     Fire Brigade
                   </span>
@@ -114,7 +114,7 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                 <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0">
                   <PhoneCall className="h-5 w-5" />
                 </div>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden min-w-0">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                     Tourist Helpline
                   </span>
@@ -131,8 +131,8 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Hospital className="h-5 w-5" />
                 </div>
-                <div className="flex-grow">
-                  <div className="flex items-center justify-between gap-2">
+                <div className="flex-grow min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider">
                       Nearest Emergency Hospital
                     </span>
@@ -140,14 +140,16 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
                       href={mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] font-extrabold text-sky-400 bg-sky-500/10 border border-sky-500/30 hover:bg-sky-500/20 px-2.5 py-1 rounded-full transition-all"
+                      className="min-h-[40px] sm:min-h-0 inline-flex items-center gap-1 text-xs sm:text-[11px] font-extrabold text-sky-400 bg-sky-500/10 border border-sky-500/30 hover:bg-sky-500/20 px-3 py-1.5 sm:px-2.5 sm:py-1 rounded-full transition-all"
                     >
                       <span>Google Maps</span>
-                      <ExternalLink className="h-3 w-3" />
+                      <ExternalLink className="h-3.5 w-3.5 sm:h-3 sm:w-3 flex-shrink-0" />
                     </a>
                   </div>
-                  <h4 className="text-base font-bold text-white mt-1.5">{hospitalName}</h4>
-                  <p className="text-slate-400 text-xs flex items-center gap-1 mt-1">
+                  <h4 className="text-base font-bold text-white mt-1.5 break-words">
+                    {hospitalName}
+                  </h4>
+                  <p className="text-slate-400 text-xs flex items-center gap-1 mt-1 break-words">
                     <MapPin className="h-3.5 w-3.5 text-slate-500 flex-shrink-0" />
                     <span>{hospitalAddress}</span>
                   </p>
@@ -160,7 +162,7 @@ export default function EmergencyModal({ isOpen, onClose, destination, emergency
           <div className="bg-slate-950/90 p-4 border-t border-slate-800 text-center">
             <button
               onClick={onClose}
-              className="w-full py-2.5 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold transition-all border border-slate-700 cursor-pointer shadow"
+              className="w-full min-h-[44px] sm:min-h-0 py-3 sm:py-2.5 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold transition-all border border-slate-700 cursor-pointer shadow flex items-center justify-center"
             >
               Done & Close
             </button>

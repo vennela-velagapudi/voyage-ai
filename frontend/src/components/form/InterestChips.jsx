@@ -37,7 +37,7 @@ export default function InterestChips({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold border transition-colors cursor-pointer ${
+              className={`inline-flex items-center gap-2 min-h-[44px] sm:min-h-[38px] lg:min-h-0 px-4 sm:px-3.5 py-2.5 lg:py-2 rounded-full text-sm sm:text-xs lg:text-xs font-semibold border transition-colors cursor-pointer ${
                 isSelected
                   ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-sm'
                   : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'

@@ -74,14 +74,14 @@ export default function Features() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative overflow-hidden pt-12 pb-28 min-h-screen">
-      {/* Background atmosphere */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[700px] pointer-events-none -z-10 overflow-hidden">
+    <div className="w-full relative overflow-hidden pt-12 pb-28 min-h-screen">
+      {/* Background atmosphere contained in bounds */}
+      <div className="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px]" />
         <div className="absolute -bottom-10 right-1/4 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[130px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.div

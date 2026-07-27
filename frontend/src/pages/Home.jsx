@@ -19,17 +19,17 @@ export default function Home() {
   };
 
   return (
-    <div className="relative overflow-hidden pt-10 pb-24 lg:pb-32">
-      {/* Background Decorative Gradients and Grid */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[700px] pointer-events-none -z-10 overflow-hidden">
+    <div className="w-full relative overflow-hidden pt-10 pb-24 lg:pb-32">
+      {/* Background Decorative Gradients and Grid contained within bounds */}
+      <div className="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden">
         <div className="absolute -top-32 left-1/4 w-[600px] h-[600px] bg-indigo-600/15 rounded-full blur-[140px]" />
         <div className="absolute top-20 right-1/4 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[130px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-purple-600/10 rounded-full blur-[160px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <div className="max-w-4xl mx-auto text-center pt-8 sm:pt-16 pb-16 sm:pb-24">
+        <div className="w-full max-w-4xl mx-auto text-center pt-8 sm:pt-16 pb-16 sm:pb-24">
           {/* Decorative Badge */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}

@@ -4,14 +4,14 @@ import { Sparkles, Brain, Globe, Compass, Users, ShieldCheck } from 'lucide-reac
 
 export default function About() {
   return (
-    <div className="relative overflow-hidden pt-12 pb-28 min-h-screen">
-      {/* Background Decorative Atmosphere */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[650px] pointer-events-none -z-10 overflow-hidden">
+    <div className="w-full relative overflow-hidden pt-12 pb-28 min-h-screen">
+      {/* Background Decorative Atmosphere contained in bounds */}
+      <div className="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-[550px] h-[550px] bg-indigo-600/15 rounded-full blur-[140px]" />
         <div className="absolute -bottom-10 right-1/4 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[130px]" />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-16">
           <motion.div

@@ -382,26 +382,26 @@ export default function TripPlannerCard() {
       initial={{ opacity: 0, y: 35 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
-      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-6 sm:p-10 shadow-2xl relative overflow-hidden border border-slate-800/80 backdrop-blur-xl"
+      className="w-full max-w-4xl mx-auto rounded-3xl glass-effect p-4.5 sm:p-7 lg:p-10 shadow-2xl relative overflow-hidden border border-slate-800/80 backdrop-blur-xl"
       id="trip-planner-card"
     >
       {/* Top subtle glow bar */}
       <div className="absolute -top-px left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent pointer-events-none" />
 
-      <div className="mb-8 text-center sm:text-left border-b border-slate-800/80 pb-6">
+      <div className="mb-6 sm:mb-8 text-center sm:text-left border-b border-slate-800/80 pb-5 sm:pb-6">
         <h2 className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2.5">
-          <Sparkles className="h-6 w-6 text-indigo-400" />
+          <Sparkles className="h-6 w-6 text-indigo-400 flex-shrink-0" />
           <span>Design Your Itinerary</span>
         </h2>
-        <p className="text-slate-400 text-sm mt-1.5">
+        <p className="text-slate-400 text-sm mt-1.5 leading-relaxed">
           Provide your travel parameters below. Our intelligent engine validates your destination
           and optimizes your perfect trip route.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8" noValidate>
         {/* Row 1: Destination Autocomplete & Duration */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
           <DestinationAutocomplete
             id="input-destination"
             label="Destination City, Country or Landmark"
@@ -519,13 +519,13 @@ export default function TripPlannerCard() {
             value={formData.notes}
             onChange={(e) => handleChange('notes', e.target.value)}
             maxLength={500}
-            className="w-full bg-slate-900/80 text-slate-100 placeholder-slate-500 text-sm rounded-xl p-4 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200 resize-none"
+            className="w-full bg-slate-900/80 text-slate-100 placeholder-slate-500 text-base sm:text-sm lg:text-sm rounded-xl p-4 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200 resize-none min-h-[88px] sm:min-h-[80px]"
           />
         </div>
 
         {/* Submission & Validation Notice */}
-        <div className="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-slate-500 text-center sm:text-left">
+        <div className="pt-4 sm:pt-5 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4.5 sm:gap-4">
+          <div className="text-xs text-slate-500 text-center sm:text-left w-full sm:w-auto">
             {!isValid ? (
               <span className="text-amber-400 font-medium flex items-center gap-1.5 justify-center sm:justify-start">
                 <span className="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
@@ -534,7 +534,7 @@ export default function TripPlannerCard() {
               </span>
             ) : (
               <span className="text-emerald-400 font-medium flex items-center gap-1.5 justify-center sm:justify-start">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
                 All criteria verified and ready to generate!
               </span>
             )}
@@ -546,7 +546,7 @@ export default function TripPlannerCard() {
             disabled={!isValid}
             whileHover={isValid ? { scale: 1.03 } : {}}
             whileTap={isValid ? { scale: 0.98 } : {}}
-            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-display font-bold text-sm tracking-wide transition-all duration-300 shadow-lg ${
+            className={`w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 sm:py-4 min-h-[52px] sm:min-h-[48px] lg:min-h-[44px] rounded-xl font-display font-bold text-base sm:text-sm lg:text-sm tracking-wide transition-all duration-300 shadow-lg ${
               isValid
                 ? 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white glow-effect cursor-pointer'
                 : 'bg-slate-800/80 text-slate-500 border border-slate-700/50 cursor-not-allowed opacity-60'
@@ -554,7 +554,7 @@ export default function TripPlannerCard() {
           >
             <span>Generate Trip</span>
             <Send
-              className={`h-4 w-4 ${isValid ? 'text-white animate-bounce' : 'text-slate-600'}`}
+              className={`h-5 w-5 sm:h-4 sm:w-4 ${isValid ? 'text-white animate-bounce' : 'text-slate-600'}`}
             />
           </motion.button>
         </div>

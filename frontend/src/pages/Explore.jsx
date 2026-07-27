@@ -223,14 +223,14 @@ export default function Explore() {
   };
 
   return (
-    <div className="relative overflow-hidden pt-12 pb-24 min-h-screen">
-      {/* Background Atmosphere */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10 overflow-hidden">
+    <div className="w-full relative overflow-hidden pt-12 pb-24 min-h-screen">
+      {/* Background Atmosphere contained in bounds */}
+      <div className="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-0 right-1/3 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[130px]" />
         <div className="absolute bottom-0 left-1/3 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[130px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.div
