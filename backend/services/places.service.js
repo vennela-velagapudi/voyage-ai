@@ -20,6 +20,132 @@ function getApiKey() {
 }
 
 /**
+ * Ensures that any string (place name, address, description, city, country) contains zero non-English (non-Latin) scripts.
+ * Translates known terms via dictionary mapping, replaces common suffixes, strips lingering native scripts, or defaults to clean English fallback context.
+ */
+export function sanitizeToEnglish(text, fallbackContext = '') {
+  if (!text || typeof text !== 'string') return '';
+
+  const nonLatinRegex =
+    /[\u3040-\u30FF\u4E00-\u9FAF\uAC00-\uD7AF\u1100-\u11FF\u0400-\u052F\u0600-\u06FF\u0750-\u077F]/;
+
+  // If already pure Latin/English script, return immediately
+  if (!nonLatinRegex.test(text)) {
+    return text;
+  }
+
+  let cleaned = text;
+
+  // 1. Comprehensive dictionary mapping of common native terms and famous attractions to official English names
+  const dictionary = {
+    東京都: 'Tokyo',
+    東京: 'Tokyo',
+    日本: 'Japan',
+    渋谷区: 'Shibuya City',
+    渋谷: 'Shibuya',
+    新宿区: 'Shinjuku City',
+    新宿: 'Shinjuku',
+    港区: 'Minato City',
+    台東区: 'Taito City',
+    中央区: 'Chuo City',
+    千代田区: 'Chiyoda City',
+    品川区: 'Shinagawa City',
+    目黒区: 'Meguro City',
+    豊島区: 'Toshima City',
+    墨田区: 'Sumida City',
+    江東区: 'Koto City',
+    文京区: 'Bunkyo City',
+    '金龍山 浅草寺': 'Senso-ji Temple',
+    浅草寺: 'Senso-ji Temple',
+    浅草: 'Asakusa',
+    明治神宮: 'Meiji Jingu Shrine',
+    東京タワー: 'Tokyo Tower',
+    渋谷駅前交差点: 'Shibuya Scramble Crossing',
+    秋葉原: 'Akihabara',
+    築地場外市場: 'Tsukiji Outer Market',
+    築地: 'Tsukiji',
+    上野公園: 'Ueno Park',
+    新宿御苑: 'Shinjuku Gyoen National Garden',
+    京都: 'Kyoto',
+    大阪: 'Osaka',
+    北京: 'Beijing',
+    中国: 'China',
+    서울: 'Seoul',
+    대한민국: 'South Korea',
+    Москва: 'Moscow',
+    Россия: 'Russia',
+    دبي: 'Dubai',
+    'الإمارات العربية المتحدة': 'United Arab Emirates',
+  };
+
+  for (const [native, eng] of Object.entries(dictionary)) {
+    cleaned = cleaned.split(native).join(eng);
+  }
+
+  // If dictionary mapping completely resolved all non-Latin characters, return cleanly
+  if (!nonLatinRegex.test(cleaned)) {
+    return cleaned.replace(/,\s*,/g, ',').trim();
+  }
+
+  // 2. Component-level cleaning and suffix translation for remaining addresses
+  const components = cleaned.split(',');
+  const resultComponents = [];
+
+  for (let comp of components) {
+    comp = comp.trim();
+    if (!comp) continue;
+    if (!nonLatinRegex.test(comp)) {
+      resultComponents.push(comp);
+      continue;
+    }
+
+    // Replace common native structural suffixes before stripping
+    comp = comp
+      .replace(/区$/g, ' City')
+      .replace(/[都府県]$/g, ' Prefecture')
+      .replace(/市$/g, ' City')
+      .replace(/町$/g, ' Town')
+      .replace(/通り$/g, ' Street')
+      .replace(/神宮$/g, ' Shrine')
+      .replace(/寺$/g, ' Temple')
+      .replace(/公園$/g, ' Park');
+
+    // Strip remaining non-Latin script characters
+    const stripped = comp
+      .replace(
+        /[\u3040-\u30FF\u4E00-\u9FAF\uAC00-\uD7AF\u1100-\u11FF\u0400-\u052F\u0600-\u06FF\u0750-\u077F]+/g,
+        ''
+      )
+      .trim();
+
+    // Only keep component if it contains readable English alphanumeric words (not just random numbers or punctuation)
+    if (stripped.length >= 2 && /[a-zA-Z]/.test(stripped)) {
+      resultComponents.push(stripped);
+    }
+  }
+
+  const result = resultComponents.join(', ').replace(/\s+/g, ' ').trim();
+  if (result.length >= 3 && /[a-zA-Z]/.test(result)) {
+    return result;
+  }
+
+  // 3. Fallback to clean English context if address couldn't be cleanly romanized
+  if (fallbackContext && typeof fallbackContext === 'string') {
+    const cleanContext = fallbackContext
+      .replace(
+        /[\u3040-\u30FF\u4E00-\u9FAF\uAC00-\uD7AF\u1100-\u11FF\u0400-\u052F\u0600-\u06FF\u0750-\u077F]+/g,
+        ''
+      )
+      .trim();
+    if (cleanContext.length >= 2 && /[a-zA-Z]/.test(cleanContext)) {
+      return cleanContext.startsWith(',') ? cleanContext.slice(1).trim() : cleanContext;
+    }
+  }
+
+  return 'Address unavailable';
+}
+
+/**
  * Processes Google Places photo objects to sort and construct real Google Places Media API URLs.
  * CRITICAL REQUIREMENT: If multiple photos are available, prioritize and select the highest-quality landscape photo.
  * Do NOT use AI-generated, stock placeholder, or random images.
@@ -120,18 +246,22 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
   if (!place) return null;
 
   const id = place.id || place.name;
-  const name = place.displayName?.text || 'Unknown Destination';
+  const name = sanitizeToEnglish(place.displayName?.text || 'Unknown Destination', 'Destination');
   const category = formatCategory(place.types);
   const rating = place.rating !== undefined ? Number(place.rating) : 4.5;
   const reviewsCount = place.userRatingCount || 120;
-  const address = place.formattedAddress || 'Central district area';
-  const description =
-    place.editorialSummary?.text ||
-    `Renowned ${category.toLowerCase()} located in ${address}. A celebrated highlight featuring authentic cultural atmospheres and scenic surroundings.`;
+  const address = sanitizeToEnglish(
+    place.formattedAddress || 'Address unavailable',
+    'Address unavailable'
+  );
+  const description = sanitizeToEnglish(
+    place.editorialSummary?.text || 'Description unavailable',
+    'Description unavailable'
+  );
   const website = place.websiteUri || null;
   const googleMapsUrl =
     place.googleMapsUri ||
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + address)}`;
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + (place.formattedAddress ? ' ' + place.formattedAddress : ''))}`;
 
   const coordinates =
     place.location?.latitude && place.location?.longitude
@@ -142,7 +272,7 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
   const hoursData = place.currentOpeningHours || place.regularOpeningHours || null;
   const openNow = hoursData?.openNow !== undefined ? hoursData.openNow : null;
 
-  let openingHours = 'Not available';
+  let openingHours = 'Hours not available';
   if (
     hoursData &&
     Array.isArray(hoursData.weekdayDescriptions) &&
@@ -196,15 +326,12 @@ function transformPlaceData(place, apiKey, baseCoords = null) {
 
 /**
  * Enriches any place data object with complete opening hours, high-quality photos, google maps links, emergency contacts, and travel tips.
+ * Guarantees 100% English-only characters for place name, address, city, state/prefecture, country, and description.
  */
 function enrichPlace(place = {}, query = 'Destination Highlight', destination = '') {
-  const name = place.name || query || 'Destination Highlight';
-  const loc =
-    destination ||
-    (place.address && place.address.includes(',')
-      ? place.address.split(',').slice(-1)[0].trim()
-      : 'Central District');
-  const destCity = destination ? destination.split(',')[0].trim() : loc.split(',')[0].trim();
+  const cleanName = sanitizeToEnglish(place.name || query || 'Destination Highlight', query);
+  const cleanDest = sanitizeToEnglish(destination || '', 'Tokyo, Japan');
+
   const defaultPhotos = [
     'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=800&q=80',
@@ -213,30 +340,104 @@ function enrichPlace(place = {}, query = 'Destination Highlight', destination = 
   const photos =
     Array.isArray(place.photos) && place.photos.length > 0 ? place.photos : defaultPhotos;
 
+  const rawAddress =
+    place.address &&
+    place.address !== 'Central district area' &&
+    place.address !== 'Address unavailable'
+      ? place.address
+      : 'Address unavailable';
+
+  const cleanAddress =
+    rawAddress === 'Address unavailable'
+      ? 'Address unavailable'
+      : sanitizeToEnglish(rawAddress, cleanDest || cleanName);
+  const cleanDescription =
+    place.description && place.description !== 'Description unavailable'
+      ? sanitizeToEnglish(place.description, 'Description unavailable')
+      : 'Description unavailable';
+
+  // Extract English city, state/prefecture, and country from cleaned address and destination
+  const addrParts =
+    cleanAddress !== 'Address unavailable'
+      ? cleanAddress
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+  const destParts = cleanDest
+    ? cleanDest
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+  const referenceParts = addrParts.length >= 2 ? addrParts : destParts;
+
+  let country = place.country || 'Japan';
+  let city = place.city || 'Tokyo';
+  let state = place.state || place.prefecture || 'Tokyo';
+
+  if (referenceParts.length > 0) {
+    const lastPart = referenceParts[referenceParts.length - 1].replace(/[0-9-]/g, '').trim();
+    if (lastPart && /[a-zA-Z]/.test(lastPart)) country = lastPart;
+    if (referenceParts.length >= 2) {
+      const secondLast = referenceParts[referenceParts.length - 2].replace(/[0-9-]/g, '').trim();
+      if (secondLast && /[a-zA-Z]/.test(secondLast)) state = secondLast;
+      else state = destParts[0] || 'Tokyo';
+    }
+    if (referenceParts.length >= 3) {
+      const thirdLast = referenceParts[referenceParts.length - 3].replace(/[0-9-]/g, '').trim();
+      if (thirdLast && /[a-zA-Z]/.test(thirdLast)) city = thirdLast;
+      else city = destParts[0] || state || 'Tokyo';
+    } else {
+      city = destParts[0] || state || 'Tokyo';
+    }
+  }
+
+  if (
+    country === 'Japan' &&
+    !state.includes('Prefecture') &&
+    state !== 'Tokyo' &&
+    state !== 'Kyoto' &&
+    state !== 'Osaka' &&
+    state !== 'Hokkaido'
+  ) {
+    if (state && !state.includes('City')) state = `${state} Prefecture`;
+  }
+  if (state === 'Tokyo' || city === 'Tokyo') {
+    state = 'Tokyo Prefecture';
+    if (!city || city === 'Japan') city = 'Tokyo';
+  }
+
+  city = sanitizeToEnglish(city, 'Tokyo');
+  state = sanitizeToEnglish(state, 'Tokyo Prefecture');
+  country = sanitizeToEnglish(country, 'Japan');
+
+  const destCity = city || (cleanDest ? cleanDest.split(',')[0].trim() : 'Tokyo');
+
   return {
     id: place.id || `place_${Date.now()}`,
-    name,
+    name: cleanName,
     category: place.category || 'Attraction & Highlight',
     rating: place.rating !== undefined ? Number(place.rating) : 4.7,
     reviewsCount: place.reviewsCount !== undefined ? place.reviewsCount : 420,
-    description:
-      place.description && place.description.length > 10
-        ? place.description
-        : `An essential landmark and highlight in ${destCity}. Celebrated for its authentic atmosphere, scenic surroundings, and enriching traveler experiences.`,
-    address:
-      place.address && place.address !== 'Central district area'
-        ? place.address
-        : `${name}, ${destCity}`,
+    description: cleanDescription,
+    address: cleanAddress,
+    city,
+    state,
+    prefecture: state,
+    country,
     openingHours:
-      place.openingHours && place.openingHours !== 'Not available'
+      place.openingHours &&
+      place.openingHours !== 'Not available' &&
+      place.openingHours !== 'Hours not available'
         ? place.openingHours
-        : '9:00 AM – 6:00 PM',
+        : 'Hours not available',
     closingHours: place.closingHours || null,
     openNow: place.openNow !== undefined && place.openNow !== null ? place.openNow : true,
     website: place.website || null,
     googleMapsUrl:
       place.googleMapsUrl ||
-      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + (destination ? ', ' + destination : ''))}`,
+      `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanName + (cleanDest ? ', ' + cleanDest : ''))}`,
     coordinates:
       place.coordinates && place.coordinates.lat ? place.coordinates : { lat: 0, lng: 0 },
     photos,
@@ -287,6 +488,7 @@ export async function searchPlace({ query, destination }) {
       },
       body: JSON.stringify({
         textQuery: fullQuery,
+        languageCode: 'en',
         maxResultCount: 1,
       }),
     });
@@ -305,21 +507,46 @@ export async function searchPlace({ query, destination }) {
         `[Places Search API Notice]: Google Places API unavailable or empty for "${fullQuery}". Using OpenStreetMap Nominatim fallback.`
       );
       try {
+        let isCityFallback = false;
         let res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullQuery)}&format=json&limit=1`,
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullQuery)}&format=json&limit=1&accept-language=en`,
           {
-            headers: { 'User-Agent': 'VoyageAI-App/1.0' },
+            headers: { 'User-Agent': 'VoyageAI-App/1.0', 'Accept-Language': 'en-US,en;q=0.9' },
           }
         );
         let data = await res.json();
 
-        // If specific activity title returned 0 matches, search by destination city or primary noun to capture valid coordinates
+        // If specific activity title returned 0 matches, attempt cleaning common AI conversational prefixes before falling back to city
+        if (!Array.isArray(data) || data.length === 0) {
+          const cleanedQuery = query
+            .replace(
+              /^(visit (to|of)?|explore|stroll (in|around|along|through)?|walk (in|around|along|through)?|lunch (at|in|near)?|dinner (at|in|near)?|breakfast (at|in|near)?|enjoy (a )?|tour (of)?|spend (the )?(morning|afternoon|evening) at|shopping at|relax at|drinks at)\s+/i,
+              ''
+            )
+            .trim();
+          if (cleanedQuery && cleanedQuery.toLowerCase() !== query.toLowerCase()) {
+            const retryQuery =
+              destination && !cleanedQuery.toLowerCase().includes(destination.toLowerCase())
+                ? `${cleanedQuery}, ${destination}`
+                : cleanedQuery;
+            res = await fetch(
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(retryQuery)}&format=json&limit=1&accept-language=en`,
+              {
+                headers: { 'User-Agent': 'VoyageAI-App/1.0', 'Accept-Language': 'en-US,en;q=0.9' },
+              }
+            );
+            data = await res.json();
+          }
+        }
+
+        // If specific place is still not found, fallback to destination city strictly for valid coordinates, marking as city fallback
         if (!Array.isArray(data) || data.length === 0) {
           if (destination) {
+            isCityFallback = true;
             res = await fetch(
-              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(destination)}&format=json&limit=1`,
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(destination)}&format=json&limit=1&accept-language=en`,
               {
-                headers: { 'User-Agent': 'VoyageAI-App/1.0' },
+                headers: { 'User-Agent': 'VoyageAI-App/1.0', 'Accept-Language': 'en-US,en;q=0.9' },
               }
             );
             data = await res.json();
@@ -332,13 +559,17 @@ export async function searchPlace({ query, destination }) {
           const lng = parseFloat(osm.lon);
           placeDetails = {
             id: `osm_${osm.place_id}`,
-            name: query,
+            name: sanitizeToEnglish(query, 'Attraction'),
             category: osm.type
               ? osm.type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
               : 'Attraction',
             rating: 4.7,
             reviewsCount: 380,
-            address: osm.display_name,
+            address: isCityFallback
+              ? 'Address unavailable'
+              : sanitizeToEnglish(osm.display_name, destination || query),
+            description: 'Description unavailable',
+            openingHours: 'Hours not available',
             coordinates: !isNaN(lat) && !isNaN(lng) ? { lat, lng } : { lat: 0, lng: 0 },
             distance: 'Central attraction zone',
           };
@@ -371,7 +602,7 @@ export async function getPlaceDetails(placeId) {
   }
 
   const resourcePath = placeId.startsWith('places/') ? placeId : `places/${placeId}`;
-  const url = `https://places.googleapis.com/v1/${resourcePath}`;
+  const url = `https://places.googleapis.com/v1/${resourcePath}?languageCode=en`;
   const fieldMask =
     'id,displayName,formattedAddress,location,rating,userRatingCount,types,photos,websiteUri,currentOpeningHours,regularOpeningHours,googleMapsUri,priceLevel,editorialSummary';
 
@@ -456,6 +687,7 @@ export async function searchNearby({ lat, lng, category = 'restaurant' }) {
       body: JSON.stringify({
         includedTypes,
         maxResultCount: maxResults,
+        languageCode: 'en',
         locationRestriction: {
           circle: {
             center: {
@@ -503,8 +735,8 @@ async function fallbackValidateDestination(cleanQuery) {
       `[Destination Validation] Google Places unavailable/quota exceeded. Using Nominatim fallback for "${cleanQuery}"...`
     );
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQuery)}&format=json&limit=1`,
-      { headers: { 'User-Agent': 'VoyageAI-App/1.0' } }
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQuery)}&format=json&limit=1&accept-language=en`,
+      { headers: { 'User-Agent': 'VoyageAI-App/1.0', 'Accept-Language': 'en-US,en;q=0.9' } }
     );
     if (!res.ok) {
       return {
@@ -538,12 +770,15 @@ async function fallbackValidateDestination(cleanQuery) {
     ) {
       types = ['tourist_attraction', 'historical_landmark', 'monument'];
     }
+    const engDestination = sanitizeToEnglish(osm.display_name || cleanQuery, cleanQuery);
+    const engName = sanitizeToEnglish(cleanQuery, cleanQuery);
+
     return {
       valid: true,
-      formattedDestination: osm.display_name || cleanQuery,
+      formattedDestination: engDestination,
       place: {
-        displayName: { text: cleanQuery },
-        formattedAddress: osm.display_name || cleanQuery,
+        displayName: { text: engName },
+        formattedAddress: engDestination,
         types: types,
       },
       photos: [],
@@ -607,6 +842,7 @@ export async function validateDestination(destination) {
       },
       body: JSON.stringify({
         textQuery: cleanQuery,
+        languageCode: 'en',
         maxResultCount: 3,
       }),
     });
@@ -650,11 +886,22 @@ export async function validateDestination(destination) {
             place.types.includes('park')
           ) {
             const photos = extractSortedPhotos(place.photos, apiKey);
+            const engDestination = sanitizeToEnglish(
+              place.displayName?.text || cleanQuery,
+              cleanQuery
+            );
 
             return {
               valid: true,
-              formattedDestination: place.displayName?.text || cleanQuery,
-              place: place,
+              formattedDestination: engDestination,
+              place: {
+                ...place,
+                displayName: { ...place.displayName, text: engDestination },
+                formattedAddress: sanitizeToEnglish(
+                  place.formattedAddress || engDestination,
+                  engDestination
+                ),
+              },
               photos: photos,
               primaryPhoto: photos[0] || null,
             };
@@ -693,6 +940,7 @@ export async function autocompleteDestinations(input) {
       },
       body: JSON.stringify({
         input: input.trim(),
+        languageCode: 'en',
       }),
     });
 
@@ -730,11 +978,20 @@ export async function autocompleteDestinations(input) {
         const types = pred.types || [];
         const isSuitable = types.some((t) => validTypes.has(t));
         if (isSuitable || types.length === 0) {
+          const label = sanitizeToEnglish(pred.text.text, input);
+          const mainText = sanitizeToEnglish(
+            pred.structuredFormat?.mainText?.text || pred.text.text,
+            input
+          );
+          const secondaryText = pred.structuredFormat?.secondaryText?.text
+            ? sanitizeToEnglish(pred.structuredFormat.secondaryText.text, '')
+            : '';
+
           suggestions.push({
             placeId: pred.placeId,
-            label: pred.text.text,
-            mainText: pred.structuredFormat?.mainText?.text || pred.text.text,
-            secondaryText: pred.structuredFormat?.secondaryText?.text || '',
+            label,
+            mainText,
+            secondaryText,
             types: types,
           });
         }

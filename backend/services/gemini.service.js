@@ -1,10 +1,37 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { sanitizeToEnglish } from './places.service.js';
+
+/**
+ * Recursively inspects any object, array, or string produced by AI and forces pure English text by removing non-Latin scripts.
+ */
+function sanitizeAiObjectToEnglish(obj) {
+  if (typeof obj === 'string') {
+    return sanitizeToEnglish(obj, obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeAiObjectToEnglish);
+  }
+  if (obj && typeof obj === 'object') {
+    const res = {};
+    for (const [key, val] of Object.entries(obj)) {
+      if (typeof val === 'string') {
+        res[key] = sanitizeToEnglish(val, val);
+      } else if (typeof val === 'object' && val !== null) {
+        res[key] = sanitizeAiObjectToEnglish(val);
+      } else {
+        res[key] = val;
+      }
+    }
+    return res;
+  }
+  return obj;
+}
 
 /**
  * Validates and sanitizes the raw text returned by Gemini to ensure strict JSON structure.
  * Isolates outermost brackets and safely cleans trailing commas and formatting artifacts.
  * @param {string} rawText - The raw output text from the AI model.
- * @returns {object} Parsed and validated JSON object.
+ * @returns {object} Parsed and validated JSON object with 100% English text only.
  */
 function sanitizeAndParseJson(rawText) {
   if (!rawText) {
@@ -43,7 +70,7 @@ function sanitizeAndParseJson(rawText) {
   cleanText = cleanText.replace(/,\s*([\]}])/g, '$1');
 
   try {
-    return JSON.parse(cleanText);
+    return sanitizeAiObjectToEnglish(JSON.parse(cleanText));
   } catch (parseError) {
     if (process.env.NODE_ENV !== 'production') {
       console.error('[Raw Malformed AI Output]:', rawText);
@@ -64,6 +91,7 @@ const GEMINI_MODEL_POOL = [
 ].filter((v, i, a) => a.indexOf(v) === i);
 
 async function generateContentWithModelPool(genAI, prompt, maxTokens = 32768) {
+  const enforcedPrompt = `${prompt}\n\nCRITICAL LANGUAGE MANDATE: All text in your JSON output (titles, activities, themes, locations, descriptions, addresses, travel tips) must be strictly 100% English. Do NOT output characters in Japanese Kanji, Hiragana, Katakana, Chinese, Korean, Cyrillic, Arabic, or any non-Latin scripts. Always use official English names and standard romanizations.`;
   let lastError;
   for (let i = 0; i < GEMINI_MODEL_POOL.length; i++) {
     const modelName = GEMINI_MODEL_POOL[i];
@@ -76,7 +104,7 @@ async function generateContentWithModelPool(genAI, prompt, maxTokens = 32768) {
           maxOutputTokens: maxTokens,
         },
       });
-      return await model.generateContent(prompt);
+      return await model.generateContent(enforcedPrompt);
     } catch (err) {
       lastError = err;
       const msg = String(err.message || '');
@@ -202,7 +230,7 @@ async function generateItineraryChunk({
       (d) => d.dayNumber >= startDay && d.dayNumber <= endDay
     );
     if (chunkExistingDays.length > 0) {
-      existingItineraryGuidance = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY SCHEDULE REBUILDING AROUND USER EDITS):\nThe user has actively customized their trip itinerary by deleting activities, replacing items, and reordering their schedule or days. Treat this current customized itinerary for Days ${startDay}–${endDay} as your IMMUTABLE BASELINE:\n${JSON.stringify(chunkExistingDays, null, 2)}\nWhen refreshing and regenerating the itinerary, you MUST obey these rules:\n1. RESPECT DELETED ITEMS: Do NOT restore activities that were deleted by the user; deleted activities must stay deleted and never reappear.\n2. RESPECT REPLACED ACTIVITIES: Keep all alternative activities that the user replaced intact and in their designated time slots.\n3. RESPECT REORDERED ACTIVITIES & DAYS: Maintain the user's updated chronological ordering of activities and days.\n4. INTELLIGENTLY REBUILD INCOMPLETE DAYS: When deleting an activity leaves a day incomplete or with large gaps, you must intelligently rebuild that day's schedule based on the remaining activities by synthesizing exciting NEW complementary activities (entirely distinct from any removed item).\n5. MAINTAIN LOGICAL TIMING AND TRAVEL FLOW: Ensure seamless travel transit times, realistic activity durations, and a complete morning-to-night chronological flow.\n`;
+      existingItineraryGuidance = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY SCHEDULE REBUILDING AROUND USER EDITS):\nThe user has actively customized their trip itinerary by deleting activities, replacing items, and reordering their schedule or days. Treat this current customized itinerary for Days ${startDay}–${endDay} as your IMMUTABLE BASELINE:\n${JSON.stringify(chunkExistingDays, null, 2)}\nWhen refreshing and regenerating the itinerary, you MUST obey these rules:\n1. RESPECT DELETED ITEMS: Do NOT restore activities that were deleted by the user; deleted activities must stay deleted and never reappear.\n2. RESPECT REPLACED ACTIVITIES: Keep all alternative activities that the user replaced intact in their designated slots.\n3. STRICTLY PRESERVE & RE-TIME REORDERED ACTIVITIES & DAYS: Maintain the user's updated exact ordering of activities and days from first to last; NEVER revert to an older AI order! Generate new, realistic chronological timestamps starting from morning through afternoon and evening corresponding precisely to this user's reordered activity sequence.\n4. INTELLIGENTLY REBUILD INCOMPLETE DAYS: When deleting an activity leaves a day incomplete or with large gaps, you must intelligently rebuild that day's schedule based on the remaining activities by synthesizing exciting NEW complementary activities (entirely distinct from any removed item).\n5. MAINTAIN LOGICAL TIMING AND TRAVEL FLOW: Ensure seamless travel transit times, realistic activity durations, and a complete morning-to-night chronological flow.\n`;
     }
   }
 
@@ -686,6 +714,7 @@ export async function generateSingleDay({
   interests = 'sightseeing',
   notes = '',
   existingDay,
+  existingItinerary,
 }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === '') {
@@ -698,15 +727,15 @@ export async function generateSingleDay({
 
   let existingDayBaseline = '';
   if (existingDay && Array.isArray(existingDay.timeline)) {
-    existingDayBaseline = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY REBUILDING):
+    existingDayBaseline = `\nCRITICAL SMART REGENERATION INSTRUCTION (INTELLIGENT DAILY REBUILDING AROUND USER'S REORDERED BASELINE):
 The user has actively edited Day ${dayNumber} by deleting, replacing, or reordering activities. Treat this current customized timeline as your IMMUTABLE BASELINE:
 ${JSON.stringify(existingDay.timeline, null, 2)}
-You MUST rebuild and refresh this day's schedule around these remaining activities:
-1. RESPECT DELETED ITEMS: Keep deleted activities REMOVED; do not re-insert or restore any previously removed items.
-2. RESPECT REPLACED ACTIVITIES: Preserve all user-replaced activities and their time slots.
-3. RESPECT REORDERED ACTIVITIES: Preserve the custom ordering of activities.
-4. INTELLIGENTLY REBUILD INCOMPLETE SCHEDULES: If activity deletions left gaps or reduced the day below a complete schedule, synthesize exciting NEW complementary activities (entirely different from any deleted items) to create a full, rich travel day.
-5. MAINTAIN LOGICAL TIMING AND FLOW: Ensure balanced transit durations and chronological flow from morning until evening.\n`;
+You MUST rebuild and refresh this day's schedule around these exact remaining activities:
+1. STRICTLY PRESERVE REORDERED ACTIVITIES: Maintain the exact user-chosen sequence of activities from first to last. Do NOT revert to any original AI order!
+2. RE-TIME REORDERED ACTIVITIES: Generate new, realistic chronological timestamps starting from morning through afternoon and evening corresponding precisely to this user's reordered activity sequence.
+3. RESPECT DELETED ITEMS: Keep deleted activities REMOVED; do not re-insert or restore any previously removed items.
+4. RESPECT REPLACED ACTIVITIES: Preserve all user-replaced activities in their designated slots.
+5. INTELLIGENTLY REBUILD INCOMPLETE SCHEDULES: If activity deletions left gaps or reduced the day below a complete schedule, synthesize exciting NEW complementary activities (entirely different from any deleted items) while preserving existing items and order.\n`;
   }
 
   return await executeWithRetry(async (_attempt, isRetry) => {
@@ -714,8 +743,7 @@ You MUST rebuild and refresh this day's schedule around these remaining activiti
       ? '\nCRITICAL RETRY INSTRUCTION: Output strictly valid JSON with no trailing commas or conversational markdown.\n'
       : '';
     const prompt = `You are an expert AI Travel Consultant. The user requested to regenerate the schedule specifically for Day ${dayNumber} of their trip to ${destination}.
-Travel parameters: Theme Focus: ${theme}, Budget: ${budget}, Companion/Style: ${travelStyle}, Interests: ${JSON.stringify(interests)}, Custom Notes: "${notes}".${existingDayBaseline}
-
+Travel parameters: Theme Focus: ${theme}, Budget: ${budget}, Companion/Style: ${travelStyle}, Interests: ${JSON.stringify(interests)}, Custom Notes: "${notes}".${existingDayBaseline}${existingItinerary ? `\nFull Trip Title/Context: ${existingItinerary.tripTitle || destination} (Ensure new complementary activities do not repeat sights planned on other days).\n` : ''}
 Create a balanced chronological timeline for Day ${dayNumber} with an engaging theme inspired by "${theme}" respecting all user customizations and remaining activities.
 ${retryNote}
 Respond ONLY with a valid JSON object matching this schema:
@@ -789,6 +817,37 @@ Respond ONLY with a valid JSON object matching this schema:
 IMPORTANT: All monetary figures must be explicitly in INR using the ₹ symbol. Never use dollar symbols ($). Respond ONLY with valid JSON.`;
 
     const result = await generateContentWithModelPool(genAI, prompt, 16384);
-    return sanitizeAndParseJson(result.response.text());
+    const parsed = sanitizeAndParseJson(result.response.text());
+    if (existingDay && Array.isArray(existingDay.timeline) && Array.isArray(parsed?.timeline)) {
+      // Strictly enforce the user's reordered activity sequence and assign new realistic chronological times
+      const existingTitles = new Set(
+        existingDay.timeline.map((t) => t?.title?.toLowerCase()?.trim())
+      );
+      const generatedMap = new Map(
+        parsed.timeline.map((t) => [t?.title?.toLowerCase()?.trim(), t])
+      );
+
+      const orderedTimeline = existingDay.timeline.map((origItem, idx) => {
+        const aiItem = generatedMap.get(origItem?.title?.toLowerCase()?.trim()) || {};
+        const newTime = parsed.timeline[idx]?.time || origItem.time;
+        return {
+          ...origItem,
+          ...aiItem,
+          title: origItem.title,
+          time: newTime,
+        };
+      });
+
+      // Integrate any newly synthesized complementary activities (created to replace earlier deletions)
+      parsed.timeline.forEach((aiItem) => {
+        const key = aiItem?.title?.toLowerCase()?.trim();
+        if (key && !existingTitles.has(key)) {
+          orderedTimeline.push(aiItem);
+        }
+      });
+
+      parsed.timeline = orderedTimeline;
+    }
+    return parsed;
   });
 }

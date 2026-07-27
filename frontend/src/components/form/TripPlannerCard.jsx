@@ -370,6 +370,7 @@ export default function TripPlannerCard() {
         onRegenerate={(currentItinerary) =>
           executeGeneration({ existingItinerary: currentItinerary || itinerary })
         }
+        onUpdateItinerary={(newItin) => setItinerary(newItin)}
         isRegenerating={false}
       />
     );

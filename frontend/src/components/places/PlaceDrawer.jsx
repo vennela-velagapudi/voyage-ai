@@ -4,25 +4,13 @@ import { X, MapPin, Sparkles } from 'lucide-react';
 import { ApiService } from '../../services/apiService';
 import PlaceLoadingSkeleton from './PlaceLoadingSkeleton';
 import PlaceErrorState from './PlaceErrorState';
-import PlaceGallery from './PlaceGallery';
 import PlaceHeader from './PlaceHeader';
 import PlaceOverview from './PlaceOverview';
-import NearbyRestaurants from './NearbyRestaurants';
-import NearbyAttractions from './NearbyAttractions';
-import NearbyCafes from './NearbyCafes';
-import BestPhotoSpots from './BestPhotoSpots';
 
 export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }) {
   const [place, setPlace] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // States for nearby discoveries
-  const [nearbyRestaurants, setNearbyRestaurants] = useState([]);
-  const [nearbyAttractions, setNearbyAttractions] = useState([]);
-  const [nearbyCafes, setNearbyCafes] = useState([]);
-  const [photoSpots, setPhotoSpots] = useState([]);
-  const [loadingNearby, setLoadingNearby] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -32,10 +20,6 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
       setIsLoading(true);
       setError(null);
       setPlace(null);
-      setNearbyRestaurants([]);
-      setNearbyAttractions([]);
-      setNearbyCafes([]);
-      setPhotoSpots([]);
 
       try {
         const response = await ApiService.searchPlace({
@@ -47,45 +31,6 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
           const fetchedPlace = response.data.data || response.data;
           setPlace(fetchedPlace);
           setIsLoading(false);
-
-          // If GPS coordinates exist, automatically fetch nearby dining, sights, cafes and photo spots
-          if (fetchedPlace.coordinates) {
-            setLoadingNearby(true);
-            try {
-              const [restRes, attrRes, cafeRes, photoRes] = await Promise.all([
-                ApiService.searchNearby({
-                  lat: fetchedPlace.coordinates.lat,
-                  lng: fetchedPlace.coordinates.lng,
-                  category: 'restaurant',
-                }),
-                ApiService.searchNearby({
-                  lat: fetchedPlace.coordinates.lat,
-                  lng: fetchedPlace.coordinates.lng,
-                  category: 'attraction',
-                }),
-                ApiService.searchNearby({
-                  lat: fetchedPlace.coordinates.lat,
-                  lng: fetchedPlace.coordinates.lng,
-                  category: 'cafe',
-                }),
-                ApiService.searchNearby({
-                  lat: fetchedPlace.coordinates.lat,
-                  lng: fetchedPlace.coordinates.lng,
-                  category: 'photo_spot',
-                }),
-              ]);
-              if (isMounted) {
-                setNearbyRestaurants(restRes?.data?.data || restRes?.data || []);
-                setNearbyAttractions(attrRes?.data?.data || attrRes?.data || []);
-                setNearbyCafes(cafeRes?.data?.data || cafeRes?.data || []);
-                setPhotoSpots(photoRes?.data?.data || photoRes?.data || []);
-              }
-            } catch (nearbyErr) {
-              console.warn('Nearby place search fallback triggered:', nearbyErr.message);
-            } finally {
-              if (isMounted) setLoadingNearby(false);
-            }
-          }
         }
       } catch (err) {
         if (isMounted) {
@@ -175,15 +120,8 @@ export default function PlaceDrawer({ isOpen, onClose, placeQuery, destination }
 
               {!isLoading && !error && place && (
                 <div className="space-y-2">
-                  <PlaceGallery photos={place.photos} placeName={place.name} />
                   <PlaceHeader place={place} />
                   <PlaceOverview place={place} />
-
-                  {/* Nearby Discoveries Section */}
-                  <NearbyRestaurants restaurants={nearbyRestaurants} isLoading={loadingNearby} />
-                  <NearbyCafes cafes={nearbyCafes} isLoading={loadingNearby} />
-                  <NearbyAttractions attractions={nearbyAttractions} isLoading={loadingNearby} />
-                  <BestPhotoSpots spots={photoSpots} isLoading={loadingNearby} />
                 </div>
               )}
             </div>

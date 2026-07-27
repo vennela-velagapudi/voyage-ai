@@ -69,15 +69,15 @@ export default function PlaceHeader({ place }) {
       </div>
 
       {/* Short Description */}
-      {description && (
-        <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 mt-2">
-          <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-sky-400" />
-            <span>About this Place</span>
-          </h4>
-          <p className="text-slate-200 text-sm leading-relaxed font-normal">{description}</p>
-        </div>
-      )}
+      <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-800/60 mt-2">
+        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+          <Sparkles className="h-3.5 w-3.5 text-sky-400" />
+          <span>About this Place</span>
+        </h4>
+        <p className="text-slate-200 text-sm leading-relaxed font-normal">
+          {description || 'Description unavailable'}
+        </p>
+      </div>
     </div>
   );
 }
