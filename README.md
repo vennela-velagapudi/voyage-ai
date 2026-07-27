@@ -96,7 +96,6 @@ git clone <repository-url>
 cd voyage-ai
 ```
 
----
 
 ## 2. Install Dependencies
 
@@ -114,7 +113,6 @@ cd frontend
 npm install
 ```
 
----
 
 ## 3. Configure Environment Variables
 
@@ -125,7 +123,6 @@ GEMINI_API_KEY=your_gemini_api_key
 GOOGLE_PLACES_API_KEY=your_google_places_api_key
 ```
 
----
 
 ## 4. Run the Backend
 
@@ -134,7 +131,6 @@ cd backend
 npm run dev
 ```
 
----
 
 ## 5. Run the Frontend
 
@@ -186,6 +182,16 @@ All architectural decisions, implementation, debugging, testing, and final integ
 - Google Places API quota limits may temporarily reduce location enrichment.
 - An active internet connection is required.
 - AI responses may vary for identical prompts.
+
+---
+
+# Notes (AI Service Availability)
+
+- Voyage AI uses the Google Gemini API to generate travel itineraries.
+- During periods of high demand, the AI service may temporarily be unavailable or respond slowly.
+- If itinerary generation fails due to a temporary AI service issue, simply wait a few minutes and try again.
+- These errors are typically caused by temporary server load or API availability and do not indicate a problem with the application itself.
+- The application includes retry handling, but occasional delays may still occur depending on the availability of the external AI service.
 
 ---
 
