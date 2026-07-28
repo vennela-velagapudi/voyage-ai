@@ -151,9 +151,9 @@ export default function TripPlannerCard() {
     const daysNum = Number(daysStr);
     if (
       touched.days &&
-      (!daysStr || isNaN(daysNum) || !/^\d+$/.test(daysStr) || daysNum < 1 || daysNum > 60)
+      (!daysStr || isNaN(daysNum) || !/^\d+$/.test(daysStr) || daysNum < 1 || daysNum > 10)
     ) {
-      newErrors.days = 'Please specify a trip duration between 1 and 60 days.';
+      newErrors.days = 'Please specify a trip duration between 1 and 10 days.';
     }
     if (
       formData.travelStyle === 'other' &&
@@ -182,7 +182,7 @@ export default function TripPlannerCard() {
     const daysStr = String(formData.days || '').trim();
     const daysNum = Number(daysStr);
     const daysValid =
-      Boolean(daysStr) && !isNaN(daysNum) && /^\d+$/.test(daysStr) && daysNum >= 1 && daysNum <= 60;
+      Boolean(daysStr) && !isNaN(daysNum) && /^\d+$/.test(daysStr) && daysNum >= 1 && daysNum <= 10;
     const budgetValid = Boolean(formData.budget);
     const styleValid = Boolean(formData.travelStyle);
     const styleOtherValid =
@@ -236,7 +236,7 @@ export default function TripPlannerCard() {
     const activeData = { ...formData, ...customOverrides };
     const destValid = isValidDestination(activeData.destination);
     const daysNum = parseInt(activeData.days, 10);
-    const daysValid = !isNaN(daysNum) && daysNum >= 1 && daysNum <= 60;
+    const daysValid = !isNaN(daysNum) && daysNum >= 1 && daysNum <= 10;
 
     if (!destValid || !daysValid || !isValid) {
       setTouched({ destination: true, days: true, travelStyleOther: true, interestsOther: true });
@@ -414,10 +414,10 @@ export default function TripPlannerCard() {
           />
           <FormInput
             id="input-days"
-            label="Number of Days (1-60)"
+            label="Number of Days (1-10)"
             type="number"
             min="1"
-            max="60"
+            max="10"
             placeholder="e.g. 7"
             value={formData.days}
             onChange={(e) => handleChange('days', e.target.value)}

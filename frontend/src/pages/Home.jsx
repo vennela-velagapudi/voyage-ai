@@ -135,7 +135,7 @@ export default function Home() {
                   <span>Define Parameters</span>
                 </h3>
                 <p className="text-text-muted text-sm leading-relaxed">
-                  Enter your destination, desired duration (up to 60 days), budget limits, companion
+                  Enter your destination, desired duration (up to 10 days), budget limits, companion
                   types, and unique personal interests or dietary preferences.
                 </p>
               </div>

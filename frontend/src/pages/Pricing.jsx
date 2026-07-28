@@ -5,7 +5,7 @@ import { Sparkles, ShieldCheck, ArrowRight, Gift, CheckCircle2 } from 'lucide-re
 
 const BETA_BENEFITS = [
   'Unlimited AI trip itinerary generations',
-  'Full duration customization (1 to 60 days per trip)',
+  'Full duration customization (1 to 10 days per trip)',
   'All social & companion profiles (Solo, Couple, Family, Business)',
   'Advanced dietary, wellness, & culinary activity filters',
   'Interactive modular Day Accordion visual layout',

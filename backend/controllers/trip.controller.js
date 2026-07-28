@@ -33,10 +33,10 @@ export async function createTripItinerary(req, res) {
     }
 
     const parsedDays = parseInt(days, 10);
-    if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 60) {
+    if (isNaN(parsedDays) || parsedDays < 1 || parsedDays > 10) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid "days" parameter. Please provide a trip duration between 1 and 60 days.',
+        error: 'Invalid "days" parameter. Please provide a trip duration between 1 and 10 days.',
       });
     }
 
