@@ -4,6 +4,8 @@ Voyage AI is an AI-powered travel planning application built for the Frontend In
 
 Instead of functioning as a traditional chatbot, the application prompts Gemini AI to return structured JSON data, which is rigorously validated, parsed, and rendered into interactive, stateful React components. Users can actively customize their travel plans by regenerating individual activities or entire days, rearranging schedules, deleting activities, and exploring rich location data.
 
+**Explanation video link:** https://drive.google.com/file/d/1UXYncIQg62-wRiv-lSZQX2oCUjCSagER/view?usp=sharing
+
 ---
 
 ## Features
