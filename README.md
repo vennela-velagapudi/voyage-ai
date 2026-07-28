@@ -2,222 +2,325 @@
 
 Voyage AI is an AI-powered travel planning application that transforms a user's travel preferences into a personalized, interactive day-by-day itinerary.
 
-Instead of functioning as a chatbot, the application prompts Gemini AI to return **structured JSON**, which is parsed and rendered into dynamic React components. Users can customize their itinerary by regenerating activities, rearranging plans, deleting stops, and exploring detailed place information.
+Unlike a traditional chatbot, Voyage AI prompts Google Gemini AI to generate structured JSON, which is validated, parsed, and rendered into an interactive React interface. Users can customize their itineraries by regenerating activities or entire days, rearranging schedules, deleting activities, and exploring detailed destination information.
 
 ---
 
-## Features
+# Features
 
-### AI-Powered Trip Generation
-- Generate personalized day-by-day travel itineraries
-- Structured JSON output from Gemini AI
-- Intelligent destination validation
-- Smart trip duration recommendations
+## AI-Powered Trip Generation
 
-### Interactive Itinerary
-- Expand and collapse each day
-- Reorder activities
-- Reorder entire days
-- Remove activities
-- Regenerate individual activities using AI
-- Regenerate an entire day while preserving the rest of the itinerary
+- Generate personalized day-by-day travel itineraries.
+- Supports trip durations from **1 to 10 days**.
+- Powered by **Google Gemini AI**.
+- Structured JSON-based AI responses.
+- Intelligent destination validation before itinerary generation.
+- Smart trip duration recommendations based on destination type.
+- English-only itinerary generation.
 
-### Rich Place Information
-- Detailed location overview
+---
+
+## Interactive Itinerary
+
+- Day-wise accordion layout.
+- Timeline-based itinerary view.
+- Reorder activities within a day.
+- Reorder entire travel days.
+- Delete activities with automatic schedule adjustment.
+- Regenerate individual activities.
+- Regenerate an entire day while maintaining itinerary consistency.
+- Interactive and stateful React UI.
+
+---
+
+## Rich Place Information
+
+Each destination includes:
+
+- Place overview
+- Photos
 - Nearby attractions
-- Nearby cafés and restaurants
-- Best photo spots
+- Nearby restaurants
+- Nearby cafés
+- Best photography spots
 - Traveler tips
-- Google Maps integration
+- Google Maps navigation
+- OpenStreetMap fallback
 
-### User Experience
-- Fully responsive mobile-first design
-- Dark / Light theme toggle
-- Loading, error, and empty states
-- English-only output enforcement
-- Graceful handling of AI failures
-- Prevention of stale API responses
-- Smooth animations and modern UI
+---
+
+## User Experience
+
+- Mobile-first responsive design.
+- Dark and Light mode.
+- Theme preference persistence.
+- Smooth animations.
+- Loading states.
+- Empty states.
+- Error states.
+- Retry generation support.
+- Form validation.
+- Modern glassmorphism UI.
+
+---
+
+## Robust AI & Error Handling
+
+The application safely handles unreliable AI responses and external API failures.
+
+Implemented safeguards include:
+
+- Malformed JSON validation
+- Empty response handling
+- Invalid response schema validation
+- Retry mechanism for temporary AI failures
+- Graceful error messages
+- Loading indicators
+- Request cancellation
+- Prevention of stale responses overwriting newer requests
+- Backend validation before AI execution
+
+---
+
+## Performance Optimizations
+
+- Request caching to reduce unnecessary API calls.
+- Optimized React rendering.
+- Responsive layouts across all devices.
+- API requests routed through the backend to protect secret keys.
 
 ---
 
 # Tech Stack
 
 ## Frontend
+
 - React
+- Functional Components
+- React Hooks
 - Vite
 - Tailwind CSS
 - Framer Motion
+- Lucide React
 
 ## Backend
+
 - Node.js
 - Express.js
 
 ## AI
+
 - Google Gemini API
 
 ## External APIs
+
 - Google Places API
-- OpenStreetMap (Fallback)
+- OpenStreetMap (Nominatim)
 
 ---
 
 # Project Structure
 
-```
+```text
 voyage-ai/
-│
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── hooks/
-│   ├── context/
-│   └── services/
 │
 ├── backend/
 │   ├── controllers/
+│   ├── middleware/
 │   ├── routes/
 │   ├── services/
-│   ├── middleware/
-│   └── utils/
+│   ├── utils/
+│   ├── server.js
+│   └── package.json
 │
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── styles/
+│   │   └── App.jsx
+│   ├── public/
+│   └── package.json
+│
+├── package.json
 └── README.md
 ```
 
 ---
 
-# Getting Started
+# Installation
 
-## 1. Clone the Repository
+## Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/<your-username>/voyage-ai.git
 cd voyage-ai
 ```
 
+---
 
-## 2. Install Dependencies
-
-### Backend
+## Install Dependencies
 
 ```bash
-cd backend
 npm install
 ```
 
-### Frontend
+The root installer automatically installs dependencies for:
 
-```bash
-cd frontend
-npm install
-```
+- Root
+- Frontend
+- Backend
 
+---
 
-## 3. Configure Environment Variables
+# Environment Variables
 
 Create a `.env` file inside the **backend** directory.
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key
-GOOGLE_PLACES_API_KEY=your_google_places_api_key
+PORT=5000
+
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+
+GOOGLE_PLACES_API_KEY=YOUR_GOOGLE_PLACES_API_KEY
 ```
 
+---
 
-## 4. Run the Backend
+# Running the Project
+
+Run both frontend and backend simultaneously.
 
 ```bash
-cd backend
-npm run dev
+npm start
 ```
 
+This starts:
 
-## 5. Run the Frontend
-
-```bash
-cd frontend
-npm run dev
-```
-
-The application will be available at:
+Frontend
 
 ```
 http://localhost:5173
 ```
 
+Backend
+
+```
+http://localhost:5000
+```
+
+You may also run them separately.
+
+Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
 ---
 
-# How to Use
+# AI Usage Note
 
-1. Enter your travel destination.
-2. Select the trip duration.
-3. Choose your travel preferences and interests.
-4. Click **Generate Trip**.
-5. Explore the generated itinerary.
-6. Expand each day to view activities.
-7. Reorder or remove activities.
-8. Regenerate an activity or an entire day using AI.
-9. Open place details to view its complete details.
+Voyage AI uses **Google Gemini AI** as its Large Language Model (LLM).
+
+Instead of displaying conversational responses, the backend prompts Gemini to generate structured JSON itineraries. Every AI response is validated before being rendered in the frontend.
+
+The application also integrates **Google Places API** and **OpenStreetMap** to enrich itineraries with verified location information, nearby attractions, restaurants, cafés, and navigation support.
 
 ---
 
-# AI Usage
+# Handling AI Failures
 
-This project was developed with assistance from AI tools (ChatGPT and Gemini) for:
+The application has been designed to safely handle unpredictable AI behavior.
 
-- Brainstorming implementation ideas
-- Prompt engineering for structured JSON generation
-- Debugging and troubleshooting
-- Code explanations and optimization
-- UI/UX improvement suggestions
+It includes:
 
-All architectural decisions, implementation, debugging, testing, and final integration were reviewed, understood, and validated before being included in the project.
+- Structured JSON validation
+- Malformed response handling
+- Empty response handling
+- Retry generation option
+- Backend validation
+- Graceful error messages
+- Loading states
+- Protection against stale API responses
+- Safe rendering without application crashes
+
+---
+
+# Mobile Responsiveness
+
+Voyage AI is fully responsive and optimized for:
+
+- Mobile phones
+- Tablets
+- Laptops
+- Desktop devices
+
+Responsive features include:
+
+- Mobile-first layouts
+- Touch-friendly controls
+- Responsive navigation
+- Responsive itinerary timeline
+- Adaptive drawers and modals
+- Dark and Light themes across all screen sizes
+
+---
+
+# Theme Support
+
+The application supports:
+
+- Dark Mode (default)
+- Light Mode
+- Automatic OS preference detection
+- Persistent theme preference using Local Storage
+- Smooth theme transitions
 
 ---
 
 # Known Limitations
 
-- AI-generated itineraries depend on the quality of the user's input.
-- Place information depends on third-party APIs and may occasionally be incomplete or unavailable.
-- Google Places API quota limits may temporarily reduce location enrichment.
-- An active internet connection is required.
-- AI responses may vary for identical prompts.
+- AI itinerary generation depends on Google Gemini service availability.
+- During periods of high demand, AI requests may be delayed or temporarily unavailable. If this occurs, wait a few minutes and try again.
+- Google Places information depends on third-party API availability and quota limits.
+- Some locations may have incomplete information, such as photos, opening hours, or descriptions.
+- AI-generated recommendations should be treated as suggestions and verified before travel.
 
 ---
 
-# Notes (AI Service Availability)
 
-- Voyage AI uses the Google Gemini API to generate travel itineraries.
-- During periods of high demand, the AI service may temporarily be unavailable or respond slowly.
-- If itinerary generation fails due to a temporary AI service issue, simply wait a few minutes and try again.
-- These errors are typically caused by temporary server load or API availability and do not indicate a problem with the application itself.
-- The application includes retry handling, but occasional delays may still occur depending on the availability of the external AI service.
+# Future Improvements
 
----
+Potential future enhancements include:
 
-# Time Spent
-
-Approximately **8 hours** of active development.
-
----
-
-# Demo
-
-A short screen recording demonstrating the application's functionality accompanies this submission.
+- User authentication
+- Saved itineraries
+- Trip sharing
+- PDF export
+- Flight recommendations
+- Hotel recommendations
+- Weather integration
+- Offline itinerary support
+- Multi-language support
+- Collaborative trip planning
 
 ---
 
-# Acknowledgements
+# Author
 
-- Google Gemini API
-- Google Places API
-- OpenStreetMap
-- React
-- Tailwind CSS
-- Framer Motion
+**Vennela Sushma Chowdary Velagapudi**
 
----
-
-# License
-
-This project was developed as part of a **Frontend Internship Assignment** and is intended for evaluation purposes only.
+B.Tech Student  
+SRM University-AP
